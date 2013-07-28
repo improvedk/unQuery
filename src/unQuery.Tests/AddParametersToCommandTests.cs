@@ -8,7 +8,7 @@ namespace unQuery.Tests
 	public partial class unQueryTests
 	{
 		[Test]
-		public void AddParameterToCommand_SingleNonNullByte()
+		public void AddParameterToCommand_Byte()
 		{
 			var cmd = new SqlCommand();
 
@@ -21,11 +21,10 @@ namespace unQuery.Tests
 			Assert.AreEqual("@Age", param.ParameterName);
 			Assert.AreEqual(SqlDbType.TinyInt, param.SqlDbType);
 			Assert.AreEqual(55, (byte)param.Value);
-			Assert.AreEqual(false, param.IsNullable);
 		}
 
 		[Test]
-		public void AddParameterToCommand_NullValue()
+		public void AddParameterToCommand_NullableByte()
 		{
 			var cmd = new SqlCommand();
 
@@ -35,6 +34,8 @@ namespace unQuery.Tests
 
 			var param = cmd.Parameters[0];
 
+			Assert.AreEqual("@Age", param.ParameterName);
+			Assert.AreEqual(SqlDbType.TinyInt, param.SqlDbType);
 			Assert.AreEqual(DBNull.Value, param.Value);
 		}
 	}

@@ -76,6 +76,7 @@ namespace unQuery
 		private static Dictionary<Type, SqlDbType> typeMap = new Dictionary<Type, SqlDbType> {
 			{ typeof(short), SqlDbType.SmallInt },
 			{ typeof(byte), SqlDbType.TinyInt },
+			{ typeof(byte?), SqlDbType.TinyInt },
 			{ typeof(int), SqlDbType.Int },
 			{ typeof(long), SqlDbType.BigInt },
 			{ typeof(bool), SqlDbType.Bit },

@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
+using NUnit.Framework;
 
 namespace unQuery.Tests
 {
