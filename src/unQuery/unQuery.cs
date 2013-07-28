@@ -75,14 +75,19 @@ namespace unQuery
 
 		private static Dictionary<Type, SqlDbType> typeMap = new Dictionary<Type, SqlDbType> {
 			{ typeof(short), SqlDbType.SmallInt },
+			{ typeof(short?), SqlDbType.SmallInt },
 			{ typeof(byte), SqlDbType.TinyInt },
 			{ typeof(byte?), SqlDbType.TinyInt },
 			{ typeof(int), SqlDbType.Int },
+			{ typeof(int?), SqlDbType.Int },
 			{ typeof(long), SqlDbType.BigInt },
+			{ typeof(long?), SqlDbType.BigInt },
 			{ typeof(bool), SqlDbType.Bit },
+			{ typeof(bool?), SqlDbType.Bit },
 			{ typeof(Guid), SqlDbType.UniqueIdentifier },
-			{ typeof(SqlVarchar), SqlDbType.VarChar },
-			{ typeof(SqlNVarchar), SqlDbType.NVarChar }
+			{ typeof(Guid?), SqlDbType.UniqueIdentifier },
+			{ typeof(DateTime), SqlDbType.DateTime },
+			{ typeof(DateTime?), SqlDbType.DateTime }
 
 			// TODO: smalldatetime, datetime, date
 			// TODO: binary, varbinary, image
@@ -94,35 +99,38 @@ namespace unQuery
 		{
 			foreach (PropertyInfo prop in parameters.GetType().GetProperties())
 			{
-				var param = new SqlParameter();
+				SqlParameter param;
+				object propValue = prop.GetValue(parameters);
+				var sqlType = propValue as ISqlType;
+
+				if (sqlType != null)
+				{
+					// If it's a SqlType value, type properties have already been set
+					param = sqlType.GetParameter();
+				}
+				else
+				{
+					// For simple types, we'll set appropriate type values here
+					param = new SqlParameter();
+					param.Value = prop.GetValue(parameters);
+
+					// Set the correct SqlDbType depending on the CLR type
+					try
+					{
+						param.SqlDbType = typeMap[prop.PropertyType];
+					}
+					catch (KeyNotFoundException)
+					{
+						throw new ArgumentException("Unsupported type: " + prop.PropertyType);
+					}
+				}
 
 				// Set parameter name
 				param.ParameterName = "@" + prop.Name;
 
-				// Get the value
-				param.Value = prop.GetValue(parameters);
-
-				// If value is a complex type, get the inner value
-				var sqlType = param.Value as ISqlType;
-				if (sqlType != null)
-				{
-					param.Value = sqlType.Value;
-					param.Size = sqlType.Length;
-				}
-
 				// If it's a null value, convert it to DBNull.value
 				if (param.Value == null)
 					param.Value = DBNull.Value;
-
-				// Set the correct SqlDbType depending on the CLR type
-				try
-				{
-					param.SqlDbType = typeMap[prop.PropertyType];
-				}
-				catch (KeyNotFoundException)
-				{
-					throw new ArgumentException("Unsupported type: " + prop.PropertyType);
-				}
 
 				cmd.Parameters.Add(param);
 			}

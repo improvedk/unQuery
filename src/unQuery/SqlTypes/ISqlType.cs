@@ -1,8 +1,9 @@
-﻿namespace unQuery.SqlTypes
+﻿using System.Data.SqlClient;
+
+namespace unQuery.SqlTypes
 {
 	public interface ISqlType
 	{
-		object Value { get; }
-		int Length { get; }
+		SqlParameter GetParameter();
 	}
 }
