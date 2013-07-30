@@ -6,6 +6,15 @@ using unQuery.SqlTypes;
 
 namespace unQuery.Tests
 {
+	/// <summary>
+	/// Exact Numerics: bigint, bit, decimal, int, money, numeric, smallint, smallmoney, tinyint
+	/// Approximate Numerics: float, real
+	/// Date and Time: date, datetime2, datetime, datetimeoffset, smalldatetime, time
+	/// Character Strings: char, text, varchar
+	/// Unicode Character Strings: nchar, ntext, nvarchar
+	/// Binary Strings: binary, image, varbinary
+	/// Other Data Types: cursor, hierarchyid, sql_variant, table, timestamp, uniqueidentifier, xml
+	/// </summary>
 	public partial class unQueryTests
 	{
 		[Test]
