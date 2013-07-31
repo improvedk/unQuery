@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using NUnit.Framework;
 using unQuery.SqlTypes;
 
 namespace unQuery.Tests
@@ -14,8 +14,13 @@ namespace unQuery.Tests
 	/// Unicode Character Strings: nchar, ntext, nvarchar
 	/// Binary Strings: binary, image, varbinary
 	/// Other Data Types: cursor, hierarchyid, sql_variant, table, timestamp, uniqueidentifier, xml
+	/// 
+	/// Supported:
+	///		bit
+	///		tinyint
+	///		smallint
 	/// </summary>
-	public partial class unQueryTests
+	public class AddParametersToCommandTests : TestFixture
 	{
 		[Test]
 		public void AddParameterToCommand_Bit()
@@ -25,57 +30,33 @@ namespace unQuery.Tests
 			testParameterType(Col.Bit(false), SqlDbType.Bit, false);
 			testParameterType(Col.Bit(null), SqlDbType.Bit, DBNull.Value);
 		}
-
+		
 		[Test]
-		public void AddParameterToCommand_Tinyint()
+		public void AddParameterToCommand_TinyInt()
 		{
-			testParameterType(true, SqlDbType.Bit);
-			testParameterType((bool?)null, SqlDbType.Bit, DBNull.Value);
-			testParameterType(Col.Bit(false), SqlDbType.Bit, false);
-			testParameterType(Col.Bit(null), SqlDbType.Bit, DBNull.Value);
+			testParameterType((byte)55, SqlDbType.TinyInt);
+			testParameterType((byte?)null, SqlDbType.TinyInt, DBNull.Value);
+			testParameterType(Col.TinyInt(55), SqlDbType.TinyInt, 55);
+			testParameterType(Col.TinyInt(null), SqlDbType.TinyInt, DBNull.Value);
 		}
-
+		
 		[Test]
-		public void AddParameterToCommand_Byte() { testParameterType<byte>(55, SqlDbType.TinyInt); }
-
+		public void AddParameterToCommand_SmallInt()
+		{
+			testParameterType((short)55, SqlDbType.SmallInt);
+			testParameterType((short?)null, SqlDbType.SmallInt, DBNull.Value);
+			testParameterType(Col.SmallInt(55), SqlDbType.SmallInt, 55);
+			testParameterType(Col.SmallInt(null), SqlDbType.SmallInt, DBNull.Value);
+		}
+		
 		[Test]
-		public void AddParameterToCommand_NullableByte() { testParameterType<byte?>(null, SqlDbType.TinyInt); }
-
-		[Test]
-		public void AddParameterToCommand_Short() { testParameterType<short>(55, SqlDbType.SmallInt); }
-
-		[Test]
-		public void AddParameterToCommand_NullableShort() { testParameterType<short?>(null, SqlDbType.SmallInt); }
-
-		[Test]
-		public void AddParameterToCommand_Int() { testParameterType<int>(55, SqlDbType.Int); }
-
-		[Test]
-		public void AddParameterToCommand_NullableInt() { testParameterType<int?>(null, SqlDbType.Int); }
-
-		[Test]
-		public void AddParameterToCommand_Long() { testParameterType<long>(55, SqlDbType.BigInt); }
-
-		[Test]
-		public void AddParameterToCommand_NullableLong() { testParameterType<long?>(null, SqlDbType.BigInt); }
-
-		[Test]
-		public void AddParameterToCommand_Guid() { testParameterType<Guid>(new Guid("df5f737d-8730-49ee-90f2-4f60acbd1323"), SqlDbType.UniqueIdentifier); }
-
-		[Test]
-		public void AddParameterToCommand_NullableGuid() { testParameterType<Guid?>(null, SqlDbType.UniqueIdentifier); }
-
-		[Test]
-		public void AddParameterToCommand_Bool() { testParameterType<bool>(true, SqlDbType.Bit); }
-
-		[Test]
-		public void AddParameterToCommand_NullableBool() { testParameterType<bool?>(null, SqlDbType.Bit); }
-
-		[Test]
-		public void AddParameterToCommand_DateTime() { testParameterType<DateTime>(DateTime.Now, SqlDbType.DateTime); }
-
-		[Test]
-		public void AddParameterToCommand_NullableDateTime() { testParameterType<DateTime?>(null, SqlDbType.DateTime); }
+		public void AddParameterToCommand_Int()
+		{
+			testParameterType(55, SqlDbType.Int);
+			testParameterType((int?)null, SqlDbType.Int, DBNull.Value);
+			testParameterType(Col.Int(55), SqlDbType.Int, 55);
+			testParameterType(Col.Int(null), SqlDbType.Int, DBNull.Value);
+		}
 
 		private void testParameterType<TValue>(TValue value, SqlDbType expectedType)
 		{
@@ -86,7 +67,7 @@ namespace unQuery.Tests
 		{
 			var cmd = new SqlCommand();
 
-			db.AddParametersToCommand(cmd, new {
+			DB.AddParametersToCommand(cmd, new {
 				Test = value
 			});
 

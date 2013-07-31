@@ -3,12 +3,12 @@ using NUnit.Framework;
 
 namespace unQuery.Tests
 {
-	public partial class unQueryTests
+	public class ExecuteTests : TestFixture
 	{
 		[Test]
 		public void Execute_WithRowsModified()
 		{
-			var result = db.Execute("UPDATE Persons SET Name = Name");
+			var result = DB.Execute("UPDATE Persons SET Name = Name");
 
 			Assert.AreEqual(5, result);
 		}
@@ -16,7 +16,7 @@ namespace unQuery.Tests
 		[Test]
 		public void Execute_WithNoRowsModified()
 		{
-			var result = db.Execute("UPDATE Persons SET Name = Name WHERE 1=0");
+			var result = DB.Execute("UPDATE Persons SET Name = Name WHERE 1=0");
 
 			Assert.AreEqual(0, result);
 		}
@@ -24,7 +24,7 @@ namespace unQuery.Tests
 		[Test]
 		public void Execute_ThrowsSqlException()
 		{
-			Assert.Throws<SqlException>(() => db.Execute("x"));
+			Assert.Throws<SqlException>(() => DB.Execute("x"));
 		}
 	}
 }

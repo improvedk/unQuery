@@ -1,18 +1,20 @@
-﻿using NUnit.Framework;
+﻿using System.Transactions;
+using NUnit.Framework;
 
 namespace unQuery.Tests
 {
 	[TestFixture]
-	public partial class unQueryTests
+	public abstract class TestFixture
 	{
-		private unQuery db = new TestDB();
+		protected unQuery DB = new TestDB();
+		private TransactionScope ts;
 
 		[TestFixtureSetUp]
 		public void SetUp()
 		{
-			db.Execute(@"
-				IF OBJECT_ID('Persons') IS NOT NULL DROP TABLE Persons;
+			ts = new TransactionScope();
 
+			DB.Execute(@"
 				CREATE TABLE dbo.Persons (
 					PersonID INT IDENTITY(1, 1) NOT NULL,
 					Name NVARCHAR(128) NOT NULL,
@@ -31,6 +33,12 @@ namespace unQuery.Tests
 					('Myra Lucero', 65, 'F', '2007-07-03 05:07:33.680'),
 					('Annie Brennan', 23, 'M', '1984-01-07 13:24:42.110')
 			");
+		}
+
+		[TestFixtureTearDown]
+		public void TearDown()
+		{
+			ts.Dispose();
 		}
 	}
 }

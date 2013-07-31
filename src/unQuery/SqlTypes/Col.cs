@@ -6,5 +6,20 @@
 		{
 			return new SqlBit(value);
 		}
+
+		public static SqlTinyInt TinyInt(byte? value)
+		{
+			return new SqlTinyInt(value);
+		}
+
+		public static SqlSmallInt SmallInt(byte? value)
+		{
+			return new SqlSmallInt(value);
+		}
+
+		public static SqlInt Int(int? value)
+		{
+			return new SqlInt(value);
+		}
 	}
 }

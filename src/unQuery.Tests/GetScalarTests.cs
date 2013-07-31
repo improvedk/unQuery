@@ -4,12 +4,12 @@ using NUnit.Framework;
 
 namespace unQuery.Tests
 {
-	public partial class unQueryTests
+	public class GetScalarTests : TestFixture
 	{
 		[Test]
 		public void GetScalar_ValueWithParameter()
 		{
-			var result = db.GetScalar<int>("SELECT COUNT(*) FROM Persons WHERE Age = @Age", new {
+			var result = DB.GetScalar<int>("SELECT COUNT(*) FROM Persons WHERE Age = @Age", new {
 				Age = (byte)55
 			});
 
@@ -19,7 +19,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetScalar_ValueType()
 		{
-			var result = db.GetScalar<int>("SELECT COUNT(*) FROM Persons");
+			var result = DB.GetScalar<int>("SELECT COUNT(*) FROM Persons");
 
 			Assert.AreEqual(5, result);
 		}
@@ -27,7 +27,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetScalar_NullNullableValueType()
 		{
-			var result = db.GetScalar<DateTime?>("SELECT TOP 1 SignedUp FROM Persons WHERE SignedUp IS NULL");
+			var result = DB.GetScalar<DateTime?>("SELECT TOP 1 SignedUp FROM Persons WHERE SignedUp IS NULL");
 
 			Assert.AreEqual(null, result);
 		}
@@ -35,7 +35,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetScalar_NonNullNullableValueType()
 		{
-			var result = db.GetScalar<DateTime?>("SELECT SignedUp FROM Persons WHERE Name = 'Daniel Gallagher'");
+			var result = DB.GetScalar<DateTime?>("SELECT SignedUp FROM Persons WHERE Name = 'Daniel Gallagher'");
 
 			Assert.AreEqual(Convert.ToDateTime("1997-11-15 21:03:54.000"), result);
 		}
@@ -43,13 +43,13 @@ namespace unQuery.Tests
 		[Test]
 		public void GetScalar_NullableValueTypeWithNoRows()
 		{
-			Assert.Throws<NoRowsException>(() => db.GetScalar<DateTime?>("SELECT TOP 1 SignedUp FROM Persons WHERE 1=0"));
+			Assert.Throws<NoRowsException>(() => DB.GetScalar<DateTime?>("SELECT TOP 1 SignedUp FROM Persons WHERE 1=0"));
 		}
 
 		[Test]
 		public void GetScalar_ThrowsSqlException()
 		{
-			Assert.Throws<SqlException>(() => db.Execute("x"));
+			Assert.Throws<SqlException>(() => DB.Execute("x"));
 		}
 	}
 }
