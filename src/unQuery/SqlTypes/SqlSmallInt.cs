@@ -5,19 +5,24 @@ namespace unQuery.SqlTypes
 {
 	public class SqlSmallInt : ISqlType
 	{
-		private byte? value;
+		private readonly short? value;
 
-		public SqlSmallInt(byte? value)
+		public SqlSmallInt(short? value)
 		{
 			this.value = value;
 		}
 
 		public SqlParameter GetParameter()
 		{
-			var param = new SqlParameter("", SqlDbType.SmallInt);
-			param.Value = value;
+			return GetParameter(value);
+		}
 
-			return param;
+		public static SqlParameter GetParameter(object value)
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.SmallInt,
+				Value = value
+			};
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace unQuery.SqlTypes
 {
 	public class SqlInt : ISqlType
 	{
-		private int? value;
+		private readonly int? value;
 
 		public SqlInt(int? value)
 		{
@@ -14,10 +14,15 @@ namespace unQuery.SqlTypes
 
 		public SqlParameter GetParameter()
 		{
-			var param = new SqlParameter("", SqlDbType.Int);
-			param.Value = value;
+			return GetParameter(value);
+		}
 
-			return param;
+		public static SqlParameter GetParameter(object value)
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.Int,
+				Value = value
+			};
 		}
 	}
 }

@@ -21,5 +21,10 @@
 		{
 			return new SqlInt(value);
 		}
+
+		public static SqlBigInt BigInt(long? value)
+		{
+			return new SqlBigInt(value);
+		}
 	}
 }

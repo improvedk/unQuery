@@ -3,11 +3,11 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlTinyInt : ISqlType
+	public class SqlBigInt : ISqlType
 	{
-		private readonly byte? value;
+		private readonly long? value;
 
-		public SqlTinyInt(byte? value)
+		public SqlBigInt(long? value)
 		{
 			this.value = value;
 		}
@@ -20,7 +20,7 @@ namespace unQuery.SqlTypes
 		public static SqlParameter GetParameter(object value)
 		{
 			return new SqlParameter {
-				SqlDbType = SqlDbType.TinyInt,
+				SqlDbType = SqlDbType.BigInt,
 				Value = value
 			};
 		}

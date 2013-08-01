@@ -57,6 +57,15 @@ namespace unQuery.Tests
 			testParameterType(Col.Int(55), SqlDbType.Int, 55);
 			testParameterType(Col.Int(null), SqlDbType.Int, DBNull.Value);
 		}
+		
+		[Test]
+		public void AddParameterToCommand_BigInt()
+		{
+			testParameterType(55L, SqlDbType.BigInt);
+			testParameterType((long?)null, SqlDbType.BigInt, DBNull.Value);
+			testParameterType(Col.BigInt(55), SqlDbType.BigInt, 55);
+			testParameterType(Col.BigInt(null), SqlDbType.BigInt, DBNull.Value);
+		}
 
 		private void testParameterType<TValue>(TValue value, SqlDbType expectedType)
 		{

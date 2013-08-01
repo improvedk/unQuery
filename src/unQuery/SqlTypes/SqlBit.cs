@@ -5,7 +5,7 @@ namespace unQuery.SqlTypes
 {
 	public class SqlBit : ISqlType
 	{
-		private bool? value;
+		private readonly bool? value;
 
 		public SqlBit(bool? value)
 		{
@@ -14,10 +14,15 @@ namespace unQuery.SqlTypes
 
 		public SqlParameter GetParameter()
 		{
-			var param = new SqlParameter("", SqlDbType.Bit);
-			param.Value = value;
+			return GetParameter(value);
+		}
 
-			return param;
+		public static SqlParameter GetParameter(object value)
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.Bit,
+				Value = value
+			};
 		}
 	}
 }

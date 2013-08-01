@@ -14,6 +14,17 @@ namespace unQuery.Tests
 		}
 
 		[Test]
+		public void Execute_WithParameters()
+		{
+			var result = DB.Execute("UPDATE Persons = SET Name = Name AND Age = Age WHERE Name = @Name AND Age = @Age", new {
+				Age = 25,
+				Name = "Daniel Gallagher"
+			});
+
+			Assert.AreEqual(1, result);
+		}
+
+		[Test]
 		public void Execute_WithNoRowsModified()
 		{
 			var result = DB.Execute("UPDATE Persons SET Name = Name WHERE 1=0");

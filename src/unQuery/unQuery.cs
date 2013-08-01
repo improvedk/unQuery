@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using unQuery.SqlTypes;
@@ -18,6 +17,9 @@ namespace unQuery
 	 * Query methods
 	 *	- Stored procedure
 	 *	- Text
+	 *	
+	 * TODO
+	 *  - Way to override standard CLR type handlers
 	 */
 
 	public abstract class unQuery
@@ -25,7 +27,7 @@ namespace unQuery
 		protected abstract string ConnectionString { get; }
 
 		/// <summary>
-		/// Executes the query, and returns the first column of the first row of the first result set returned by the query.
+		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
 		/// Additional columns or rows are ignored.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
@@ -36,7 +38,7 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Executes the query, and returns the first column of the first row of the first result set returned by the query.
+		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
 		/// Additional columns or rows are ignored.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
@@ -63,66 +65,67 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Executes a statement and returns the number of rows affected.
+		/// Executes a batch and returns the number of rows affected.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		public int Execute(string sql)
 		{
-			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-				return cmd.ExecuteNonQuery();
+			return Execute(sql, null);
 		}
 
-		private static Dictionary<Type, SqlDbType> typeMap = new Dictionary<Type, SqlDbType> {
-			{ typeof(short), SqlDbType.SmallInt },
-			{ typeof(short?), SqlDbType.SmallInt },
-			{ typeof(byte), SqlDbType.TinyInt },
-			{ typeof(byte?), SqlDbType.TinyInt },
-			{ typeof(int), SqlDbType.Int },
-			{ typeof(int?), SqlDbType.Int },
-			{ typeof(long), SqlDbType.BigInt },
-			{ typeof(long?), SqlDbType.BigInt },
-			{ typeof(bool), SqlDbType.Bit },
-			{ typeof(bool?), SqlDbType.Bit },
-			{ typeof(Guid), SqlDbType.UniqueIdentifier },
-			{ typeof(Guid?), SqlDbType.UniqueIdentifier },
-			{ typeof(DateTime), SqlDbType.DateTime },
-			{ typeof(DateTime?), SqlDbType.DateTime }
+		/// <summary>
+		/// Executes a batch and returns the number of rows affected.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		public int Execute(string sql, dynamic parameters)
+		{
+			using (var conn = getConnection())
+			using (var cmd = new SqlCommand(sql, conn))
+			{
+				if (parameters != null)
+					AddParametersToCommand(cmd, parameters);
 
-			// TODO: smalldatetime, datetime, date
-			// TODO: binary, varbinary, image
-			// TODO: char, nchar, varchar, nvarchar, xml, text, ntext
-			// TODO: double, float, money
+				return cmd.ExecuteNonQuery();
+			}
+		}
+
+		private static readonly Dictionary<Type, Func<object, SqlParameter>> typeHandlers = new Dictionary<Type, Func<object, SqlParameter>> {
+			{ typeof(short), SqlSmallInt.GetParameter },
+			{ typeof(short?), SqlSmallInt.GetParameter },
+			{ typeof(byte), SqlTinyInt.GetParameter },
+			{ typeof(byte?), SqlTinyInt.GetParameter },
+			{ typeof(int), SqlInt.GetParameter },
+			{ typeof(int?), SqlInt.GetParameter },
+			{ typeof(long), SqlBigInt.GetParameter },
+			{ typeof(long?), SqlBigInt.GetParameter },
+			{ typeof(bool), SqlBit.GetParameter },
+			{ typeof(bool?), SqlBit.GetParameter }
+
+			// TODO: char, decimal, double, enum, float, sbyte, struct, uint, ulong, ushort, guid, datetime
+			// TODO: object, string
 		};
 
 		internal void AddParametersToCommand(SqlCommand cmd, object parameters)
 		{
+			// For each property in the dynamic parameters object, create a SqlParameter and add it to the SqlCommand
 			foreach (PropertyInfo prop in parameters.GetType().GetProperties())
 			{
 				SqlParameter param;
 				object propValue = prop.GetValue(parameters);
 				var sqlType = propValue as ISqlType;
-
-				if (sqlType != null)
+			
+				try
 				{
-					// If it's a SqlType value, type properties have already been set
-					param = sqlType.GetParameter();
+					// If it's a SqlType value, let it create the parameter for us. Otherwise, for native CLR types we'll
+					// let the type handlers take care of creating the parameter.
+					if (sqlType != null)
+						param = sqlType.GetParameter();
+					else
+						param = typeHandlers[prop.PropertyType](propValue);
 				}
-				else
+				catch (KeyNotFoundException)
 				{
-					// For simple types, we'll set appropriate type values here
-					param = new SqlParameter();
-					param.Value = prop.GetValue(parameters);
-
-					// Set the correct SqlDbType depending on the CLR type
-					try
-					{
-						param.SqlDbType = typeMap[prop.PropertyType];
-					}
-					catch (KeyNotFoundException)
-					{
-						throw new ArgumentException("Unsupported type: " + prop.PropertyType);
-					}
+					throw new TypeNotSupportedException(prop.PropertyType);
 				}
 
 				// Set parameter name
