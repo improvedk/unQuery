@@ -1,10 +1,18 @@
-﻿using System.Data.SqlClient;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System;
+using System.Data.SqlClient;
 
 namespace unQuery.Tests
 {
 	public class ExecuteTests : TestFixture
 	{
+		[Test]
+		public void Execute_EmptySql()
+		{
+			Assert.Throws<InvalidOperationException>(() => db.Execute(""));
+			Assert.Throws<InvalidOperationException>(() => db.Execute(null));
+		}
+
 		[Test]
 		public void Execute_WithRowsModified()
 		{
