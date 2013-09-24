@@ -36,5 +36,15 @@
 		{
 			return new SqlNVarchar(value, size);
 		}
+
+		public static SqlVarchar Varchar(string value)
+		{
+			return new SqlVarchar(value);
+		}
+
+		public static SqlVarchar Varchar(string value, int size)
+		{
+			return new SqlVarchar(value, size);
+		}
 	}
 }
