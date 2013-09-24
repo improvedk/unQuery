@@ -99,7 +99,7 @@ namespace unQuery
 			{ typeof(long), SqlBigInt.GetParameter },
 			{ typeof(long?), SqlBigInt.GetParameter },
 			{ typeof(bool), SqlBit.GetParameter },
-			{ typeof(bool?), SqlBit.GetParameter }
+			{ typeof(bool?), SqlBit.GetParameter },
 
 			// TODO: char, decimal, double, enum, float, sbyte, struct, uint, ulong, ushort, guid, datetime
 			// TODO: object, string

@@ -1,17 +1,15 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Data;
 using System.Data.SqlClient;
-using NUnit.Framework;
 using unQuery.SqlTypes;
 
 namespace unQuery.Tests
 {
 	/// <summary>
-	/// Exact Numerics: bigint, bit, decimal, int, money, numeric, smallint, smallmoney, tinyint
+	/// Exact Numerics: decimal, money, numeric, smallmoney, tinyint
 	/// Approximate Numerics: float, real
 	/// Date and Time: date, datetime2, datetime, datetimeoffset, smalldatetime, time
-	/// Character Strings: char, text, varchar
-	/// Unicode Character Strings: nchar, ntext, nvarchar
 	/// Binary Strings: binary, image, varbinary
 	/// Other Data Types: cursor, hierarchyid, sql_variant, table, timestamp, uniqueidentifier, xml
 	/// 
@@ -19,6 +17,11 @@ namespace unQuery.Tests
 	///		bit
 	///		tinyint
 	///		smallint
+	///		int
+	///		bigint
+	/// 
+	/// Not supported:
+	///		char, text, varchar, nchar, ntext, nvarchar - For now we'll let the users explicitly set the SqlType here
 	/// </summary>
 	public class AddParametersToCommandTests : TestFixture
 	{
@@ -65,6 +68,16 @@ namespace unQuery.Tests
 			testParameterType((long?)null, SqlDbType.BigInt, DBNull.Value);
 			testParameterType(Col.BigInt(55), SqlDbType.BigInt, 55);
 			testParameterType(Col.BigInt(null), SqlDbType.BigInt, DBNull.Value);
+		}
+
+		[Test]
+		public void AddParameterToCommand_String()
+		{
+			Assert.Throws<TypeNotSupportedException>(() => {
+				DB.AddParametersToCommand(new SqlCommand(), new {
+					Test = "Hello"
+				});
+			});
 		}
 
 		private void testParameterType<TValue>(TValue value, SqlDbType expectedType)

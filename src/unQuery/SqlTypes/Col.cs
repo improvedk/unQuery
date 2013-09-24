@@ -26,5 +26,15 @@
 		{
 			return new SqlBigInt(value);
 		}
+
+		public static SqlNVarchar NVarchar(string value)
+		{
+			return new SqlNVarchar(value);
+		}
+
+		public static SqlNVarchar NVarchar(string value, int size)
+		{
+			return new SqlNVarchar(value, size);
+		}
 	}
 }

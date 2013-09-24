@@ -42,6 +42,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\Col.cs" />
+    <Compile Include="SqlTypes\SqlNVarchar.cs" />
     <Compile Include="SqlTypes\SqlBigInt.cs" />
     <Compile Include="SqlTypes\SqlInt.cs" />
     <Compile Include="SqlTypes\SqlSmallInt.cs" />

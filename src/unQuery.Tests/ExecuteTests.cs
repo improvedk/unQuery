@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Data.SqlClient;
+using unQuery.SqlTypes;
 
 namespace unQuery.Tests
 {
@@ -9,8 +10,8 @@ namespace unQuery.Tests
 		[Test]
 		public void Execute_EmptySql()
 		{
-			Assert.Throws<InvalidOperationException>(() => db.Execute(""));
-			Assert.Throws<InvalidOperationException>(() => db.Execute(null));
+			Assert.Throws<InvalidOperationException>(() => DB.Execute(""));
+			Assert.Throws<InvalidOperationException>(() => DB.Execute(null));
 		}
 
 		[Test]
@@ -24,9 +25,9 @@ namespace unQuery.Tests
 		[Test]
 		public void Execute_WithParameters()
 		{
-			var result = DB.Execute("UPDATE Persons = SET Name = Name AND Age = Age WHERE Name = @Name AND Age = @Age", new {
+			var result = DB.Execute("UPDATE Persons SET Name = Name, Age = Age WHERE Name = @Name AND Age = @Age", new {
 				Age = 25,
-				Name = "Daniel Gallagher"
+				Name = Col.NVarchar("Daniel Gallagher")
 			});
 
 			Assert.AreEqual(1, result);

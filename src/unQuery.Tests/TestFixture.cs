@@ -15,6 +15,8 @@ namespace unQuery.Tests
 			ts = new TransactionScope();
 
 			DB.Execute(@"
+				IF OBJECT_ID('Persons') IS NOT NULL DROP TABLE Persons
+
 				CREATE TABLE dbo.Persons (
 					PersonID INT IDENTITY(1, 1) NOT NULL,
 					Name NVARCHAR(128) NOT NULL,
