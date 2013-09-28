@@ -20,6 +20,7 @@ namespace unQuery
 	 *	
 	 * TODO
 	 *  - Way to override standard CLR type handlers
+	 *  - Make sure DBNull.Value is used for null values
 	 */
 
 	public abstract class unQuery
@@ -100,6 +101,8 @@ namespace unQuery
 			{ typeof(long?), SqlBigInt.GetParameter },
 			{ typeof(bool), SqlBit.GetParameter },
 			{ typeof(bool?), SqlBit.GetParameter },
+			{ typeof(Guid), SqlUniqueIdentifier.GetParameter },
+			{ typeof(Guid?), SqlUniqueIdentifier.GetParameter }
 
 			// TODO: char, decimal, double, enum, float, sbyte, struct, uint, ulong, ushort, guid, datetime
 			// TODO: object, string
