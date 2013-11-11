@@ -21,6 +21,7 @@ namespace unQuery
 	 * TODO
 	 *  - Way to override standard CLR type handlers
 	 *  - Make sure DBNull.Value is used for null values
+	 *  - Test SqlUniqueidentifier
 	 */
 
 	public abstract class unQuery
