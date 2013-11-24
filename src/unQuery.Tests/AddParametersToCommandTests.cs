@@ -73,11 +73,9 @@ namespace unQuery.Tests
 		[Test]
 		public void AddParameterToCommand_String()
 		{
-			Assert.Throws<TypeNotSupportedException>(() => {
-				DB.AddParametersToCommand(new SqlCommand(), new {
-					Test = "Hello"
-				});
-			});
+			Assert.Throws<TypeNotSupportedException>(() => DB.AddParametersToCommand(new SqlCommand(), new {
+				Test = "Hello"
+			}));
 		}
 
 		private void testParameterType<TValue>(TValue value, SqlDbType expectedType)

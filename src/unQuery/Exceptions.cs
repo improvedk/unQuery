@@ -10,7 +10,10 @@ namespace unQuery
 
 	public class TypeNotSupportedException : Exception
 	{
-		public TypeNotSupportedException(Type t) : base("Type " + t + " not supported.")
+		public TypeNotSupportedException(Type t) : base("Type '" + t + "' not supported.")
+		{ }
+
+		public TypeNotSupportedException(string t) : base("Type '" + t + "' not supported.")
 		{ }
 	}
 }

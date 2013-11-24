@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Reflection;
 using unQuery.SqlTypes;
 
@@ -8,25 +10,56 @@ namespace unQuery
 {
 	/*
 	 * Access methods
-	 *  - Get scalar value
-	 *  - Get single row
 	 *  - Get multiple rows
 	 *  - Get multiple result sets with multiple rows
-	 *  - Execute without result
 	 *  
 	 * Query methods
 	 *	- Stored procedure
 	 *	- Text
 	 *	
-	 * TODO
+	 * Misc
 	 *  - Way to override standard CLR type handlers
 	 *  - Make sure DBNull.Value is used for null values
 	 *  - Test SqlUniqueidentifier
+	 *  - VisibleFieldCount vs FieldCount
 	 */
 
 	public abstract class unQuery
 	{
 		protected abstract string ConnectionString { get; }
+
+		/// <summary>
+		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
+		/// all but the first will be discarded.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		public dynamic GetSingleRow(string sql)
+		{
+			return GetSingleRow(sql, null);
+		}
+
+		/// <summary>
+		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
+		/// all but the first will be discarded.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		public dynamic GetSingleRow(string sql, dynamic parameters)
+		{
+			using (var conn = getConnection())
+			using (var cmd = new SqlCommand(sql, conn))
+			{
+				if (parameters != null)
+					AddParametersToCommand(cmd, parameters);
+
+				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow);
+
+				if (!reader.Read())
+					return null;
+
+				return MapReaderRowToObject(reader);
+			}
+		}
 
 		/// <summary>
 		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
@@ -91,6 +124,24 @@ namespace unQuery
 			}
 		}
 
+		/// <summary>
+		/// Maps a single row from a SqlDataReader into a dynamic object.
+		/// </summary>
+		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
+		internal static dynamic MapReaderRowToObject(SqlDataReader reader)
+		{
+			IDictionary<string, object> obj = new ExpandoObject();
+
+			for (int i = 0; i < reader.VisibleFieldCount; i++)
+				obj[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader[i];
+
+			return obj;
+		}
+
+		/// <summary>
+		/// These are the default mappings between C# datatypes and their equivalent database types. By default, only the
+		/// safe types are mapped, e.g. types that are non-ambiguously translated between C# and SQL Server.
+		/// </summary>
 		private static readonly Dictionary<Type, Func<object, SqlParameter>> typeHandlers = new Dictionary<Type, Func<object, SqlParameter>> {
 			{ typeof(short), SqlSmallInt.GetParameter },
 			{ typeof(short?), SqlSmallInt.GetParameter },
