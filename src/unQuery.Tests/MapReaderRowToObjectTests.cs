@@ -9,7 +9,7 @@ namespace unQuery.Tests
 		[Test]
 		public void MapReaderRowToObjectTests_AllColumnTypes()
 		{
-			var result = DB.GetSingleRow(@"
+			var result = DB.GetRow(@"
 				SELECT
 					CAST(1 AS tinyint) AS TinyInt,
 					CAST(NULL AS tinyint) AS NullTinyInt,

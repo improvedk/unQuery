@@ -33,9 +33,9 @@ namespace unQuery
 		/// all but the first will be discarded.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
-		public dynamic GetSingleRow(string sql)
+		public dynamic GetRow(string sql)
 		{
-			return GetSingleRow(sql, null);
+			return GetRow(sql, null);
 		}
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public dynamic GetSingleRow(string sql, dynamic parameters)
+		public dynamic GetRow(string sql, dynamic parameters)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
