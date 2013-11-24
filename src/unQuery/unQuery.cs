@@ -167,6 +167,7 @@ namespace unQuery
 			{
 				SqlParameter param;
 				object propValue = prop.GetValue(parameters);
+				Type propertyType = propValue != null ? propValue.GetType() : prop.PropertyType;
 				var sqlType = propValue as ISqlType;
 			
 				try
@@ -176,11 +177,11 @@ namespace unQuery
 					if (sqlType != null)
 						param = sqlType.GetParameter();
 					else
-						param = typeHandlers[prop.PropertyType](propValue);
+						param = typeHandlers[propertyType](propValue);
 				}
 				catch (KeyNotFoundException)
 				{
-					throw new TypeNotSupportedException(prop.PropertyType);
+					throw new TypeNotSupportedException(propertyType);
 				}
 
 				// Set parameter name
