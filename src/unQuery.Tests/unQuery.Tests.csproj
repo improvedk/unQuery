@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="AddParametersToCommandTests.cs" />
     <Compile Include="MapReaderRowToObjectTests.cs" />
-    <Compile Include="GetSingleRowTests.cs" />
+    <Compile Include="GetRowTests.cs" />
     <Compile Include="ExecuteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\SqlVarcharTests.cs" />

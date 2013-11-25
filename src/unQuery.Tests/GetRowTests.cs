@@ -5,7 +5,7 @@ using unQuery.SqlTypes;
 
 namespace unQuery.Tests
 {
-	public class GetSingleRowTests : TestFixture
+	public class GetRowTests : TestFixture
 	{
 		[Test]
 		public void GetSingleRow_NoResults()
