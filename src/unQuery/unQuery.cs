@@ -10,7 +10,6 @@ namespace unQuery
 {
 	/*
 	 * Access methods
-	 *  - Get multiple rows
 	 *  - Get multiple result sets with multiple rows
 	 *  
 	 * Query methods
@@ -20,13 +19,46 @@ namespace unQuery
 	 * Misc
 	 *  - Way to override standard CLR type handlers
 	 *  - Make sure DBNull.Value is used for null values
-	 *  - Test SqlUniqueidentifier
+	 *  - Test all SqlTypes
 	 *  - VisibleFieldCount vs FieldCount
 	 */
 
 	public abstract class unQuery
 	{
 		protected abstract string ConnectionString { get; }
+
+		/// <summary>
+		/// Executes the batch and returns all rows from the single result set.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		public IList<dynamic> GetRows(string sql)
+		{
+			return GetRows(sql, null);
+		}
+
+		/// <summary>
+		/// Executes the batch and returns all rows from the single result set.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		public IList<dynamic> GetRows(string sql, dynamic parameters)
+		{
+			var result = new List<dynamic>();
+
+			using (var conn = getConnection())
+			using (var cmd = new SqlCommand(sql, conn))
+			{
+				if (parameters != null)
+					AddParametersToCommand(cmd, parameters);
+
+				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
+
+				while (reader.Read())
+					result.Add(MapReaderRowToObject(reader));
+			}
+
+			return result;
+		}
 
 		/// <summary>
 		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
@@ -112,6 +144,7 @@ namespace unQuery
 		/// Executes a batch and returns the number of rows affected.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		public int Execute(string sql, dynamic parameters)
 		{
 			using (var conn = getConnection())
