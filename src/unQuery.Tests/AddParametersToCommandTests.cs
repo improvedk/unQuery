@@ -71,6 +71,17 @@ namespace unQuery.Tests
 		}
 
 		[Test]
+		public void AddParameterToCommand_UniqueIdentifier()
+		{
+			Guid guid = Guid.NewGuid();
+
+			testParameterType(guid, SqlDbType.UniqueIdentifier, guid);
+			testParameterType((Guid?)null, SqlDbType.UniqueIdentifier, DBNull.Value);
+			testParameterType(Col.UniqueIdentifier(guid), SqlDbType.UniqueIdentifier, guid);
+			testParameterType(Col.UniqueIdentifier(null), SqlDbType.UniqueIdentifier, DBNull.Value);
+		}
+
+		[Test]
 		public void AddParameterToCommand_String()
 		{
 			Assert.Throws<TypeNotSupportedException>(() => DB.AddParametersToCommand(new SqlCommand(), new {

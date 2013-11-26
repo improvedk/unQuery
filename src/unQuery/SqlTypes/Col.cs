@@ -1,4 +1,6 @@
-﻿namespace unQuery.SqlTypes
+﻿using System;
+
+namespace unQuery.SqlTypes
 {
 	public static class Col
 	{
@@ -45,6 +47,11 @@
 		public static SqlVarchar Varchar(string value, int size)
 		{
 			return new SqlVarchar(value, size);
+		}
+
+		public static SqlUniqueIdentifier UniqueIdentifier(Guid? value)
+		{
+			return new SqlUniqueIdentifier(value);
 		}
 	}
 }

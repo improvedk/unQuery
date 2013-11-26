@@ -189,7 +189,7 @@ namespace unQuery
 			{ typeof(Guid), SqlUniqueIdentifier.GetParameter },
 			{ typeof(Guid?), SqlUniqueIdentifier.GetParameter }
 
-			// TODO: char, decimal, double, enum, float, sbyte, struct, uint, ulong, ushort, guid, datetime
+			// TODO: char, decimal, double, enum, float, sbyte, struct, uint, ulong, ushort, datetime
 			// TODO: object, string
 		};
 
