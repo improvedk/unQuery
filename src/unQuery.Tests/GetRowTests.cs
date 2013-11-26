@@ -8,7 +8,7 @@ namespace unQuery.Tests
 	public class GetRowTests : TestFixture
 	{
 		[Test]
-		public void GetSingleRow_NoResults()
+		public void GetRow_NoResults()
 		{
 			var result = DB.GetRow("SELECT * FROM Persons WHERE 1 = 0");
 
@@ -16,7 +16,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void GetSingleRow_SingleColumn()
+		public void GetRow_SingleColumn()
 		{
 			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarchar("Stefanie Alexander") });
 
@@ -25,7 +25,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void GetSingleRow_MultipleColumns()
+		public void GetRow_MultipleColumns()
 		{
 			var result = DB.GetRow("SELECT Age, Sex FROM Persons WHERE Name = @Name", new { Name = Col.NVarchar("Daniel Gallagher") });
 
@@ -35,7 +35,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void GetSingleRow_AllColumns()
+		public void GetRow_AllColumns()
 		{
 			var result = DB.GetRow("SELECT * FROM Persons WHERE Name = @Name", new { Name = Col.NVarchar("Annie Brennan") });
 
@@ -48,7 +48,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void GetSingleRow_MultipleResultsPossible()
+		public void GetRow_MultipleResultsPossible()
 		{
 			var result = DB.GetRow("SELECT * FROM Persons ORDER BY PersonID");
 
