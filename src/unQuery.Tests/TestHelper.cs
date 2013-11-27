@@ -30,8 +30,11 @@ namespace unQuery.Tests
 		internal static void AssertSqlParameter(SqlParameter param, SqlDbType expectedDbType, int? size, object value)
 		{
 			Assert.AreEqual(expectedDbType, param.SqlDbType);
-			Assert.AreEqual(size ?? 0, param.Size);
 			Assert.AreEqual(value, param.Value);
+			Assert.AreEqual(value.GetType(), param.Value.GetType());
+
+			if (size != null)
+				Assert.AreEqual(size, param.Size);
 		}
 	}
 }
