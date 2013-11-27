@@ -23,15 +23,11 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
-		public static SqlParameter GetParameter(object value)
+		public static SqlParameter GetParameter(Guid? value)
 		{
-			object realValue = value;
-			if (realValue == null)
-				realValue = DBNull.Value;
-
 			return new SqlParameter {
 				SqlDbType = SqlDbType.UniqueIdentifier,
-				Value = realValue
+				Value = TypeHelper.GetDBNullableValue(value)
 			};
 		}
 	}

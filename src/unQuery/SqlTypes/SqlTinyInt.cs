@@ -23,11 +23,11 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
-		public static SqlParameter GetParameter(object value)
+		public static SqlParameter GetParameter(byte? value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.TinyInt,
-				Value = value ?? DBNull.Value
+				Value = TypeHelper.GetDBNullableValue(value)
 			};
 		}
 	}

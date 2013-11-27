@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -30,16 +29,16 @@ namespace unQuery.SqlTypes
 			return GetParameter(value, size);
 		}
 
-		public static SqlParameter GetParameter(object value)
+		public static SqlParameter GetParameter(string value)
 		{
 			return GetParameter(value, null);
 		}
 
-		public static SqlParameter GetParameter(object value, int? size)
+		public static SqlParameter GetParameter(string value, int? size)
 		{
 			var param = new SqlParameter {
 				SqlDbType = SqlDbType.NVarChar,
-				Value = value ?? DBNull.Value
+				Value = TypeHelper.GetDBNullableValue(value)
 			};
 
 			if (size != null || value != null)

@@ -176,18 +176,18 @@ namespace unQuery
 		/// safe types are mapped, e.g. types that are non-ambiguously translated between C# and SQL Server.
 		/// </summary>
 		private static readonly Dictionary<Type, Func<object, SqlParameter>> typeHandlers = new Dictionary<Type, Func<object, SqlParameter>> {
-			{ typeof(short), SqlSmallInt.GetParameter },
-			{ typeof(short?), SqlSmallInt.GetParameter },
-			{ typeof(byte), SqlTinyInt.GetParameter },
-			{ typeof(byte?), SqlTinyInt.GetParameter },
-			{ typeof(int), SqlInt.GetParameter },
-			{ typeof(int?), SqlInt.GetParameter },
-			{ typeof(long), SqlBigInt.GetParameter },
-			{ typeof(long?), SqlBigInt.GetParameter },
-			{ typeof(bool), SqlBit.GetParameter },
-			{ typeof(bool?), SqlBit.GetParameter },
-			{ typeof(Guid), SqlUniqueIdentifier.GetParameter },
-			{ typeof(Guid?), SqlUniqueIdentifier.GetParameter }
+			{ typeof(short), x => SqlSmallInt.GetParameter((short)x) },
+			{ typeof(short?), x => SqlSmallInt.GetParameter((short?)x) },
+			{ typeof(byte), x => SqlTinyInt.GetParameter((byte)x) },
+			{ typeof(byte?), x => SqlTinyInt.GetParameter((byte?)x) },
+			{ typeof(int), x => SqlInt.GetParameter((int)x) },
+			{ typeof(int?), x => SqlInt.GetParameter((int?)x) },
+			{ typeof(long), x => SqlBigInt.GetParameter((long)x) },
+			{ typeof(long?), x => SqlBigInt.GetParameter((long?)x) },
+			{ typeof(bool), x => SqlBit.GetParameter((bool)x) },
+			{ typeof(bool?), x => SqlBit.GetParameter((bool?)x) },
+			{ typeof(Guid), x => SqlUniqueIdentifier.GetParameter((Guid)x) },
+			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) }
 
 			// TODO: char, decimal, double, enum, float, sbyte, struct, uint, ulong, ushort, datetime
 			// TODO: object, string

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -23,11 +22,11 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
-		public static SqlParameter GetParameter(object value)
+		public static SqlParameter GetParameter(long? value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.BigInt,
-				Value = value ?? DBNull.Value
+				Value = TypeHelper.GetDBNullableValue(value)
 			};
 		}
 	}
