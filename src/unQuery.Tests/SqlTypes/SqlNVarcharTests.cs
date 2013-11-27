@@ -41,13 +41,5 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(SqlNVarchar.GetParameter("Test", 10), SqlDbType.NVarChar, 10, "Test");
 			TestHelper.AssertSqlParameter(SqlNVarchar.GetParameter(null), SqlDbType.NVarChar, null, DBNull.Value);
 		}
-
-		[Test]
-		public void ParameterType()
-		{
-			TestHelper.AssertParameterFromValue(Col.NVarchar("Test"), SqlDbType.NVarChar, "Test", 4);
-			TestHelper.AssertParameterFromValue(Col.NVarchar("Test", 10), SqlDbType.NVarChar, "Test", 10);
-			TestHelper.AssertParameterFromValue(Col.NVarchar(null), SqlDbType.NVarChar, DBNull.Value);
-		}
 	}
 }

@@ -29,12 +29,5 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(SqlBit.GetParameter(false), SqlDbType.Bit, null, false);
 			TestHelper.AssertSqlParameter(SqlBit.GetParameter(null), SqlDbType.Bit, null, DBNull.Value);
 		}
-
-		[Test]
-		public void ParameterType()
-		{
-			TestHelper.AssertParameterFromValue(Col.Bit(false), SqlDbType.Bit, false);
-			TestHelper.AssertParameterFromValue(Col.Bit(null), SqlDbType.Bit, DBNull.Value);
-		}
 	}
 }

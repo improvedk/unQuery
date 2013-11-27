@@ -28,12 +28,5 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(SqlBigInt.GetParameter(5), SqlDbType.BigInt, null, 5L);
 			TestHelper.AssertSqlParameter(SqlBigInt.GetParameter(null), SqlDbType.BigInt, null, DBNull.Value);
 		}
-
-		[Test]
-		public void ParameterType()
-		{
-			TestHelper.AssertParameterFromValue(Col.BigInt(5), SqlDbType.BigInt, 5L);
-			TestHelper.AssertParameterFromValue(Col.BigInt(null), SqlDbType.BigInt, DBNull.Value);
-		}
 	}
 }
