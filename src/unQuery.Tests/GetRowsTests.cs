@@ -19,7 +19,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRows_SingleRow()
 		{
-			var result = DB.GetRows("SELECT Age, Name FROM Persons WHERE Name = @Name", new { Name = Col.NVarchar("Stefanie Alexander") });
+			var result = DB.GetRows("SELECT Age, Name FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") });
 
 			Assert.AreEqual(1, result.Count());
 

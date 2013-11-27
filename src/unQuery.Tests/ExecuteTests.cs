@@ -27,7 +27,7 @@ namespace unQuery.Tests
 		{
 			var result = DB.Execute("UPDATE Persons SET Name = Name, Age = Age WHERE Name = @Name AND Age = @Age", new {
 				Age = 25,
-				Name = Col.NVarchar("Daniel Gallagher")
+				Name = Col.NVarChar("Daniel Gallagher")
 			});
 
 			Assert.AreEqual(1, result);

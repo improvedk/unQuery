@@ -5,12 +5,12 @@ using unQuery.SqlTypes;
 
 namespace unQuery.Tests.SqlTypes
 {
-	public class SqlNVarcharTests : TestFixture
+	public class SqlNVarCharTests : TestFixture
 	{
 		[Test]
 		public void Casting()
 		{
-			var col = (SqlNVarchar)"Test";
+			var col = (SqlNVarChar)"Test";
 			var param = col.GetParameter();
 
 			TestHelper.AssertSqlParameter(param, SqlDbType.NVarChar, 4, "Test");
@@ -19,7 +19,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void Constructor()
 		{
-			var col = new SqlNVarchar("Test");
+			var col = new SqlNVarChar("Test");
 			var param = col.GetParameter();
 
 			TestHelper.AssertSqlParameter(param, SqlDbType.NVarChar, 4, "Test");
@@ -28,7 +28,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void ExplicitSize()
 		{
-			var col = new SqlNVarchar("Test", 10);
+			var col = new SqlNVarChar("Test", 10);
 			var param = col.GetParameter();
 
 			TestHelper.AssertSqlParameter(param, SqlDbType.NVarChar, 10, "Test");
@@ -37,9 +37,9 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlNVarchar.GetParameter("Test"), SqlDbType.NVarChar, 4, "Test");
-			TestHelper.AssertSqlParameter(SqlNVarchar.GetParameter("Test", 10), SqlDbType.NVarChar, 10, "Test");
-			TestHelper.AssertSqlParameter(SqlNVarchar.GetParameter(null), SqlDbType.NVarChar, null, DBNull.Value);
+			TestHelper.AssertSqlParameter(SqlNVarChar.GetParameter("Test"), SqlDbType.NVarChar, 4, "Test");
+			TestHelper.AssertSqlParameter(SqlNVarChar.GetParameter("Test", 10), SqlDbType.NVarChar, 10, "Test");
+			TestHelper.AssertSqlParameter(SqlNVarChar.GetParameter(null), SqlDbType.NVarChar, null, DBNull.Value);
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRow_SingleColumn()
 		{
-			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarchar("Stefanie Alexander") });
+			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") });
 
 			Assert.AreEqual(55, result.Age);
 			Assert.AreEqual(1, ((IDictionary<string, object>)result).Count);
@@ -27,7 +27,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRow_MultipleColumns()
 		{
-			var result = DB.GetRow("SELECT Age, Sex FROM Persons WHERE Name = @Name", new { Name = Col.NVarchar("Daniel Gallagher") });
+			var result = DB.GetRow("SELECT Age, Sex FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Daniel Gallagher") });
 
 			Assert.AreEqual(25, result.Age);
 			Assert.AreEqual("M", result.Sex);
@@ -37,7 +37,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRow_AllColumns()
 		{
-			var result = DB.GetRow("SELECT * FROM Persons WHERE Name = @Name", new { Name = Col.NVarchar("Annie Brennan") });
+			var result = DB.GetRow("SELECT * FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Annie Brennan") });
 
 			Assert.AreEqual(5, result.PersonID);
 			Assert.AreEqual("Annie Brennan", result.Name);

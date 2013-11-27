@@ -3,25 +3,25 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlNVarchar : ISqlType
+	public class SqlNVarChar : ISqlType
 	{
 		private readonly string value;
 		private readonly int? size;
 
-		public SqlNVarchar(string value)
+		public SqlNVarChar(string value)
 		{
 			this.value = value;
 		}
 
-		public SqlNVarchar(string value, int size)
+		public SqlNVarChar(string value, int size)
 		{
 			this.value = value;
 			this.size = size;
 		}
 
-		public static explicit operator SqlNVarchar(string value)
+		public static explicit operator SqlNVarChar(string value)
 		{
-			return new SqlNVarchar(value);
+			return new SqlNVarChar(value);
 		}
 
 		public SqlParameter GetParameter()

@@ -23,9 +23,9 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertParameterFromValue(Col.Int(null), SqlDbType.Int, DBNull.Value);
 
 			// nvarchar
-			TestHelper.AssertParameterFromValue(Col.NVarchar("Test"), SqlDbType.NVarChar, "Test", 4);
-			TestHelper.AssertParameterFromValue(Col.NVarchar("Test", 10), SqlDbType.NVarChar, "Test", 10);
-			TestHelper.AssertParameterFromValue(Col.NVarchar(null), SqlDbType.NVarChar, DBNull.Value);
+			TestHelper.AssertParameterFromValue(Col.NVarChar("Test"), SqlDbType.NVarChar, "Test", 4);
+			TestHelper.AssertParameterFromValue(Col.NVarChar("Test", 10), SqlDbType.NVarChar, "Test", 10);
+			TestHelper.AssertParameterFromValue(Col.NVarChar(null), SqlDbType.NVarChar, DBNull.Value);
 
 			// smallint
 			TestHelper.AssertParameterFromValue(Col.SmallInt(5), SqlDbType.SmallInt, (short)5);
@@ -41,9 +41,9 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertParameterFromValue(Col.UniqueIdentifier(null), SqlDbType.UniqueIdentifier, DBNull.Value);
 
 			// varchar
-			TestHelper.AssertParameterFromValue(Col.Varchar("Test"), SqlDbType.VarChar, "Test", 4);
-			TestHelper.AssertParameterFromValue(Col.Varchar("Test", 10), SqlDbType.VarChar, "Test", 10);
-			TestHelper.AssertParameterFromValue(Col.Varchar(null), SqlDbType.VarChar, DBNull.Value);
+			TestHelper.AssertParameterFromValue(Col.VarChar("Test"), SqlDbType.VarChar, "Test", 4);
+			TestHelper.AssertParameterFromValue(Col.VarChar("Test", 10), SqlDbType.VarChar, "Test", 10);
+			TestHelper.AssertParameterFromValue(Col.VarChar(null), SqlDbType.VarChar, DBNull.Value);
 		}
 	}
 }

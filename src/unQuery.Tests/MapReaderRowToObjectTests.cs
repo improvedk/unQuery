@@ -18,9 +18,9 @@ namespace unQuery.Tests
 					CAST(4 AS bigint) AS BigInt,
 					CAST(0 AS bit) AS FalseBool,
 					CAST(1 AS bit) AS TrueBool,
-					CAST('AB' AS nvarchar) AS NVarchar,
+					CAST('AB' AS nvarchar) AS NVarChar,
 					CAST('A9F04A09-4358-4F31-B815-EC704EE32047' AS UNIQUEIDENTIFIER) AS UniqueIdentifier,
-					CAST('CD' AS varchar) AS Varchar,
+					CAST('CD' AS varchar) AS VarChar,
 					CAST('EF' AS char(2)) AS Char,
 					CAST('GH' AS nchar(2)) AS NChar,
 					CAST(12.345 AS decimal(5, 3)) AS Decimal,
@@ -65,14 +65,14 @@ namespace unQuery.Tests
 			Assert.AreEqual(true, result.TrueBool);
 			Assert.AreEqual(typeof(bool), result.TrueBool.GetType());
 
-			Assert.AreEqual("AB", result.NVarchar);
-			Assert.AreEqual(typeof(string), result.NVarchar.GetType());
+			Assert.AreEqual("AB", result.NVarChar);
+			Assert.AreEqual(typeof(string), result.NVarChar.GetType());
 
 			Assert.AreEqual(new Guid("A9F04A09-4358-4F31-B815-EC704EE32047"), result.UniqueIdentifier);
 			Assert.AreEqual(typeof(Guid), result.UniqueIdentifier.GetType());
 
-			Assert.AreEqual("CD", result.Varchar);
-			Assert.AreEqual(typeof(string), result.Varchar.GetType());
+			Assert.AreEqual("CD", result.VarChar);
+			Assert.AreEqual(typeof(string), result.VarChar.GetType());
 
 			Assert.AreEqual("EF", result.Char);
 			Assert.AreEqual(typeof(string), result.Char.GetType());

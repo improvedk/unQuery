@@ -29,24 +29,24 @@ namespace unQuery.SqlTypes
 			return new SqlBigInt(value);
 		}
 
-		public static SqlNVarchar NVarchar(string value)
+		public static SqlNVarChar NVarChar(string value)
 		{
-			return new SqlNVarchar(value);
+			return new SqlNVarChar(value);
 		}
 
-		public static SqlNVarchar NVarchar(string value, int size)
+		public static SqlNVarChar NVarChar(string value, int size)
 		{
-			return new SqlNVarchar(value, size);
+			return new SqlNVarChar(value, size);
 		}
 
-		public static SqlVarchar Varchar(string value)
+		public static SqlVarChar VarChar(string value)
 		{
-			return new SqlVarchar(value);
+			return new SqlVarChar(value);
 		}
 
-		public static SqlVarchar Varchar(string value, int size)
+		public static SqlVarChar VarChar(string value, int size)
 		{
-			return new SqlVarchar(value, size);
+			return new SqlVarChar(value, size);
 		}
 
 		public static SqlUniqueIdentifier UniqueIdentifier(Guid? value)
