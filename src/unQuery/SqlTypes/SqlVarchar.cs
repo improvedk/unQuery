@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -31,17 +32,20 @@ namespace unQuery.SqlTypes
 
 		public static SqlParameter GetParameter(object value)
 		{
-			return GetParameter(value, value.ToString().Length);
+			return GetParameter(value, null);
 		}
 
 		public static SqlParameter GetParameter(object value, int? size)
 		{
-			return new SqlParameter
-			{
+			var param = new SqlParameter {
 				SqlDbType = SqlDbType.VarChar,
-				Value = value,
-				Size = size ?? value.ToString().Length
+				Value = value ?? DBNull.Value
 			};
+
+			if (size != null || value != null)
+				param.Size = size ?? param.Value.ToString().Length;
+
+			return param;
 		}
 	}
 }

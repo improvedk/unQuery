@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Data;
-using System.Data.SqlClient;
 using unQuery.SqlTypes;
 
 namespace unQuery.Tests.SqlTypes
@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 			var col = (SqlNVarchar)"Test";
 			var param = col.GetParameter();
 
-			assertParameter(param, 4, "Test");
+			TestHelper.AssertParameterFromValue(param, SqlDbType.NVarChar, 4, "Test");
 		}
 
 		[Test]
@@ -22,7 +22,7 @@ namespace unQuery.Tests.SqlTypes
 			var col = new SqlNVarchar("Test");
 			var param = col.GetParameter();
 
-			assertParameter(param, 4, "Test");
+			TestHelper.AssertParameterFromValue(param, SqlDbType.NVarChar, 4, "Test");
 		}
 
 		[Test]
@@ -31,21 +31,23 @@ namespace unQuery.Tests.SqlTypes
 			var col = new SqlNVarchar("Test", 10);
 			var param = col.GetParameter();
 
-			assertParameter(param, 10, "Test");
+			TestHelper.AssertParameterFromValue(param, SqlDbType.NVarChar, 10, "Test");
 		}
 
 		[Test]
 		public void GetParameter()
 		{
-			assertParameter(SqlNVarchar.GetParameter("Test"), 4, "Test");
-			assertParameter(SqlNVarchar.GetParameter("Test", 10), 10, "Test");
+			TestHelper.AssertParameterFromValue(SqlNVarchar.GetParameter("Test"), SqlDbType.NVarChar, 4, "Test");
+			TestHelper.AssertParameterFromValue(SqlNVarchar.GetParameter("Test", 10), SqlDbType.NVarChar, 10, "Test");
+			TestHelper.AssertParameterFromValue(SqlNVarchar.GetParameter(null), SqlDbType.NVarChar, null, DBNull.Value);
 		}
 
-		private void assertParameter(SqlParameter param, int size, string value)
+		[Test]
+		public void ParameterType()
 		{
-			Assert.That(param.SqlDbType == SqlDbType.NVarChar);
-			Assert.That(param.Size == size);
-			Assert.That(param.Value.ToString() == value);
+			TestHelper.AssertParameterFromValue(Col.NVarchar("Test"), SqlDbType.NVarChar, "Test", 4);
+			TestHelper.AssertParameterFromValue(Col.NVarchar("Test", 10), SqlDbType.NVarChar, "Test", 10);
+			TestHelper.AssertParameterFromValue(Col.NVarchar(null), SqlDbType.NVarChar, DBNull.Value);
 		}
 	}
 }
