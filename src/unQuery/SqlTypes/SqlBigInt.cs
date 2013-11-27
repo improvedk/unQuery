@@ -12,6 +12,11 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
+		public static explicit operator SqlBigInt(long? value)
+		{
+			return new SqlBigInt(value);
+		}
+
 		public SqlParameter GetParameter()
 		{
 			return GetParameter(value);
