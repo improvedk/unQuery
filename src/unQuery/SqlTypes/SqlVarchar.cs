@@ -31,11 +31,7 @@ namespace unQuery.SqlTypes
 
 		public static SqlParameter GetParameter(object value)
 		{
-			return new SqlParameter {
-				SqlDbType = SqlDbType.VarChar,
-				Value = value,
-				Size = value.ToString().Length
-			};
+			return GetParameter(value, value.ToString().Length);
 		}
 
 		public static SqlParameter GetParameter(object value, int? size)
