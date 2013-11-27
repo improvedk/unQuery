@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -12,6 +13,11 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
+		public static explicit operator SqlInt(int? value)
+		{
+			return new SqlInt(value);
+		}
+
 		public SqlParameter GetParameter()
 		{
 			return GetParameter(value);
@@ -21,7 +27,7 @@ namespace unQuery.SqlTypes
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.Int,
-				Value = value
+				Value = value ?? DBNull.Value
 			};
 		}
 	}

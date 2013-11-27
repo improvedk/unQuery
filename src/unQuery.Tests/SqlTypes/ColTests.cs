@@ -18,6 +18,10 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertParameterFromValue(Col.BigInt(5), SqlDbType.BigInt, 5L);
 			TestHelper.AssertParameterFromValue(Col.BigInt(null), SqlDbType.BigInt, DBNull.Value);
 
+			// int
+			TestHelper.AssertParameterFromValue(Col.Int(5), SqlDbType.Int, 5);
+			TestHelper.AssertParameterFromValue(Col.Int(null), SqlDbType.Int, DBNull.Value);
+
 			// varchar
 			TestHelper.AssertParameterFromValue(Col.Varchar("Test"), SqlDbType.VarChar, "Test", 4);
 			TestHelper.AssertParameterFromValue(Col.Varchar("Test", 10), SqlDbType.VarChar, "Test", 10);

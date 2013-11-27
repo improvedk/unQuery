@@ -15,6 +15,7 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.Bit, null, true);
 		}
 
+		[Test]
 		public void Constructor()
 		{
 			var col = new SqlBit(true);
@@ -23,6 +24,7 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(param, SqlDbType.Bit, null, true);
 		}
 
+		[Test]
 		public void GetParameter()
 		{
 			TestHelper.AssertSqlParameter(SqlBit.GetParameter(true), SqlDbType.Bit, null, true);

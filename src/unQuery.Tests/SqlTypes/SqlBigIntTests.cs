@@ -15,6 +15,7 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.BigInt, null, 5L);
 		}
 
+		[Test]
 		public void Constructor()
 		{
 			var col = new SqlBigInt(5);
@@ -23,6 +24,7 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(param, SqlDbType.BigInt, null, 5L);
 		}
 
+		[Test]
 		public void GetParameter()
 		{
 			TestHelper.AssertSqlParameter(SqlBigInt.GetParameter(5), SqlDbType.BigInt, null, 5L);
