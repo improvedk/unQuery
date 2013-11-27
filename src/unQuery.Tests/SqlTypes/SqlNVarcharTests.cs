@@ -34,6 +34,13 @@ namespace unQuery.Tests.SqlTypes
 			assertParameter(param, 10, "Test");
 		}
 
+		[Test]
+		public void GetParameter()
+		{
+			assertParameter(SqlNVarchar.GetParameter("Test"), 4, "Test");
+			assertParameter(SqlNVarchar.GetParameter("Test", 10), 10, "Test");
+		}
+
 		private void assertParameter(SqlParameter param, int size, string value)
 		{
 			Assert.That(param.SqlDbType == SqlDbType.NVarChar);
