@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -12,6 +13,16 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
+		public static explicit operator SqlSmallInt(short? value)
+		{
+			return new SqlSmallInt(value);
+		}
+
+		public static explicit operator SqlSmallInt(int? value)
+		{
+			return new SqlSmallInt((short?)value);
+		}
+
 		public SqlParameter GetParameter()
 		{
 			return GetParameter(value);
@@ -21,7 +32,7 @@ namespace unQuery.SqlTypes
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.SmallInt,
-				Value = value
+				Value = value ?? DBNull.Value
 			};
 		}
 	}
