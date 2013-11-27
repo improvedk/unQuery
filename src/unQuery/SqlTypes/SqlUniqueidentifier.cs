@@ -13,6 +13,11 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
+		public static explicit operator SqlUniqueIdentifier(Guid? value)
+		{
+			return new SqlUniqueIdentifier(value);
+		}
+
 		public SqlParameter GetParameter()
 		{
 			return GetParameter(value);

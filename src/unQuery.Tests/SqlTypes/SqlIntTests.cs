@@ -12,7 +12,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			var col = (SqlInt)5;
 
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.Int, null, 5L);
+			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.Int, null, 5);
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlInt.GetParameter(5), SqlDbType.Int, null, 5L);
+			TestHelper.AssertSqlParameter(SqlInt.GetParameter(5), SqlDbType.Int, null, 5);
 			TestHelper.AssertSqlParameter(SqlInt.GetParameter(null), SqlDbType.Int, null, DBNull.Value);
 		}
 	}
