@@ -43,40 +43,5 @@ namespace unQuery.Tests
 				Test = "Hello"
 			}));
 		}
-		
-		[Test]
-		public void AddParameterToCommand_TinyInt()
-		{
-			//testAutoParameterType(Col.TinyInt(55), SqlDbType.TinyInt, 55);
-			//testAutoParameterType(Col.TinyInt(null), SqlDbType.TinyInt, DBNull.Value);
-		}
-		
-		[Test]
-		public void AddParameterToCommand_SmallInt()
-		{
-			//testAutoParameterType(Col.SmallInt(55), SqlDbType.SmallInt, 55);
-			//testAutoParameterType(Col.SmallInt(null), SqlDbType.SmallInt, DBNull.Value);
-		}
-		
-		[Test]
-		public void AddParameterToCommand_Int()
-		{
-			//testAutoParameterType(Col.Int(55), SqlDbType.Int, 55);
-			//testAutoParameterType(Col.Int(null), SqlDbType.Int, DBNull.Value);
-		}
-		
-		[Test]
-		public void AddParameterToCommand_BigInt()
-		{
-			//testAutoParameterType(Col.BigInt(55), SqlDbType.BigInt, 55);
-			//testAutoParameterType(Col.BigInt(null), SqlDbType.BigInt, DBNull.Value);
-		}
-
-		[Test]
-		public void AddParameterToCommand_UniqueIdentifier()
-		{
-			//testAutoParameterType(Col.UniqueIdentifier(guid), SqlDbType.UniqueIdentifier, guid);
-			//testAutoParameterType(Col.UniqueIdentifier(null), SqlDbType.UniqueIdentifier, DBNull.Value);
-		}
 	}
 }
