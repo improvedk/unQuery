@@ -12,6 +12,11 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
+		public static explicit operator SqlBit(bool? value)
+		{
+			return new SqlBit(value);
+		}
+
 		public SqlParameter GetParameter()
 		{
 			return GetParameter(value);
