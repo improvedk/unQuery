@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	// TODO: Better handling of length. Instead of setting explicit length, try to reuse common lengths.
 	public class SqlVarchar : ISqlType
 	{
 		private readonly string value;
