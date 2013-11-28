@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Dynamic;
 using System.Reflection;
 using unQuery.SqlTypes;
 
@@ -161,12 +160,12 @@ namespace unQuery
 		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
 		internal static dynamic MapReaderRowToObject(SqlDataReader reader)
 		{
-			IDictionary<string, object> obj = new ExpandoObject();
+			var obj = new Dictionary<string, object>();
 
 			for (int i = 0; i < reader.VisibleFieldCount; i++)
 				obj[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader[i];
 
-			return obj;
+			return new DynamicRow(obj);
 		}
 
 		/// <summary>
