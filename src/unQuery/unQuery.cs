@@ -185,9 +185,11 @@ namespace unQuery
 			{ typeof(bool), x => SqlBit.GetParameter((bool)x) },
 			{ typeof(bool?), x => SqlBit.GetParameter((bool?)x) },
 			{ typeof(Guid), x => SqlUniqueIdentifier.GetParameter((Guid)x) },
-			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) }
+			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) },
+			{ typeof(uint), x => SqlBigInt.GetParameter((uint)x) },
+			{ typeof(uint?), x => SqlBigInt.GetParameter((uint?)x) }
 
-			// TODO: char, decimal, double, enum, float, sbyte, struct, uint, ulong, ushort, datetime
+			// TODO: decimal, double, float, struct, ulong, ushort, datetime
 			// TODO: object, string
 		};
 
