@@ -10,10 +10,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void Casting()
 		{
-			var col = (SqlSmallInt)(short)5;
+			var col = (SqlSmallInt)(byte)5;
+			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.SmallInt, null, (short)5);
+
+			col = (SqlSmallInt)(short)5;
 			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.SmallInt, null, (short)5);
 
 			col = (SqlSmallInt)5;
+			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.SmallInt, null, (short)5);
+
+			col = (SqlSmallInt)5L;
 			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.SmallInt, null, (short)5);
 		}
 

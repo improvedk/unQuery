@@ -12,9 +12,9 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
-		public static explicit operator SqlInt(int? value)
+		public static explicit operator SqlInt(long? value)
 		{
-			return new SqlInt(value);
+			return new SqlInt((int?)value);
 		}
 
 		public SqlParameter GetParameter()

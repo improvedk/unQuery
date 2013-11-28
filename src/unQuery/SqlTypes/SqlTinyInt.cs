@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -13,9 +12,9 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
-		public static explicit operator SqlTinyInt(byte? value)
+		public static explicit operator SqlTinyInt(long? value)
 		{
-			return new SqlTinyInt(value);
+			return new SqlTinyInt((byte?)value);
 		}
 
 		public SqlParameter GetParameter()

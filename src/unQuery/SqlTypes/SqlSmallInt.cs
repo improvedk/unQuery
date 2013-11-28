@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -13,12 +12,7 @@ namespace unQuery.SqlTypes
 			this.value = value;
 		}
 
-		public static explicit operator SqlSmallInt(short? value)
-		{
-			return new SqlSmallInt(value);
-		}
-
-		public static explicit operator SqlSmallInt(int? value)
+		public static explicit operator SqlSmallInt(long? value)
 		{
 			return new SqlSmallInt((short?)value);
 		}

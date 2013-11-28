@@ -12,6 +12,16 @@ namespace unQuery.Tests.SqlTypes
 		{
 			var col = (SqlTinyInt)(byte)5;
 			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
+
+			col = (SqlTinyInt)(short)5;
+			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
+
+			col = (SqlTinyInt)5;
+			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
+
+			col = (SqlTinyInt)5L;
+			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
+
 		}
 
 		[Test]
