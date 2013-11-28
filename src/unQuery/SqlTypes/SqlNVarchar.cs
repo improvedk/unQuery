@@ -41,8 +41,8 @@ namespace unQuery.SqlTypes
 				Value = TypeHelper.GetDBNullableValue(value)
 			};
 
-			if (size != null || value != null)
-				param.Size = size ?? param.Value.ToString().Length;
+			if (size != null)
+				param.Size = size.Value;
 
 			return param;
 		}
