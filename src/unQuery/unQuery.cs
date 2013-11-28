@@ -228,6 +228,14 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// Returns a raw and open SqlConnection for manual use.
+		/// </summary>
+		public SqlConnection GetOpenConnection()
+		{
+			return getConnection();
+		}
+
+		/// <summary>
 		/// Creates and returns an open SqlConnection.
 		/// </summary>
 		private SqlConnection getConnection()
