@@ -18,8 +18,6 @@ namespace unQuery
 	 *	
 	 * Misc
 	 *  - Way to override standard CLR type handlers
-	 *  - Make sure DBNull.Value is used for null values
-	 *  - Test all SqlTypes
 	 *  - VisibleFieldCount vs FieldCount
 	 */
 
