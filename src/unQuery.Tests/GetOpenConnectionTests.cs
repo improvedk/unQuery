@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.Tests
@@ -10,6 +11,8 @@ namespace unQuery.Tests
 		{
 			using (var conn = DB.GetOpenConnection())
 			{
+				Assert.AreEqual(ConnectionState.Open, conn.State);
+
 				var cmd = new SqlCommand("SELECT COUNT(*) FROM Persons WHERE PersonID = 1", conn);
 
 				Assert.AreEqual(1, (int)cmd.ExecuteScalar());
