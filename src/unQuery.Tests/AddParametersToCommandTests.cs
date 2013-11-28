@@ -38,6 +38,10 @@ namespace unQuery.Tests
 			// uint / bigint
 			TestHelper.AssertParameterFromValue((uint)55, SqlDbType.BigInt, 55L);
 			TestHelper.AssertParameterFromValue((uint?)null, SqlDbType.BigInt, DBNull.Value);
+
+			// ushort / int
+			TestHelper.AssertParameterFromValue((ushort)55, SqlDbType.Int, 55);
+			TestHelper.AssertParameterFromValue((ushort?)null, SqlDbType.Int, DBNull.Value);
 		}
 
 		[Test]

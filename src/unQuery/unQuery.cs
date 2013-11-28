@@ -187,9 +187,11 @@ namespace unQuery
 			{ typeof(Guid), x => SqlUniqueIdentifier.GetParameter((Guid)x) },
 			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) },
 			{ typeof(uint), x => SqlBigInt.GetParameter((uint)x) },
-			{ typeof(uint?), x => SqlBigInt.GetParameter((uint?)x) }
+			{ typeof(uint?), x => SqlBigInt.GetParameter((uint?)x) },
+			{ typeof(ushort), x => SqlInt.GetParameter((ushort)x) },
+			{ typeof(ushort?), x => SqlInt.GetParameter((ushort?)x) }
 
-			// TODO: decimal, double, float, struct, ulong, ushort, datetime
+			// TODO: decimal, double, float, ushort, datetime
 			// TODO: object, string
 		};
 
