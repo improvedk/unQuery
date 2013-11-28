@@ -190,9 +190,6 @@ namespace unQuery
 			{ typeof(uint?), x => SqlBigInt.GetParameter((uint?)x) },
 			{ typeof(ushort), x => SqlInt.GetParameter((ushort)x) },
 			{ typeof(ushort?), x => SqlInt.GetParameter((ushort?)x) }
-
-			// TODO: decimal, double, float, ushort, datetime
-			// TODO: object, string
 		};
 
 		internal void AddParametersToCommand(SqlCommand cmd, object parameters)
