@@ -21,7 +21,7 @@ namespace unQuery.Tests
 			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") });
 
 			Assert.AreEqual(55, result.Age);
-			Assert.AreEqual(1, ((IDictionary<string, object>)result).Count);
+			Assert.AreEqual(1, ((Dictionary<string, object>)result).Count);
 		}
 
 		[Test]
@@ -31,7 +31,7 @@ namespace unQuery.Tests
 
 			Assert.AreEqual(25, result.Age);
 			Assert.AreEqual("M", result.Sex);
-			Assert.AreEqual(2, ((IDictionary<string, object>)result).Count);
+			Assert.AreEqual(2, ((Dictionary<string, object>)result).Count);
 		}
 
 		[Test]
@@ -44,7 +44,7 @@ namespace unQuery.Tests
 			Assert.AreEqual(23, result.Age);
 			Assert.AreEqual("M", result.Sex);
 			Assert.AreEqual(Convert.ToDateTime("1984-01-07 13:24:42.110"), result.SignedUp);
-			Assert.AreEqual(5, ((IDictionary<string, object>)result).Count);
+			Assert.AreEqual(5, ((Dictionary<string, object>)result).Count);
 		}
 
 		[Test]

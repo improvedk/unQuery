@@ -11,6 +11,11 @@ namespace unQuery
 		{
 			this.dict = dict;
 		}
+
+		public static explicit operator Dictionary<string, object>(DynamicRow row)
+		{
+			return row.dict;
+		}
 		
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{

@@ -45,7 +45,7 @@ namespace unQuery.Tests
 			");
 			
 			// Verify column count
-			Assert.AreEqual(31, ((IDictionary<string, object>)result).Count);
+			Assert.AreEqual(31, ((Dictionary<string, object>)result).Count);
 
 			// Verify column types & values
 			Assert.AreEqual(1, result.TinyInt);

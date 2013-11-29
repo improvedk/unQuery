@@ -26,7 +26,7 @@ namespace unQuery.Tests
 			var row = result.First();
 			Assert.AreEqual(55, row.Age);
 			Assert.AreEqual("Stefanie Alexander", row.Name);
-			Assert.AreEqual(2, ((IDictionary<string, object>)row).Count);
+			Assert.AreEqual(2, ((Dictionary<string, object>)row).Count);
 		}
 
 		[Test]
@@ -42,7 +42,7 @@ namespace unQuery.Tests
 			Assert.AreEqual(37, row.Age);
 			Assert.AreEqual("M", row.Sex);
 			Assert.AreEqual(null, row.SignedUp);
-			Assert.AreEqual(5, ((IDictionary<string, object>)row).Count);
+			Assert.AreEqual(5, ((Dictionary<string, object>)row).Count);
 
 			row = result.Skip(1).First();
 			Assert.AreEqual(3, row.PersonID);
@@ -50,7 +50,7 @@ namespace unQuery.Tests
 			Assert.AreEqual(25, row.Age);
 			Assert.AreEqual("M", row.Sex);
 			Assert.AreEqual(Convert.ToDateTime("1997-11-15 21:03:54.000"), row.SignedUp);
-			Assert.AreEqual(5, ((IDictionary<string, object>)row).Count);
+			Assert.AreEqual(5, ((Dictionary<string, object>)row).Count);
 		}
 	}
 }
