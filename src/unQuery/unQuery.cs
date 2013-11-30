@@ -184,11 +184,7 @@ namespace unQuery
 			{ typeof(bool), x => SqlBit.GetParameter((bool)x) },
 			{ typeof(bool?), x => SqlBit.GetParameter((bool?)x) },
 			{ typeof(Guid), x => SqlUniqueIdentifier.GetParameter((Guid)x) },
-			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) },
-			{ typeof(uint), x => SqlBigInt.GetParameter((uint)x) },
-			{ typeof(uint?), x => SqlBigInt.GetParameter((uint?)x) },
-			{ typeof(ushort), x => SqlInt.GetParameter((ushort)x) },
-			{ typeof(ushort?), x => SqlInt.GetParameter((ushort?)x) }
+			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) }
 		};
 
 		internal void AddParametersToCommand(SqlCommand cmd, object parameters)
