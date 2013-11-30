@@ -160,7 +160,7 @@ namespace unQuery
 		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
 		internal static dynamic MapReaderRowToObject(SqlDataReader reader)
 		{
-			var obj = new Dictionary<string, object>(reader.VisibleFieldCount);
+			var obj = new Dictionary<string, object>(reader.VisibleFieldCount, StringComparer.Ordinal);
 
 			for (int i = 0; i < reader.VisibleFieldCount; i++)
 				obj[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader[i];

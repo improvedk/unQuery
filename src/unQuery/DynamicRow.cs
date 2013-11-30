@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 
 namespace unQuery
@@ -24,9 +25,7 @@ namespace unQuery
 		
 		public override bool TrySetMember(SetMemberBinder binder, object value)
 		{
-			dict[binder.Name] = value;
-		
-			return true;
+			throw new InvalidOperationException("Setting values on DynamicRow is not supported.");
 		}
 	}
 }

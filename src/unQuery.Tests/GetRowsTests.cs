@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.CSharp.RuntimeBinder;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,18 @@ namespace unQuery.Tests
 			var result = DB.GetRows("SELECT * FROM Persons WHERE 1 = 0");
 
 			Assert.AreEqual(0, result.Count());
+		}
+
+		[Test]
+		public void GetRows_CaseSensitive()
+		{
+			var result = DB.GetRows("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") }).First();
+
+			Assert.AreEqual(55, result.Age);
+
+			object dummy;
+			Assert.Throws<RuntimeBinderException>(() => dummy = result.age);
+			Assert.Throws<RuntimeBinderException>(() => dummy = result.AGE);
 		}
 
 		[Test]
