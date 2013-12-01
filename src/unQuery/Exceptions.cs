@@ -16,4 +16,10 @@ namespace unQuery
 		public TypeNotSupportedException(string t) : base("Type '" + t + "' not supported.")
 		{ }
 	}
+
+	public class MissingConnectionStringException : Exception
+	{
+		public MissingConnectionStringException() : base("unQuery did not find any connection strings in the ConnectionStrings configuration section.")
+		{ }
+	}
 }

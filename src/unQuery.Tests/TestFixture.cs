@@ -6,7 +6,6 @@ namespace unQuery.Tests
 	[TestFixture]
 	public abstract class TestFixture
 	{
-		protected unQuery DB = new TestDB();
 		private TransactionScope ts;
 
 		[TestFixtureSetUp]

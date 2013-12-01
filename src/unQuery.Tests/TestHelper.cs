@@ -6,13 +6,13 @@ namespace unQuery.Tests
 {
 	public class TestHelper
 	{
-		internal static unQuery DB = new TestDB();
+		private static unQuery db = new unQuery(null);
 
 		internal static void AssertParameterFromValue<TValue, TParamValue>(TValue value, SqlDbType expectedType, TParamValue paramValue, int? size = null)
 		{
 			var cmd = new SqlCommand();
-
-			DB.AddParametersToCommand(cmd, new {
+			
+			db.AddParametersToCommand(cmd, new {
 				Test = value
 			});
 

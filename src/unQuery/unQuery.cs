@@ -20,9 +20,14 @@ namespace unQuery
 	 *  - VisibleFieldCount vs FieldCount
 	 */
 
-	public abstract class unQuery
+	public class unQuery
 	{
-		protected abstract string ConnectionString { get; }
+		private readonly string connectionString;
+
+		public unQuery(string connectionString)
+		{
+			this.connectionString = connectionString;
+		}
 
 		/// <summary>
 		/// Executes the batch and returns all rows from the single result set.
@@ -235,7 +240,7 @@ namespace unQuery
 		/// </summary>
 		private SqlConnection getConnection()
 		{
-			var conn = new SqlConnection(ConnectionString);
+			var conn = new SqlConnection(connectionString);
 
 			try
 			{

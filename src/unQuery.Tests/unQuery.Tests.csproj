@@ -63,7 +63,6 @@
     <Compile Include="SqlTypes\SqlBitTests.cs" />
     <Compile Include="SqlTypes\SqlVarcharTests.cs" />
     <Compile Include="SqlTypes\SqlNVarcharTests.cs" />
-    <Compile Include="TestDB.cs" />
     <Compile Include="GetScalarTests.cs" />
     <Compile Include="TestFixture.cs" />
     <Compile Include="TestHelper.cs" />
@@ -75,6 +74,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

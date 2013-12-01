@@ -5,8 +5,11 @@ using System.Data.SqlClient;
 
 namespace unQuery.Tests
 {
-	public class AddParametersToCommandTests : TestFixture
+	[TestFixture]
+	public class AddParametersToCommandTests
 	{
+		private unQuery db = new unQuery(null);
+
 		[Test]
 		public void AddParameterToCommand_ImplicitTypes()
 		{
@@ -39,7 +42,7 @@ namespace unQuery.Tests
 		[Test]
 		public void AddParameterToCommand_NonSupportedTypes()
 		{
-			Assert.Throws<TypeNotSupportedException>(() => DB.AddParametersToCommand(new SqlCommand(), new {
+			Assert.Throws<TypeNotSupportedException>(() => db.AddParametersToCommand(new SqlCommand(), new {
 				Test = "Hello"
 			}));
 		}
