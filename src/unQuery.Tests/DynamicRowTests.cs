@@ -15,5 +15,18 @@ namespace unQuery.Tests
 
 			Assert.Throws<InvalidOperationException>(() => row.Test = "abc");
 		}
+
+		[Test]
+		public void ColumnDoesNotExist()
+		{
+			var dict = new Dictionary<string, object>();
+			dict["Test"] = "abc";
+
+			dynamic row = new DynamicRow(dict);
+
+			object dummy;
+			Assert.AreEqual("abc", row.Test);
+			Assert.Throws<ColumnDoesNotExistException>(() => dummy = row.DoesNotExist);
+		}
 	}
 }

@@ -22,4 +22,10 @@ namespace unQuery
 		public MissingConnectionStringException() : base("unQuery did not find any connection strings in the ConnectionStrings configuration section.")
 		{ }
 	}
+
+	public class ColumnDoesNotExistException : Exception
+	{
+		public ColumnDoesNotExistException(string column) : base("Column '" + column + "' does not exist.")
+		{ }
+	}
 }

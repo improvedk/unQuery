@@ -1,5 +1,4 @@
-﻿using Microsoft.CSharp.RuntimeBinder;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using unQuery.SqlTypes;
@@ -24,8 +23,8 @@ namespace unQuery.Tests
 			Assert.AreEqual(55, result.Age);
 			
 			object dummy;
-			Assert.Throws<RuntimeBinderException>(() => dummy = result.age);
-			Assert.Throws<RuntimeBinderException>(() => dummy = result.AGE);
+			Assert.Throws<ColumnDoesNotExistException>(() => dummy = result.age);
+			Assert.Throws<ColumnDoesNotExistException>(() => dummy = result.AGE);
 		}
 	
 		[Test]

@@ -20,7 +20,10 @@ namespace unQuery
 		
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
-			return dict.TryGetValue(binder.Name, out result);
+			if (!dict.TryGetValue(binder.Name, out result))
+				throw new ColumnDoesNotExistException(binder.Name);
+
+			return true;
 		}
 		
 		public override bool TrySetMember(SetMemberBinder binder, object value)
