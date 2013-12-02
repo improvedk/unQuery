@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Reflection;
 using unQuery.SqlTypes;
 
@@ -54,10 +55,8 @@ namespace unQuery
 					AddParametersToCommand(cmd, parameters);
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
-				int visibleFieldCount = reader.VisibleFieldCount;
 
-				while (reader.Read())
-					result.Add(MapReaderRowToObject(reader, visibleFieldCount));
+				result.AddRange(MapReaderRowsToObject(reader).ToList());
 			}
 
 			return result;
@@ -161,18 +160,52 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Maps a single row from a SqlDataReader into a dynamic object.
+		/// Maps a single row from a SqlDataReader into a dynamic object. This method is optimized for just a single row.
 		/// </summary>
 		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
 		/// <param name="visibleFieldCount">The number of visible columns in the datareader.</param>
 		internal static dynamic MapReaderRowToObject(SqlDataReader reader, int visibleFieldCount)
 		{
-			var obj = new Dictionary<string, object>(visibleFieldCount, StringComparer.Ordinal);
+			var obj = new Dictionary<string, object>(visibleFieldCount);
 
 			for (int i = 0; i < visibleFieldCount; i++)
-				obj[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader[i];
+			{
+				object value = reader[i];
+				obj[reader.GetName(i)] = value is DBNull ? null : value;
+			}
 
 			return new DynamicRow(obj);
+		}
+
+		/// <summary>
+		/// Maps any number of rows to dynamic objects. This method is optimized for returning many rows.
+		/// </summary>
+		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
+		internal static IEnumerable<dynamic> MapReaderRowsToObject(SqlDataReader reader)
+		{
+			int visibleFieldCount = reader.VisibleFieldCount;
+			var fieldMap = new Dictionary<string, int>(visibleFieldCount);
+			bool first = true;
+
+			while (reader.Read())
+			{
+				var obj = new object[visibleFieldCount];
+
+				for (int i = 0; i < visibleFieldCount; i++)
+				{
+					if (first)
+						fieldMap[reader.GetName(i)] = i;
+
+					object value = reader[i];
+
+					if (!(value is DBNull))
+						obj[i] = value;
+				}
+
+				first = false;
+				
+				yield return new DynamicRow(obj, fieldMap);
+			}
 		}
 
 		/// <summary>
