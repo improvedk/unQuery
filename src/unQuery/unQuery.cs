@@ -54,9 +54,10 @@ namespace unQuery
 					AddParametersToCommand(cmd, parameters);
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
+				int visibleFieldCount = reader.VisibleFieldCount;
 
 				while (reader.Read())
-					result.Add(MapReaderRowToObject(reader));
+					result.Add(MapReaderRowToObject(reader, visibleFieldCount));
 			}
 
 			return result;
@@ -91,13 +92,13 @@ namespace unQuery
 				if (!reader.Read())
 					return null;
 
-				return MapReaderRowToObject(reader);
+				return MapReaderRowToObject(reader, reader.VisibleFieldCount);
 			}
 		}
 
 		/// <summary>
 		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
-		/// Additional columns or rows are ignored.
+		/// Additional visibleFieldCount or rows are ignored.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <exception cref="NoRowsException" />
@@ -108,7 +109,7 @@ namespace unQuery
 
 		/// <summary>
 		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
-		/// Additional columns or rows are ignored.
+		/// Additional visibleFieldCount or rows are ignored.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
@@ -163,11 +164,12 @@ namespace unQuery
 		/// Maps a single row from a SqlDataReader into a dynamic object.
 		/// </summary>
 		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
-		internal static dynamic MapReaderRowToObject(SqlDataReader reader)
+		/// <param name="visibleFieldCount">The number of visible columns in the datareader.</param>
+		internal static dynamic MapReaderRowToObject(SqlDataReader reader, int visibleFieldCount)
 		{
-			var obj = new Dictionary<string, object>(reader.VisibleFieldCount, StringComparer.Ordinal);
+			var obj = new Dictionary<string, object>(visibleFieldCount, StringComparer.Ordinal);
 
-			for (int i = 0; i < reader.VisibleFieldCount; i++)
+			for (int i = 0; i < visibleFieldCount; i++)
 				obj[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader[i];
 
 			return new DynamicRow(obj);
