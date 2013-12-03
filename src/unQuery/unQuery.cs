@@ -36,7 +36,17 @@ namespace unQuery
 		/// <param name="sql">The SQL statement to execute.</param>
 		public IList<dynamic> GetRows(string sql)
 		{
-			return GetRows(sql, null);
+			var result = new List<dynamic>();
+
+			using (var conn = getConnection())
+			using (var cmd = new SqlCommand(sql, conn))
+			{
+				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
+				
+				result.AddRange(MapReaderRowsToObject(reader).ToList());
+			}
+
+			return result;
 		}
 
 		/// <summary>
@@ -61,7 +71,7 @@ namespace unQuery
 
 			return result;
 		}
-
+		
 		/// <summary>
 		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
 		/// all but the first will be discarded.
@@ -185,24 +195,19 @@ namespace unQuery
 		{
 			int visibleFieldCount = reader.VisibleFieldCount;
 			var fieldMap = new Dictionary<string, int>(visibleFieldCount);
-			bool first = true;
+
+			// First loop through each column and create map between the field name and storage array index
+			for (int i = 0; i < visibleFieldCount; i++)
+				fieldMap[reader.GetName(i)] = i;
 
 			while (reader.Read())
 			{
 				var obj = new object[visibleFieldCount];
+				reader.GetValues(obj);
 
 				for (int i = 0; i < visibleFieldCount; i++)
-				{
-					if (first)
-						fieldMap[reader.GetName(i)] = i;
-
-					object value = reader[i];
-
-					if (!(value is DBNull))
-						obj[i] = value;
-				}
-
-				first = false;
+					if (obj[i] is DBNull)
+						obj[i] = null;
 				
 				yield return new DynamicFieldMapRow(obj, fieldMap);
 			}
