@@ -7,52 +7,23 @@ namespace unQuery
 	public class DynamicRow : DynamicObject
 	{
 		private readonly Dictionary<string, object> valuesDict;
-		private readonly object[] values;
-		private readonly Dictionary<string, int> fieldMap;
 
-		public DynamicRow(Dictionary<string, object> dict)
+		public DynamicRow(Dictionary<string, object> valuesDict)
 		{
-			this.valuesDict = dict;
+			this.valuesDict = valuesDict;
 		}
 
-		public DynamicRow(object[] values, Dictionary<string, int> fieldMap)
-		{
-			this.values = values;
-			this.fieldMap = fieldMap;
-		}
-		
 		public static explicit operator Dictionary<string, object>(DynamicRow row)
 		{
-			if (row.valuesDict != null)
-				return row.valuesDict;
-
-			var dict = new Dictionary<string, object>(row.values.Length);
-
-			foreach (var key in row.fieldMap.Keys)
-				dict[key] = row.values[row.fieldMap[key]];
-
-			return dict;
+			return row.valuesDict;
 		}
 		
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
-			if (valuesDict != null)
-			{
-				if (!valuesDict.TryGetValue(binder.Name, out result))
-					throw new ColumnDoesNotExistException(binder.Name);
-
-				return true;
-			}
-
-			try
-			{
-				result = values[fieldMap[binder.Name]];
-				return true;
-			}
-			catch (KeyNotFoundException)
-			{
+			if (!valuesDict.TryGetValue(binder.Name, out result))
 				throw new ColumnDoesNotExistException(binder.Name);
-			}
+
+			return true;
 		}
 		
 		public override bool TrySetMember(SetMemberBinder binder, object value)

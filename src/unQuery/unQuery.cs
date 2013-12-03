@@ -204,7 +204,7 @@ namespace unQuery
 
 				first = false;
 				
-				yield return new DynamicRow(obj, fieldMap);
+				yield return new DynamicFieldMapRow(obj, fieldMap);
 			}
 		}
 

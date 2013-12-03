@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB.cs" />
+    <Compile Include="DynamicFieldMapRow.cs" />
     <Compile Include="DynamicRow.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

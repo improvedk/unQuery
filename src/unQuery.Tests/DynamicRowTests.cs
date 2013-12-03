@@ -17,6 +17,17 @@ namespace unQuery.Tests
 		}
 
 		[Test]
+		public void CanGetValues()
+		{
+			var dict = new Dictionary<string, object>();
+			dict["Test"] = "abc";
+
+			dynamic row = new DynamicRow(dict);
+
+			Assert.AreEqual("abc", row.Test);
+		}
+
+		[Test]
 		public void ColumnDoesNotExist()
 		{
 			var dict = new Dictionary<string, object>();

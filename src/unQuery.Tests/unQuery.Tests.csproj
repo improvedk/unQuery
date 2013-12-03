@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddParametersToCommandTests.cs" />
+    <Compile Include="DynamicFieldMapRowTests.cs" />
     <Compile Include="MapReaderRowsToObjectTests.cs" />
     <Compile Include="DynamicRowTests.cs" />
     <Compile Include="GetOpenConnectionTests.cs" />
