@@ -36,17 +36,7 @@ namespace unQuery
 		/// <param name="sql">The SQL statement to execute.</param>
 		public IList<dynamic> GetRows(string sql)
 		{
-			var result = new List<dynamic>();
-
-			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-			{
-				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
-				
-				result.AddRange(MapReaderRowsToObject(reader).ToList());
-			}
-
-			return result;
+			return GetRows(sql, null);
 		}
 
 		/// <summary>
