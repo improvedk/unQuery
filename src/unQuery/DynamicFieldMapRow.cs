@@ -6,9 +6,16 @@ using System.Reflection;
 
 namespace unQuery
 {
+	/// <summary>
+	/// Custom dynamic implementation that stores a single row, with a reference to a common field map so multiple rows don't have
+	/// to store the same schema.
+	/// </summary>
 	public class DynamicFieldMapRow : IDynamicMetaObjectProvider
 	{
+		// This stores the raw column values by ordinal index
 		private readonly object[] values;
+
+		// The field map stores the <ColumnName, ColumnOrdinal> map, allowing us to retrieve the value from the values array
 		private readonly Dictionary<string, int> fieldMap;
 
 		public DynamicFieldMapRow(object[] values, Dictionary<string, int> fieldMap)
@@ -19,6 +26,8 @@ namespace unQuery
 
 		public object GetColumnValue(string name)
 		{
+			// Let's take advantage of the fact that 99.9% of column access will succeed. Rather than expecting failure,
+			// let's optimize for the best case and catch the rare misses.
 			try
 			{
 				return values[fieldMap[name]];
@@ -45,6 +54,10 @@ namespace unQuery
 		}
 	}
 
+	/// <summary>
+	/// Plumbing class to properly implement IDynamicMetaObjectProvider. All it does is to map the property access
+	/// to the DynamicFieldMapRow.GetColumnValue method.
+	/// </summary>
 	internal class DynamicFieldMapRowMetaObject : DynamicMetaObject
 	{
 		private static readonly MethodInfo getColumnValueMethod = typeof(DynamicFieldMapRow).GetMethod("GetColumnValue");

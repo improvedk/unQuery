@@ -4,6 +4,9 @@ using System.Data.SqlClient;
 
 namespace unQuery
 {
+	/// <summary>
+	/// Provides easy static access to to the database referenced by the first available connection string.
+	/// </summary>
 	public static class DB
 	{
 		private static unQuery db;

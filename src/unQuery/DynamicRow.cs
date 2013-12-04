@@ -4,6 +4,9 @@ using System.Dynamic;
 
 namespace unQuery
 {
+	/// <summary>
+	/// Custom dynamic implementation for storing a single row in an internal dictionary.
+	/// </summary>
 	public class DynamicRow : DynamicObject
 	{
 		private readonly Dictionary<string, object> valuesDict;
