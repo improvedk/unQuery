@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Reflection;
 using unQuery.SqlTypes;
 
@@ -44,8 +45,6 @@ namespace unQuery
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		public IList<dynamic> GetRows(string sql, dynamic parameters)
 		{
-			var result = new List<dynamic>();
-
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
 			{
@@ -54,10 +53,8 @@ namespace unQuery
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
 				
-				result.AddRange(MapReaderRowsToObject(reader));
+				return MapReaderRowsToObject(reader).ToList();
 			}
-
-			return result;
 		}
 		
 		/// <summary>
