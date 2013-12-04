@@ -17,7 +17,6 @@ namespace unQuery
 	 *	
 	 * Misc
 	 *  - Way to override standard CLR type handlers
-	 *  - VisibleFieldCount vs FieldCount
 	 */
 
 	public class unQuery
@@ -221,6 +220,9 @@ namespace unQuery
 			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) }
 		};
 
+		/// <summary>
+		/// Loops through each property on the parameters object and adds it as a parameter to the SqlCommand.
+		/// </summary>
 		internal void AddParametersToCommand(SqlCommand cmd, object parameters)
 		{
 			// For each property in the dynamic parameters object, create a SqlParameter and add it to the SqlCommand
