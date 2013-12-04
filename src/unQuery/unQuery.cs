@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
 using unQuery.SqlTypes;
 
@@ -55,8 +54,8 @@ namespace unQuery
 					AddParametersToCommand(cmd, parameters);
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
-
-				result.AddRange(MapReaderRowsToObject(reader).ToList());
+				
+				result.AddRange(MapReaderRowsToObject(reader));
 			}
 
 			return result;
