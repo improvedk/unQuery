@@ -8,7 +8,7 @@ namespace unQuery.Tests
 	[TestFixture]
 	public class AddParametersToCommandTests
 	{
-		private unQuery db = new unQuery(null);
+		private unQueryDB db = new unQueryDB(null);
 
 		[Test]
 		public void AddParameterToCommand_ImplicitTypes()

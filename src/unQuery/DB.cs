@@ -9,14 +9,14 @@ namespace unQuery
 	/// </summary>
 	public static class DB
 	{
-		private static unQuery db;
+		private static unQueryDB db;
 
 		static DB()
 		{
 			if (ConfigurationManager.ConnectionStrings.Count == 0)
 				throw new MissingConnectionStringException();
 
-			db = new unQuery(ConfigurationManager.ConnectionStrings[0].ConnectionString);
+			db = new unQueryDB(ConfigurationManager.ConnectionStrings[0].ConnectionString);
 		}
 
 		public static IList<dynamic> GetRows(string sql)

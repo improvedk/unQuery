@@ -20,11 +20,11 @@ namespace unQuery
 	 *  - Way to override standard CLR type handlers
 	 */
 
-	public class unQuery
+	public class unQueryDB
 	{
 		private readonly string connectionString;
 
-		public unQuery(string connectionString)
+		public unQueryDB(string connectionString)
 		{
 			this.connectionString = connectionString;
 		}

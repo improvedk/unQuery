@@ -28,7 +28,7 @@ namespace unQuery
 	/// </summary>
 	public class MissingConnectionStringException : Exception
 	{
-		public MissingConnectionStringException() : base("unQuery did not find any connection strings in the ConnectionStrings configuration section.")
+		public MissingConnectionStringException() : base("unQueryDB did not find any connection strings in the ConnectionStrings configuration section.")
 		{ }
 	}
 
