@@ -8,18 +8,6 @@ using unQuery.SqlTypes;
 
 namespace unQuery
 {
-	/*
-	 * Access methods
-	 *  - Get multiple result sets with multiple rows
-	 *  
-	 * Query methods
-	 *	- Stored procedure
-	 *	- Text
-	 *	
-	 * Misc
-	 *  - Way to override standard CLR type handlers
-	 */
-
 	public class unQueryDB
 	{
 		private readonly string connectionString;
