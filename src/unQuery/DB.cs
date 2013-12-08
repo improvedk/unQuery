@@ -19,42 +19,22 @@ namespace unQuery
 			db = new unQueryDB(ConfigurationManager.ConnectionStrings[0].ConnectionString);
 		}
 
-		public static IList<dynamic> GetRows(string sql)
-		{
-			return db.GetRows(sql);
-		}
-
-		public static IList<dynamic> GetRows(string sql, dynamic parameters)
+		public static IList<dynamic> GetRows(string sql, dynamic parameters = null)
 		{
 			return db.GetRows(sql, parameters);
 		}
 
-		public static dynamic GetRow(string sql)
-		{
-			return db.GetRow(sql);
-		}
-
-		public static dynamic GetRow(string sql, dynamic parameters)
+		public static dynamic GetRow(string sql, dynamic parameters = null)
 		{
 			return db.GetRow(sql, parameters);
 		}
 
-		public static T GetScalar<T>(string sql)
-		{
-			return db.GetScalar<T>(sql);
-		}
-
-		public static T GetScalar<T>(string sql, dynamic parameters)
+		public static T GetScalar<T>(string sql, dynamic parameters = null)
 		{
 			return db.GetScalar<T>(sql, parameters);
 		}
 
-		public static int Execute(string sql)
-		{
-			return db.Execute(sql);
-		}
-
-		public static int Execute(string sql, dynamic parameters)
+		public static int Execute(string sql, dynamic parameters = null)
 		{
 			return db.Execute(sql, parameters);
 		}
