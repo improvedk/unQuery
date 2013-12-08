@@ -6,4 +6,4 @@ Minimal generic data access layer. Work in progress - not ready for public use y
 TODO
 ====
 
-* Adding <clear /> to ConnectionStrings section as a precaution
+* Adding ````<clear />```` to ConnectionStrings section as a precaution
