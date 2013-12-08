@@ -40,4 +40,22 @@ namespace unQuery
 		public ColumnDoesNotExistException(string column) : base("Column '" + column + "' does not exist.")
 		{ }
 	}
+
+	/// <summary>
+	/// Thrown if a result row contains two columns with the same name
+	/// </summary>
+	public class DuplicateColumnException : Exception
+	{
+		public DuplicateColumnException(string column) : base("Two or more columns share the same name '" + column + "'.")
+		{ }
+	}
+
+	/// <summary>
+	/// Thrown if a result contains an unnamed column
+	/// </summary>
+	public class UnnamedColumnException : Exception
+	{
+		public UnnamedColumnException(int index) : base("Column with index " + index + " has no name.")
+		{ }
+	}
 }

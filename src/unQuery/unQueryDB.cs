@@ -154,7 +154,19 @@ namespace unQuery
 			for (int i = 0; i < visibleFieldCount; i++)
 			{
 				object value = reader[i];
-				obj.Add(reader.GetName(i), value is DBNull ? null : value);
+				string fieldName = reader.GetName(i);
+
+				if (string.IsNullOrWhiteSpace(fieldName))
+					throw new UnnamedColumnException(i);
+
+				try
+				{
+					obj.Add(reader.GetName(i), value is DBNull ? null : value);
+				}
+				catch (ArgumentException)
+				{
+					throw new DuplicateColumnException(fieldName);
+				}
 			}
 
 			return new DynamicRow(obj);
@@ -171,7 +183,21 @@ namespace unQuery
 
 			// First loop through each column and create map between the field name and storage array index
 			for (int i = 0; i < visibleFieldCount; i++)
-				fieldMap.Add(reader.GetName(i), i);
+			{
+				string fieldName = reader.GetName(i);
+
+				if (string.IsNullOrWhiteSpace(fieldName))
+					throw new UnnamedColumnException(i);
+
+				try
+				{
+					fieldMap.Add(reader.GetName(i), i);
+				}
+				catch (ArgumentException)
+				{
+					throw new DuplicateColumnException(fieldName);
+				}
+			}
 
 			while (reader.Read())
 			{

@@ -6,7 +6,7 @@ namespace unQuery.Tests
 	public class MapReaderRowsToObjectTests : TestFixture
 	{
 		[Test]
-		public void MapReaderRowsToObjectTests_Simple()
+		public void Simple()
 		{
 			var rows = DB.GetRows(@"
 				SELECT 25 AS TestInt, N'abc' AS TestNVarChar
@@ -22,6 +22,18 @@ namespace unQuery.Tests
 			var secondRow = rows.Skip(1).Single();
 			Assert.AreEqual(57, secondRow.TestInt);
 			Assert.AreEqual("xyz", secondRow.TestNVarChar);
+		}
+
+		[Test]
+		public void UnnamedColumn()
+		{
+			Assert.Throws<UnnamedColumnException>(() => DB.GetRow("SELECT 1"));
+		}
+
+		[Test]
+		public void DuplicateColumnNames()
+		{
+			Assert.Throws<DuplicateColumnException>(() => DB.GetRow("SELECT 0 AS A, 1 AS A"));
 		}
 	}
 }

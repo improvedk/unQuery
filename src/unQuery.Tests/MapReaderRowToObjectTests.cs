@@ -7,7 +7,19 @@ namespace unQuery.Tests
 	public class MapReaderRowToObjectTests : TestFixture
 	{
 		[Test]
-		public void MapReaderRowToObjectTests_AllColumnTypes()
+		public void UnnamedColumn()
+		{
+			Assert.Throws<UnnamedColumnException>(() => DB.GetRows("SELECT 1"));
+		}
+
+		[Test]
+		public void DuplicateColumnNames()
+		{
+			Assert.Throws<DuplicateColumnException>(() => DB.GetRows("SELECT 0 AS A, 1 AS A"));
+		}
+
+		[Test]
+		public void AllColumnTypes()
 		{
 			var result = DB.GetRow(@"
 				SELECT
