@@ -29,6 +29,11 @@ namespace unQuery
 			return db.GetRow(sql, parameters);
 		}
 
+		public static T GetScalar<T>(SqlCommand cmd, dynamic parameters = null)
+		{
+			return db.GetScalar<T>(cmd, parameters);
+		}
+
 		public static T GetScalar<T>(string sql, dynamic parameters = null)
 		{
 			return db.GetScalar<T>(sql, parameters);

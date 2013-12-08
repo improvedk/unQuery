@@ -64,22 +64,22 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
-		/// Additional visibleFieldCount or rows are ignored.
+		/// Executes the command, and returns the first column of the first row of the first result set returned by the query.
 		/// </summary>
-		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="cmd">The SqlCommand to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		/// <exception cref="NoRowsException" />
-		public T GetScalar<T>(string sql, dynamic parameters = null)
+		public T GetScalar<T>(SqlCommand cmd, dynamic parameters = null)
 		{
 			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
 			{
+				cmd.Connection = conn;
+
 				if (parameters != null)
 					AddParametersToCommand(cmd, parameters);
 
 				object result = cmd.ExecuteScalar();
-				
+
 				if (result == null)
 					throw new NoRowsException();
 
@@ -88,6 +88,18 @@ namespace unQuery
 
 				return (T)result;
 			}
+		}
+
+		/// <summary>
+		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		/// <exception cref="NoRowsException" />
+		public T GetScalar<T>(string sql, dynamic parameters = null)
+		{
+			using (var cmd = new SqlCommand(sql))
+				return GetScalar<T>(cmd, parameters);
 		}
 
 		/// <summary>
