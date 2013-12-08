@@ -21,17 +21,8 @@ namespace unQuery
 		/// Executes the batch and returns all rows from the single result set.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
-		public IList<dynamic> GetRows(string sql)
-		{
-			return GetRows(sql, null);
-		}
-
-		/// <summary>
-		/// Executes the batch and returns all rows from the single result set.
-		/// </summary>
-		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public IList<dynamic> GetRows(string sql, dynamic parameters)
+		public IList<dynamic> GetRows(string sql, dynamic parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -50,18 +41,8 @@ namespace unQuery
 		/// all but the first will be discarded.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
-		public dynamic GetRow(string sql)
-		{
-			return GetRow(sql, null);
-		}
-
-		/// <summary>
-		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
-		/// all but the first will be discarded.
-		/// </summary>
-		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public dynamic GetRow(string sql, dynamic parameters)
+		public dynamic GetRow(string sql, dynamic parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -83,20 +64,9 @@ namespace unQuery
 		/// Additional visibleFieldCount or rows are ignored.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
-		/// <exception cref="NoRowsException" />
-		public T GetScalar<T>(string sql)
-		{
-			return GetScalar<T>(sql, null);
-		}
-
-		/// <summary>
-		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
-		/// Additional visibleFieldCount or rows are ignored.
-		/// </summary>
-		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		/// <exception cref="NoRowsException" />
-		public T GetScalar<T>(string sql, dynamic parameters)
+		public T GetScalar<T>(string sql, dynamic parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -120,17 +90,8 @@ namespace unQuery
 		/// Executes a batch and returns the number of rows affected.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
-		public int Execute(string sql)
-		{
-			return Execute(sql, null);
-		}
-
-		/// <summary>
-		/// Executes a batch and returns the number of rows affected.
-		/// </summary>
-		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public int Execute(string sql, dynamic parameters)
+		public int Execute(string sql, dynamic parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
