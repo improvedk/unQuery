@@ -58,4 +58,14 @@ namespace unQuery
 		public UnnamedColumnException(int index) : base("Column with index " + index + " has no name.")
 		{ }
 	}
+
+	/// <summary>
+	/// Thrown if trying to add a parameter to a SqlCommand that already contains a parameter
+	/// with the same name.
+	/// </summary>
+	public class DuplicateParameterException : Exception
+	{
+		public DuplicateParameterException(string name) : base("Parameter '" + name + "' has already been added.")
+		{ }
+	}
 }

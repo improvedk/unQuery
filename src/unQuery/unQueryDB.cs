@@ -226,6 +226,11 @@ namespace unQuery
 				if (param.Value == null)
 					param.Value = DBNull.Value;
 
+				// To avoid nasty surprises, throw in case parameter already has parameter
+				// by the same name.
+				if (cmd.Parameters.Contains(prop.Name) || cmd.Parameters.Contains(param.ParameterName))
+					throw new DuplicateParameterException(param.ParameterName);
+
 				cmd.Parameters.Add(param);
 			}
 		}

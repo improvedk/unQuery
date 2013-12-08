@@ -11,7 +11,31 @@ namespace unQuery.Tests
 		private unQueryDB db = new unQueryDB(null);
 
 		[Test]
-		public void AddParameterToCommand_ImplicitTypes()
+		public void AddToExistingParameterCollection()
+		{
+			var cmd = new SqlCommand();
+			cmd.Parameters.Add("@A", SqlDbType.Int).Value = 52;
+
+			db.AddParametersToCommand(cmd, new { B = 25 });
+
+			Assert.AreEqual(2, cmd.Parameters.Count);
+			Assert.AreEqual(52, cmd.Parameters["@A"].Value);
+			Assert.AreEqual(25, cmd.Parameters["@B"].Value);
+		}
+
+		[Test]
+		public void ClashesWithExistingParameter()
+		{
+			var cmd = new SqlCommand();
+			cmd.Parameters.Add("@A", SqlDbType.Int).Value = 52;
+			cmd.Parameters.Add("B", SqlDbType.Int).Value = 52;
+
+			Assert.Throws<DuplicateParameterException>(() => db.AddParametersToCommand(cmd, new { A = 25 }));
+			Assert.Throws<DuplicateParameterException>(() => db.AddParametersToCommand(cmd, new { B = 25 }));
+		}
+
+		[Test]
+		public void ImplicitTypes()
 		{
 			// bool / bit
 			TestHelper.AssertParameterFromValue(true, SqlDbType.Bit, true);
@@ -40,7 +64,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void AddParameterToCommand_NonSupportedTypes()
+		public void NonSupportedTypes()
 		{
 			Assert.Throws<TypeNotSupportedException>(() => db.AddParametersToCommand(new SqlCommand(), new {
 				Test = "Hello"
