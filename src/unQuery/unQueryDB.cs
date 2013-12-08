@@ -12,6 +12,10 @@ namespace unQuery
 	{
 		private readonly string connectionString;
 
+		/// <summary>
+		/// Instantiates an unQuery instance that connects using the provided connection string.
+		/// </summary>
+		/// <param name="connectionString">The database connection string.</param>
 		public unQueryDB(string connectionString)
 		{
 			this.connectionString = connectionString;
