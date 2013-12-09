@@ -64,7 +64,7 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Executes the command, and returns the first column of the first row of the first result set returned by the query.
+		/// Executes the command and returns the first column of the first row of the first result set returned by the query.
 		/// </summary>
 		/// <param name="cmd">The SqlCommand to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
@@ -103,20 +103,32 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// Executes the command and returns the number of rows affected.
+		/// </summary>
+		/// <param name="cmd">The SqlCommand to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		public int Execute(SqlCommand cmd, dynamic parameters = null)
+		{
+			using (var conn = getConnection())
+			{
+				cmd.Connection = conn;
+
+				if (parameters != null)
+					AddParametersToCommand(cmd, parameters);
+
+				return cmd.ExecuteNonQuery();
+			}
+		}
+
+		/// <summary>
 		/// Executes a batch and returns the number of rows affected.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		public int Execute(string sql, dynamic parameters = null)
 		{
-			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-			{
-				if (parameters != null)
-					AddParametersToCommand(cmd, parameters);
-
-				return cmd.ExecuteNonQuery();
-			}
+			using (var cmd = new SqlCommand(sql))
+				return Execute(cmd, parameters);
 		}
 
 		/// <summary>

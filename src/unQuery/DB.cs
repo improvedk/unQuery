@@ -39,6 +39,11 @@ namespace unQuery
 			return db.GetScalar<T>(sql, parameters);
 		}
 
+		public static int Execute(SqlCommand cmd, dynamic parameters = null)
+		{
+			return db.Execute(cmd, parameters);
+		}
+
 		public static int Execute(string sql, dynamic parameters = null)
 		{
 			return db.Execute(sql, parameters);
