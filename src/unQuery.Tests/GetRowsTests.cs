@@ -1,7 +1,8 @@
-﻿using Microsoft.CSharp.RuntimeBinder;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using unQuery.SqlTypes;
 
@@ -10,7 +11,46 @@ namespace unQuery.Tests
 	public class GetRowsTests : TestFixture
 	{
 		[Test]
-		public void GetRows_NoResults()
+		public void SqlCommand()
+		{
+			var cmd = new SqlCommand("SELECT TOP 2 * FROM Persons WHERE PersonID IN (1, 2) ORDER BY PersonID");
+			
+			var result = DB.GetRows(cmd);
+
+			Assert.AreEqual(2, result.Count);
+			Assert.AreEqual("Stefanie Alexander", result.First().Name);
+			Assert.AreEqual("Lee Buckley", result.Skip(1).Take(1).First().Name);
+		}
+
+		[Test]
+		public void SqlCommand_WithParameters()
+		{
+			var cmd = new SqlCommand("SELECT TOP 2 * FROM Persons WHERE PersonID IN (@One, @Two) ORDER BY PersonID");
+			cmd.Parameters.Add("@One", SqlDbType.Int).Value = 1;
+			cmd.Parameters.Add("@Two", SqlDbType.Int).Value = 2;
+
+			var result = DB.GetRows(cmd);
+
+			Assert.AreEqual(2, result.Count);
+			Assert.AreEqual("Stefanie Alexander", result.First().Name);
+			Assert.AreEqual("Lee Buckley", result.Skip(1).Take(1).First().Name);
+		}
+
+		[Test]
+		public void SqlCommand_WithMixedParameters()
+		{
+			var cmd = new SqlCommand("SELECT TOP 2 * FROM Persons WHERE PersonID IN (@One, @Two) ORDER BY PersonID");
+			cmd.Parameters.Add("@One", SqlDbType.Int).Value = 1;
+
+			var result = DB.GetRows(cmd, new { Two = 2 });
+
+			Assert.AreEqual(2, result.Count);
+			Assert.AreEqual("Stefanie Alexander", result.First().Name);
+			Assert.AreEqual("Lee Buckley", result.Skip(1).Take(1).First().Name);
+		}
+
+		[Test]
+		public void NoResults()
 		{
 			var result = DB.GetRows("SELECT * FROM Persons WHERE 1 = 0");
 
@@ -18,7 +58,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void GetRows_CaseSensitive()
+		public void CaseSensitive()
 		{
 			var result = DB.GetRows("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") }).First();
 
@@ -30,7 +70,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void GetRows_SingleRow()
+		public void SingleRow()
 		{
 			var result = DB.GetRows("SELECT Age, Name FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") });
 
@@ -43,7 +83,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void GetRows_MultipleRows()
+		public void MultipleRows()
 		{
 			var result = DB.GetRows("SELECT * FROM Persons WHERE PersonID IN (2, 3)");
 

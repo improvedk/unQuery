@@ -19,6 +19,11 @@ namespace unQuery
 			db = new unQueryDB(ConfigurationManager.ConnectionStrings[0].ConnectionString);
 		}
 
+		public static IList<dynamic> GetRows(SqlCommand cmd, dynamic parameters = null)
+		{
+			return db.GetRows(cmd, parameters);
+		}
+
 		public static IList<dynamic> GetRows(string sql, dynamic parameters = null)
 		{
 			return db.GetRows(sql, parameters);

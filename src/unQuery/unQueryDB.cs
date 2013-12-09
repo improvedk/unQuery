@@ -22,22 +22,34 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// Executes the command and returns all rows from the single result set.
+		/// </summary>
+		/// <param name="cmd">The SqlCommand to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		public IList<dynamic> GetRows(SqlCommand cmd, dynamic parameters = null)
+		{
+			using (var conn = getConnection())
+			{
+				cmd.Connection = conn;
+
+				if (parameters != null)
+					AddParametersToCommand(cmd, parameters);
+
+				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
+
+				return MapReaderRowsToObject(reader).ToList();
+			}
+		}
+
+		/// <summary>
 		/// Executes the batch and returns all rows from the single result set.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		public IList<dynamic> GetRows(string sql, dynamic parameters = null)
 		{
-			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-			{
-				if (parameters != null)
-					AddParametersToCommand(cmd, parameters);
-
-				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
-				
-				return MapReaderRowsToObject(reader).ToList();
-			}
+			using (var cmd = new SqlCommand(sql))
+				return GetRows(cmd, parameters);
 		}
 
 		/// <summary>
