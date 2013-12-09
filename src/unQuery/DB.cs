@@ -24,6 +24,11 @@ namespace unQuery
 			return db.GetRows(sql, parameters);
 		}
 
+		public static dynamic GetRow(SqlCommand cmd, dynamic parameters = null)
+		{
+			return db.GetRow(cmd, parameters);
+		}
+
 		public static dynamic GetRow(string sql, dynamic parameters = null)
 		{
 			return db.GetRow(sql, parameters);

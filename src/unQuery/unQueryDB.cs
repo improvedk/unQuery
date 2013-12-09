@@ -39,18 +39,19 @@ namespace unQuery
 				return MapReaderRowsToObject(reader).ToList();
 			}
 		}
-		
+
 		/// <summary>
-		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
+		/// Executes the command and returns a single row of data. If more than one row is is returned from the database,
 		/// all but the first will be discarded.
 		/// </summary>
-		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="cmd">The SqlCommandstatement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public dynamic GetRow(string sql, dynamic parameters = null)
+		public dynamic GetRow(SqlCommand cmd, dynamic parameters = null)
 		{
 			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
 			{
+				cmd.Connection = conn;
+
 				if (parameters != null)
 					AddParametersToCommand(cmd, parameters);
 
@@ -61,6 +62,18 @@ namespace unQuery
 
 				return MapReaderRowToObject(reader, reader.VisibleFieldCount);
 			}
+		}
+
+		/// <summary>
+		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
+		/// all but the first will be discarded.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		public dynamic GetRow(string sql, dynamic parameters = null)
+		{
+			using (var cmd = new SqlCommand(sql))
+				return GetRow(cmd, parameters);
 		}
 
 		/// <summary>
