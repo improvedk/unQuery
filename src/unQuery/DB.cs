@@ -9,7 +9,7 @@ namespace unQuery
 	/// </summary>
 	public static class DB
 	{
-		private static unQueryDB db;
+		private static readonly unQueryDB db;
 
 		static DB()
 		{
