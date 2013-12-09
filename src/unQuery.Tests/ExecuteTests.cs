@@ -8,14 +8,14 @@ namespace unQuery.Tests
 	public class ExecuteTests : TestFixture
 	{
 		[Test]
-		public void Execute_EmptySql()
+		public void EmptySql()
 		{
 			Assert.Throws<InvalidOperationException>(() => DB.Execute(""));
 			Assert.Throws<InvalidOperationException>(() => DB.Execute(null));
 		}
 
 		[Test]
-		public void Execute_WithRowsModified()
+		public void WithRowsModified()
 		{
 			var result = DB.Execute("UPDATE Persons SET Name = Name");
 
@@ -23,7 +23,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void Execute_WithParameters()
+		public void WithParameters()
 		{
 			var result = DB.Execute("UPDATE Persons SET Name = Name, Age = Age WHERE Name = @Name AND Age = @Age", new {
 				Age = 25,
@@ -34,7 +34,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void Execute_WithNoRowsModified()
+		public void WithNoRowsModified()
 		{
 			var result = DB.Execute("UPDATE Persons SET Name = Name WHERE 1=0");
 
@@ -42,7 +42,7 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void Execute_ThrowsSqlException()
+		public void ThrowsSqlException()
 		{
 			Assert.Throws<SqlException>(() => DB.Execute("x"));
 		}
