@@ -1,6 +1,10 @@
 # unQuery
 
-Minimal generic data access layer. Work in progress - not ready for public use yet.
+unQuery is a very minimal data access class that makes it as simple as possible to consume data and interact with SQL Server.
+
+It is neither an OR/M nor an object mapper, and it does not intend to be either.
+
+unQuery aims to ease the simpler use cases where strongly typed results are not necessary. I prefer SQL over query constructor abstractions, thus promoting the use of raw SQL.
 
 ## Access Methods
 
@@ -104,7 +108,9 @@ int secondaryUsers = secondaryDB.GetScalar<int>("SELECT COUNT(*) FROM Users");
 
 ## Database Support
 
+While unQuery currently requires no specific SQL Server functionality, I've decided to just support SQL Server. Just changing the use of SqlConnection to IDbConnection, SqlCommand to IDbComman and SqlParameter to IDbParameter might be enough, but I have not tested it.
 
+I do foresee changing to a database agnostic implementation, but for now I want to keep it simple and open up if there's demand and people willing to test & support other platforms.
 
 ## Configuration
 
