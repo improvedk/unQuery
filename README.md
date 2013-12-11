@@ -75,13 +75,15 @@ var row = DB.GetRow("SELECT @A, @B, @C", new {
 });
 ```
 
-Nulls are handled automatically and translated into the proper DBNull.Value value.
+Nulls are handled automatically and translated ito & from DBNull.Value.
 
 ```csharp
 DB.Execute("UPDATE Users SET Active = @Active WHERE UserID = @UserID", new {
 	Active = (int?)null,
 	UserID = 5
 });
+
+Assert.IsNull(DB.GetScalar<int?>("SELECT SUM(Age) FROM Users WHERE 1=0"));
 ```
 
 ## unQueryDB vs DB
