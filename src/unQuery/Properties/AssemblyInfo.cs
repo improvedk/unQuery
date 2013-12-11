@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("unQueryDB")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("unQuery is a very minimal data access library that makes it as simple as possible to consume data and interact with SQL Server.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Mark S. Rasmussen")]
 [assembly: AssemblyProduct("unQueryDB")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>unQuery</id>
+    <version>0.1</version>
+    <title>unQuery</title>
+    <authors>Mark S. Rasmussen</authors>
+    <owners>Mark S. Rasmussen</owners>
+    <licenseUrl>https://raw.github.com/improvedk/unQuery/master/license.txt</licenseUrl>
+    <projectUrl>https://github.com/improvedk/unQuery</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>unQuery is a very minimal data access library that makes it as simple as possible to consume data and interact with SQL Server.</description>
+    <releaseNotes />
+    <copyright>Copyright 2013</copyright>
+    <tags>SQL Micro-ORM DAL DB</tags>
+  </metadata>
+</package>
