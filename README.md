@@ -108,7 +108,21 @@ int secondaryUsers = secondaryDB.GetScalar<int>("SELECT COUNT(*) FROM Users");
 
 ## Configuration
 
-* Adding ````<clear />```` to ConnectionStrings section as a precaution
+If you use the unQueryDB and pass a connection string to the constructor, no further configuration is necessary.
+
+If you opt to use the static ```DB``` wrapper, unQuery will automatically use the first defined connection string in your configuration file.
+
+Note that connections will inherit from your machine.config & aspnet.config files, so it may be safest to first clear existing connections and then define the one you want to connection.
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<connectionStrings>
+		<clear/>
+		<add name="TestDB" connectionString="Server=.;Database=MainDB;Trusted_Connection=True"/>
+	</connectionStrings>
+</configuration>
+```
 
 ## Contact
 
