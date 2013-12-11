@@ -75,6 +75,15 @@ var row = DB.GetRow("SELECT @A, @B, @C", new {
 });
 ```
 
+Nulls are handled automatically and translated into the proper DBNull.Value value.
+
+```csharp
+DB.Execute("UPDATE Users SET Active = @Active WHERE UserID = @UserID", new {
+	Active = (int?)null,
+	UserID = 5
+});
+```
+
 ## unQueryDB vs DB
 
 ## Database Support
