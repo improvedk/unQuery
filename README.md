@@ -75,6 +75,8 @@ var row = DB.GetRow("SELECT @A, @B, @C", new {
 });
 ```
 
+## Nulls
+
 Nulls are handled automatically and translated ito & from DBNull.Value.
 
 ```csharp
@@ -86,9 +88,23 @@ DB.Execute("UPDATE Users SET Active = @Active WHERE UserID = @UserID", new {
 Assert.IsNull(DB.GetScalar<int?>("SELECT SUM(Age) FROM Users WHERE 1=0"));
 ```
 
-## unQueryDB vs DB
+## DB vs unQueryDB
+
+The ```DB``` class is a static wrapper over a single instance of the unQueryDB class. If you only have one database, DB is the simplest way to go. Please see [Configuration](#configuration).
+
+If you need to connect to multiple databases, you should use the unQueryDB class directly.
+
+```csharp
+var mainDB = new unQueryDB("Server=.;Database=MainDB;Trusted_Connection=True");
+var secondaryDB = new unQueryDB("Server=.;Database=SecondaryDB;Trusted_Connection=True");
+
+int mainUsers = mainDB.GetScalar<int>("SELECT COUNT(*) FROM Users");
+int secondaryUsers = secondaryDB.GetScalar<int>("SELECT COUNT(*) FROM Users");
+```
 
 ## Database Support
+
+
 
 ## Configuration
 
