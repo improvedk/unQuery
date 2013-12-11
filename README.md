@@ -49,6 +49,27 @@ foreach (var user in users)
 	Console.WriteLine(user.Name + " (" + user.Age + " years old)");
 ```
 
+### SqlCommand Overloads
+
+Each access method supports the use of raw SQL, while also allowing you to pass in a SqlCommand. Creating your own SqlCommand can be useful if you need custom configuration or full control over the parameterization.
+
+```csharp
+// These two are functionally equivalent
+int deletedUsers = DB.Execute(new SqlCommand("DELETE FROM Users"));
+int deletedUsers = DB.Execute("DELETE FROM Users");
+```
+
+You may also add parameters to an already parameterized SqlCommand.
+
+```csharp
+var cmd = new SqlCommand("DELETE FROM Users WHERE Age > @Age AND Active = @Active");
+cmd.Parameters.Add("@Age", SqlDbType.Int).Value = 50;
+
+int deletedUsers = DB.Execute(cmd, new {
+	Active = false
+});
+```
+
 ## Parameterization
 
 All access methods support supplying an anonymous objects with parameters.
