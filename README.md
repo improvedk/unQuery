@@ -54,7 +54,7 @@ var children = DB.GetRows("SELECT * FROM Users WHERE Age < @AdultThreshold", new
 	AdultThreshold = 18
 });
 
-var marks = DB.GetRows("SELECT * FROM Users WHERE Name = @Name", new {
+var marks = DB.GetRow("SELECT TOP 1 * FROM Users WHERE Name = @Name", new {
 	Name = Col.NVarChar("Mark", 64)
 });
 
