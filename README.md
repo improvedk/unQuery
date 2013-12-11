@@ -2,7 +2,7 @@
 
 Minimal generic data access layer. Work in progress - not ready for public use yet.
 
-## Methods
+## Access Methods
 
 unQuery presents four different options for interacting with the database.
 
@@ -45,7 +45,48 @@ foreach (var user in users)
 	Console.WriteLine(user.Name + " (" + user.Age + " years old)");
 ```
 
-##TODO
-====
+## Parameterization
+
+All access methods support supplying an anonymous objects with parameters.
+
+```csharp
+var children = DB.GetRows("SELECT * FROM Users WHERE Age < @AdultThreshold", new {
+	AdultThreshold = 18
+});
+
+var marks = DB.GetRows("SELECT * FROM Users WHERE Name = @Name", new {
+	Name = Col.NVarChar("Mark", 64)
+});
+
+DB.Execute("INSERT INTO Users (Name, Age, Active) VALUES (@Name, @Age, @Active)", new {
+	Name = Col.NVarChar("Mark", 64),
+	Age = 28,
+	Active = true
+});
+```
+
+Simple C# types like byte, short, int, bigint, bool & Guid are automatically mapped to their equivalent database type. Ambiguous types like strings need to be mapped to a specific type using the Col factory. There are several ways of specifying the types explicitly.
+
+```csharp
+var row = DB.GetRow("SELECT @A, @B, @C", new {
+	A = Col.VarChar("A"), // Length is based on the input
+	B = Col.VarChar("A", 1), // Sets length explicitly for optimal plan reuse
+	C = (SqlVarchar)"A" // Casts a string into a SqlVarChar with length based on the input
+});
+```
+
+## unQueryDB vs DB
+
+## Database Support
+
+## Configuration
 
 * Adding ````<clear />```` to ConnectionStrings section as a precaution
+
+## Contact
+
+For any questions, issues or suggestions, please contact me at
+
+* Mail: mark@improve.dk
+* Twitter: @improvedk
+* Blog: improve.dk
