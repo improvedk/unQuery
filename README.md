@@ -10,17 +10,13 @@ unQuery presents four different ways of interacting with the database.
 
 Execute is used when you want to execute a batch but don't care about the results, other than the number of rows modified.
 
-    int deletedUsers = DB.Execute("DELETE FROM Users WHERE UserID = @UserID", new {
-        UserID = 5
-    });
+    int deletedUsers = DB.Execute("DELETE FROM Users WHERE Inactive = 1");
 
 ### GetScalar
 
 GetScalar is used when you want to return the value of the first column in the first row of the batch.
 
-    int userID = DB.GetScalar<int>("INSERT INTO Users (Name) VALUES (@Name); SELECT SCOPE_IDENTITY()", new {
-        Name = Col.NVarChar("Mark", 64)
-    });
+    int numberOfUsers = DB.GetScalar<int>("SELECT COUNT(*) FROM Users");
 
 ##TODO
 ====
