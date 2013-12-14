@@ -46,7 +46,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\Col.cs" />
-    <Compile Include="SqlTypes\SqlType.cs" />
+    <Compile Include="SqlTypes\TypeHelper.cs" />
     <Compile Include="SqlTypes\SqlUniqueIdentifier.cs" />
     <Compile Include="SqlTypes\SqlVarchar.cs" />
     <Compile Include="SqlTypes\SqlNVarchar.cs" />
