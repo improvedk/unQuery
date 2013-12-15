@@ -87,6 +87,18 @@ namespace unQuery
 								sdr.SetInt32(i, (int)columnValue);
 								break;
 
+							case SqlDbType.BigInt:
+								sdr.SetInt64(i, (long)columnValue);
+								break;
+
+							case SqlDbType.SmallInt:
+								sdr.SetInt16(i, (short)columnValue);
+								break;
+
+							case SqlDbType.UniqueIdentifier:
+								sdr.SetGuid(i, (Guid)columnValue);
+								break;
+
 							default:
 								throw new TypeNotSupportedException(col.SqlDbType.ToString());
 						}
