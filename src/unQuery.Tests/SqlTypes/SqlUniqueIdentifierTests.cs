@@ -32,5 +32,17 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(SqlUniqueIdentifier.GetParameter(guid), SqlDbType.UniqueIdentifier, null, guid);
 			TestHelper.AssertSqlParameter(SqlUniqueIdentifier.GetParameter(null), SqlDbType.UniqueIdentifier, null, DBNull.Value);
 		}
+
+		[Test]
+		public void GetRawValue()
+		{
+			Assert.AreEqual(guid, new SqlUniqueIdentifier(guid).GetRawValue());
+		}
+
+		[Test]
+		public void GetSqlDbType()
+		{
+			Assert.AreEqual(SqlDbType.UniqueIdentifier, new SqlUniqueIdentifier(guid).GetSqlDbType());
+		}
 	}
 }

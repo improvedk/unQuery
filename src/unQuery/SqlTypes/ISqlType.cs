@@ -6,7 +6,7 @@ namespace unQuery.SqlTypes
 	public interface ISqlType
 	{
 		SqlParameter GetParameter();
-		SqlDbType GetDbType();
+		SqlDbType GetSqlDbType();
 		object GetRawValue();
 	}
 }

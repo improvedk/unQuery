@@ -41,7 +41,7 @@ namespace unQuery
 						var propSqlType = propValue as ISqlType;
 						
 						if (propSqlType != null)
-							schema[keyCount++] = new SqlMetaData(prop.Name, propSqlType.GetDbType());
+							schema[keyCount++] = new SqlMetaData(prop.Name, propSqlType.GetSqlDbType());
 						else
 						{
 							try

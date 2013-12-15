@@ -39,5 +39,17 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(SqlTinyInt.GetParameter(5), SqlDbType.TinyInt, null, (byte)5);
 			TestHelper.AssertSqlParameter(SqlTinyInt.GetParameter(null), SqlDbType.TinyInt, null, DBNull.Value);
 		}
+
+		[Test]
+		public void GetRawValue()
+		{
+			Assert.AreEqual(1, new SqlTinyInt(1).GetRawValue());
+		}
+
+		[Test]
+		public void GetSqlDbType()
+		{
+			Assert.AreEqual(SqlDbType.TinyInt, new SqlTinyInt(1).GetSqlDbType());
+		}
 	}
 }

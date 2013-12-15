@@ -21,7 +21,7 @@ namespace unQuery.SqlTypes
 			return GetParameter(typeName, values);
 		}
 
-		public SqlDbType GetDbType()
+		public SqlDbType GetSqlDbType()
 		{
 			return SqlDbType.Structured;
 		}

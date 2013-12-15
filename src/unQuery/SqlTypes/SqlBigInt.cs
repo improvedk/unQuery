@@ -22,7 +22,7 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
-		public SqlDbType GetDbType()
+		public SqlDbType GetSqlDbType()
 		{
 			return SqlDbType.BigInt;
 		}

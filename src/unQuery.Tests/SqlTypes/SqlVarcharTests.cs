@@ -41,5 +41,17 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertSqlParameter(SqlVarChar.GetParameter("Test", 10), SqlDbType.VarChar, 10, "Test");
 			TestHelper.AssertSqlParameter(SqlVarChar.GetParameter(null), SqlDbType.VarChar, null, DBNull.Value);
 		}
+
+		[Test]
+		public void GetRawValue()
+		{
+			Assert.AreEqual("Test", new SqlVarChar("Test").GetRawValue());
+		}
+
+		[Test]
+		public void GetSqlDbType()
+		{
+			Assert.AreEqual(SqlDbType.VarChar, new SqlVarChar("Test").GetSqlDbType());
+		}
 	}
 }

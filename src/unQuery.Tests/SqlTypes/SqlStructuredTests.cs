@@ -61,5 +61,17 @@ namespace unQuery.Tests.SqlTypes
 			Assert.AreEqual(typeof(bool), rows[1].B.GetType());
 			Assert.AreEqual(false, rows[1].B);
 		}
+
+		[Test]
+		public void GetRawValue()
+		{
+			Assert.Throws<InvalidOperationException>(() => new SqlStructured("A", null).GetRawValue());
+		}
+
+		[Test]
+		public void GetSqlDbType()
+		{
+			Assert.AreEqual(SqlDbType.Structured, new SqlStructured("Test", null).GetSqlDbType());
+		}
 	}
 }
