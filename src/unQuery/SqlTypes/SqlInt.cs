@@ -22,6 +22,16 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
+		public SqlDbType GetDbType()
+		{
+			return SqlDbType.Int;
+		}
+
+		public object GetRawValue()
+		{
+			return value;
+		}
+
 		public static SqlParameter GetParameter(int? value)
 		{
 			return new SqlParameter {

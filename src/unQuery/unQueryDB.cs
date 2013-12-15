@@ -246,6 +246,24 @@ namespace unQuery
 		};
 
 		/// <summary>
+		/// Map between standard CLR datatypes and their equivalent SqlDbType values.
+		/// </summary>
+		internal static readonly Dictionary<Type, SqlDbType> ClrToSqlDbTypeMap = new Dictionary<Type, SqlDbType> {
+			{ typeof(byte), SqlDbType.TinyInt },
+			{ typeof(byte?), SqlDbType.TinyInt },
+			{ typeof(short), SqlDbType.SmallInt },
+			{ typeof(short?), SqlDbType.SmallInt },
+			{ typeof(int), SqlDbType.Int },
+			{ typeof(int?), SqlDbType.Int },
+			{ typeof(long), SqlDbType.BigInt },
+			{ typeof(long?), SqlDbType.BigInt },
+			{ typeof(bool), SqlDbType.Bit },
+			{ typeof(bool?), SqlDbType.Bit },
+			{ typeof(Guid), SqlDbType.UniqueIdentifier },
+			{ typeof(Guid?), SqlDbType.UniqueIdentifier }
+		};
+
+		/// <summary>
 		/// Loops through each property on the parameters object and adds it as a parameter to the SqlCommand.
 		/// </summary>
 		internal void AddParametersToCommand(SqlCommand cmd, object parameters)

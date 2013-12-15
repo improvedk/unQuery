@@ -11,6 +11,12 @@ namespace unQuery.Tests
 		[TestFixtureSetUp]
 		public void SetUp()
 		{
+			// Non-transactional setup
+			DB.Execute(@"
+				IF TYPE_ID('MyType') IS NOT NULL DROP TYPE MyType
+				CREATE TYPE MyType AS Table (A int, B bit)
+			");
+
 			ts = new TransactionScope();
 
 			DB.Execute(@"

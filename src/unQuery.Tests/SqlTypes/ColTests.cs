@@ -31,6 +31,14 @@ namespace unQuery.Tests.SqlTypes
 			TestHelper.AssertParameterFromValue(Col.SmallInt(5), SqlDbType.SmallInt, (short)5);
 			TestHelper.AssertParameterFromValue(Col.SmallInt(null), SqlDbType.SmallInt, DBNull.Value);
 
+			// structured
+			TestHelper.AssertParameterFromValue(Col.Structured("MyType", null), SqlDbType.Structured, DBNull.Value);
+
+			var param = Col.Structured("MyType", new dynamic[] { new { A = 5, B = true } }).GetParameter();
+			Assert.AreEqual("MyType", param.TypeName);
+			Assert.AreEqual(SqlDbType.Structured, param.SqlDbType);
+			Assert.AreEqual(typeof(StructuredDynamicYielder), param.Value.GetType());
+
 			// tinyint
 			TestHelper.AssertParameterFromValue(Col.TinyInt(5), SqlDbType.TinyInt, (byte)5);
 			TestHelper.AssertParameterFromValue(Col.TinyInt(null), SqlDbType.TinyInt, DBNull.Value);

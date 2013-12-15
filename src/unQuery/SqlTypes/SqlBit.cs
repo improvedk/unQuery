@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -21,6 +20,16 @@ namespace unQuery.SqlTypes
 		public SqlParameter GetParameter()
 		{
 			return GetParameter(value);
+		}
+
+		public SqlDbType GetDbType()
+		{
+			return SqlDbType.Bit;
+		}
+
+		public object GetRawValue()
+		{
+			return value;
 		}
 
 		public static SqlParameter GetParameter(bool? value)

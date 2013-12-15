@@ -22,6 +22,16 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
+		public SqlDbType GetDbType()
+		{
+			return SqlDbType.BigInt;
+		}
+
+		public object GetRawValue()
+		{
+			return value;
+		}
+
 		public static SqlParameter GetParameter(long? value)
 		{
 			return new SqlParameter {

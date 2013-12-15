@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace unQuery.SqlTypes
 {
@@ -37,6 +38,11 @@ namespace unQuery.SqlTypes
 		public static SqlNVarChar NVarChar(string value, int size)
 		{
 			return new SqlNVarChar(value, size);
+		}
+
+		public static SqlStructured Structured(string typeName, IEnumerable<object> values)
+		{
+			return new SqlStructured(typeName, values);
 		}
 
 		public static SqlVarChar VarChar(string value)

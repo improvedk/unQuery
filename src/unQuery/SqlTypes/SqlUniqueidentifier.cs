@@ -23,6 +23,16 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
+		public SqlDbType GetDbType()
+		{
+			return SqlDbType.UniqueIdentifier;
+		}
+
+		public object GetRawValue()
+		{
+			return value;
+		}
+
 		public static SqlParameter GetParameter(Guid? value)
 		{
 			return new SqlParameter {
