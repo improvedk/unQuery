@@ -21,11 +21,6 @@ namespace unQuery.SqlTypes
 			return GetParameter(typeName, values);
 		}
 
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.Structured;
-		}
-
 		public object GetRawValue()
 		{
 			throw new InvalidOperationException("You're not meant to use nested structured parameters.");

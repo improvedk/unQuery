@@ -47,11 +47,5 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.AreEqual("Test", new SqlNVarChar("Test").GetRawValue());
 		}
-
-		[Test]
-		public void GetSqlDbType()
-		{
-			Assert.AreEqual(SqlDbType.NVarChar, new SqlNVarChar("Test").GetSqlDbType());
-		}
 	}
 }

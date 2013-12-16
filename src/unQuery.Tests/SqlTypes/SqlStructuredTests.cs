@@ -190,11 +190,5 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<InvalidOperationException>(() => new SqlStructured("A", null).GetRawValue());
 		}
-
-		[Test]
-		public void GetSqlDbType()
-		{
-			Assert.AreEqual(SqlDbType.Structured, new SqlStructured("Test", null).GetSqlDbType());
-		}
 	}
 }

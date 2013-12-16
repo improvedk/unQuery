@@ -38,11 +38,5 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.AreEqual(guid, new SqlUniqueIdentifier(guid).GetRawValue());
 		}
-
-		[Test]
-		public void GetSqlDbType()
-		{
-			Assert.AreEqual(SqlDbType.UniqueIdentifier, new SqlUniqueIdentifier(guid).GetSqlDbType());
-		}
 	}
 }

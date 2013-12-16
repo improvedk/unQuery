@@ -24,11 +24,6 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.UniqueIdentifier;
-		}
-
 		public object GetRawValue()
 		{
 			return value;

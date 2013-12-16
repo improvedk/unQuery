@@ -45,11 +45,5 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.AreEqual(1, new SqlTinyInt(1).GetRawValue());
 		}
-
-		[Test]
-		public void GetSqlDbType()
-		{
-			Assert.AreEqual(SqlDbType.TinyInt, new SqlTinyInt(1).GetSqlDbType());
-		}
 	}
 }

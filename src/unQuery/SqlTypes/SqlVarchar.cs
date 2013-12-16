@@ -29,12 +29,7 @@ namespace unQuery.SqlTypes
 		{
 			return GetParameter(value, size);
 		}
-
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.VarChar;
-		}
-
+		
 		public object GetRawValue()
 		{
 			return value;

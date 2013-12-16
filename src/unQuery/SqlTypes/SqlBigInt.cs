@@ -23,11 +23,6 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.BigInt;
-		}
-
 		public object GetRawValue()
 		{
 			return value;
