@@ -227,42 +227,48 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// These are the default mappings between C# datatypes and their equivalent database types. By default, only the
-		/// safe types are mapped, e.g. types that are non-ambiguously translated between C# and SQL Server.
+		/// Map between core CLR & ISqlTypes and their corresponding ITypeHandlers
 		/// </summary>
-		private static readonly Dictionary<Type, Func<object, SqlParameter>> typeHandlers = new Dictionary<Type, Func<object, SqlParameter>> {
-			{ typeof(short), x => SqlSmallInt.GetParameter((short)x) },
-			{ typeof(short?), x => SqlSmallInt.GetParameter((short?)x) },
-			{ typeof(byte), x => SqlTinyInt.GetParameter((byte)x) },
-			{ typeof(byte?), x => SqlTinyInt.GetParameter((byte?)x) },
-			{ typeof(int), x => SqlInt.GetParameter((int)x) },
-			{ typeof(int?), x => SqlInt.GetParameter((int?)x) },
-			{ typeof(long), x => SqlBigInt.GetParameter((long)x) },
-			{ typeof(long?), x => SqlBigInt.GetParameter((long?)x) },
-			{ typeof(bool), x => SqlBit.GetParameter((bool)x) },
-			{ typeof(bool?), x => SqlBit.GetParameter((bool?)x) },
-			{ typeof(Guid), x => SqlUniqueIdentifier.GetParameter((Guid)x) },
-			{ typeof(Guid?), x => SqlUniqueIdentifier.GetParameter((Guid?)x) }
+		internal static Dictionary<Type, ITypeHandler> ClrTypeHandlers = new Dictionary<Type, ITypeHandler> {
+			// Core CLR types
+			{ typeof(short), SqlSmallIntTypeHandler.GetInstance() },
+			{ typeof(int), SqlIntTypeHandler.GetInstance() },
+			{ typeof(int?), SqlIntTypeHandler.GetInstance() },
+			{ typeof(bool), SqlBitTypeHandler.GetInstance() },
+			{ typeof(bool?), SqlBitTypeHandler.GetInstance() },
+			{ typeof(byte), SqlTinyIntTypeHandler.GetInstance() },
+			{ typeof(byte?), SqlTinyIntTypeHandler.GetInstance() },
+			{ typeof(long), SqlBigIntTypeHandler.GetInstance() },
+			{ typeof(short?), SqlSmallIntTypeHandler.GetInstance() },
+			{ typeof(long?), SqlBigIntTypeHandler.GetInstance() },	
+			{ typeof(Guid), SqlUniqueIdentifierTypeHandler.GetInstance() },
+			{ typeof(Guid?), SqlUniqueIdentifierTypeHandler.GetInstance() },
+
+			// ISqlTypes
+			{ typeof(SqlBigInt), SqlBigIntTypeHandler.GetInstance() },  
+			{ typeof(SqlBit), SqlBitTypeHandler.GetInstance() },
+			{ typeof(SqlInt), SqlIntTypeHandler.GetInstance() },
+			{ typeof(SqlSmallInt), SqlSmallIntTypeHandler.GetInstance() },
+			{ typeof(SqlTinyInt), SqlTinyIntTypeHandler.GetInstance() },
+			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifierTypeHandler.GetInstance() },
+			{ typeof(SqlVarChar), SqlVarCharTypeHandler.GetInstance() },
+			{ typeof(SqlNVarChar), SqlNVarCharTypeHandler.GetInstance() }
 		};
 
 		/// <summary>
-		/// Map between standard CLR datatypes and their equivalent SqlDbType values.
+		/// Map between SqlDbType and their corresponding ITypeHandlers
 		/// </summary>
-		internal static readonly Dictionary<Type, SqlDbType> ClrToSqlDbTypeMap = new Dictionary<Type, SqlDbType> {
-			{ typeof(byte), SqlDbType.TinyInt },
-			{ typeof(byte?), SqlDbType.TinyInt },
-			{ typeof(short), SqlDbType.SmallInt },
-			{ typeof(short?), SqlDbType.SmallInt },
-			{ typeof(int), SqlDbType.Int },
-			{ typeof(int?), SqlDbType.Int },
-			{ typeof(long), SqlDbType.BigInt },
-			{ typeof(long?), SqlDbType.BigInt },
-			{ typeof(bool), SqlDbType.Bit },
-			{ typeof(bool?), SqlDbType.Bit },
-			{ typeof(Guid), SqlDbType.UniqueIdentifier },
-			{ typeof(Guid?), SqlDbType.UniqueIdentifier }
+		internal static Dictionary<SqlDbType, ITypeHandler> SqlDbTypeHandlers = new Dictionary<SqlDbType, ITypeHandler> {	
+			{ SqlDbType.BigInt, SqlBigIntTypeHandler.GetInstance() },  
+			{ SqlDbType.Bit, SqlBitTypeHandler.GetInstance() },		   
+			{ SqlDbType.Int, SqlIntTypeHandler.GetInstance() },
+			{ SqlDbType.NVarChar, SqlNVarCharTypeHandler.GetInstance() },
+			{ SqlDbType.SmallInt, SqlSmallIntTypeHandler.GetInstance() },
+			{ SqlDbType.TinyInt, SqlTinyIntTypeHandler.GetInstance() },
+			{ SqlDbType.UniqueIdentifier, SqlUniqueIdentifierTypeHandler.GetInstance() },
+			{ SqlDbType.VarChar, SqlVarCharTypeHandler.GetInstance() }
 		};
-
+		
 		/// <summary>
 		/// Loops through each property on the parameters object and adds it as a parameter to the SqlCommand.
 		/// </summary>
@@ -273,9 +279,8 @@ namespace unQuery
 			{
 				SqlParameter param;
 				object propValue = prop.GetValue(parameters);
-				Type propertyType = propValue != null ? propValue.GetType() : prop.PropertyType;
 				var sqlType = propValue as ISqlType;
-			
+				
 				try
 				{
 					// If it's a SqlType value, let it create the parameter for us. Otherwise, for native CLR types we'll
@@ -283,11 +288,11 @@ namespace unQuery
 					if (sqlType != null)
 						param = sqlType.GetParameter();
 					else
-						param = typeHandlers[propertyType](propValue);
+						param = ClrTypeHandlers[prop.PropertyType].CreateParamFromValue(propValue);
 				}
 				catch (KeyNotFoundException)
 				{
-					throw new TypeNotSupportedException(propertyType);
+					throw new TypeNotSupportedException(prop.PropertyType);
 				}
 
 				// Set parameter name

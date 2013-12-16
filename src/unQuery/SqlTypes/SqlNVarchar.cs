@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -55,6 +56,36 @@ namespace unQuery.SqlTypes
 				param.Size = size.Value;
 
 			return param;
+		}
+	}
+
+	internal class SqlNVarCharTypeHandler : ITypeHandler
+	{
+		private static readonly SqlNVarCharTypeHandler instance = new SqlNVarCharTypeHandler();
+
+		internal static SqlNVarCharTypeHandler GetInstance()
+		{
+			return instance;
+		}
+
+		public SqlParameter CreateParamFromValue(object value)
+		{
+			return SqlNVarChar.GetParameter((string)value);
+		}
+
+		public SqlDbType GetSqlDbType()
+		{
+			return SqlDbType.NVarChar;
+		}
+
+		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
+		{
+			sdr.SetString(ordinal, (string)value);
+		}
+
+		public SqlMetaData CreateSqlMetaData(string name)
+		{
+			return new SqlMetaData(name, SqlDbType.NVarChar, -1);
 		}
 	}
 }

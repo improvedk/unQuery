@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -22,9 +23,24 @@ namespace unQuery.SqlTypes
 			return GetParameter(value);
 		}
 
+		public SqlParameter CreateParamFromValue(object value)
+		{
+			return GetParameter((short)value);
+		}
+
 		public SqlDbType GetSqlDbType()
 		{
 			return SqlDbType.SmallInt;
+		}
+
+		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
+		{
+			sdr.SetInt16(ordinal, (short)value);
+		}
+
+		public SqlMetaData CreateSqlMetaData(string name)
+		{
+			return new SqlMetaData(name, SqlDbType.SmallInt);
 		}
 
 		public object GetRawValue()
@@ -38,6 +54,36 @@ namespace unQuery.SqlTypes
 				SqlDbType = SqlDbType.SmallInt,
 				Value = TypeHelper.GetDBNullableValue(value)
 			};
+		}
+	}
+
+	internal class SqlSmallIntTypeHandler : ITypeHandler
+	{
+		private static readonly SqlSmallIntTypeHandler instance = new SqlSmallIntTypeHandler();
+
+		internal static SqlSmallIntTypeHandler GetInstance()
+		{
+			return instance;
+		}
+
+		public SqlParameter CreateParamFromValue(object value)
+		{
+			return SqlSmallInt.GetParameter((short?)value);
+		}
+
+		public SqlDbType GetSqlDbType()
+		{
+			return SqlDbType.SmallInt;
+		}
+
+		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
+		{
+			sdr.SetInt16(ordinal, (short)value);
+		}
+
+		public SqlMetaData CreateSqlMetaData(string name)
+		{
+			return new SqlMetaData(name, SqlDbType.SmallInt);
 		}
 	}
 }

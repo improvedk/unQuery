@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -38,6 +39,36 @@ namespace unQuery.SqlTypes
 				SqlDbType = SqlDbType.TinyInt,
 				Value = TypeHelper.GetDBNullableValue(value)
 			};
+		}
+	}
+
+	internal class SqlTinyIntTypeHandler : ITypeHandler
+	{
+		private static readonly SqlTinyIntTypeHandler instance = new SqlTinyIntTypeHandler();
+
+		internal static SqlTinyIntTypeHandler GetInstance()
+		{
+			return instance;
+		}
+
+		public SqlParameter CreateParamFromValue(object value)
+		{
+			return SqlTinyInt.GetParameter((byte?)value);
+		}
+
+		public SqlDbType GetSqlDbType()
+		{
+			return SqlDbType.TinyInt;
+		}
+
+		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
+		{
+			sdr.SetByte(ordinal, (byte)value);
+		}
+
+		public SqlMetaData CreateSqlMetaData(string name)
+		{
+			return new SqlMetaData(name, SqlDbType.TinyInt);
 		}
 	}
 }

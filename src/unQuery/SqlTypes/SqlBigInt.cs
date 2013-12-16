@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
@@ -38,6 +39,36 @@ namespace unQuery.SqlTypes
 				SqlDbType = SqlDbType.BigInt,
 				Value = TypeHelper.GetDBNullableValue(value)
 			};
+		}
+	}
+
+	internal class SqlBigIntTypeHandler : ITypeHandler
+	{
+		private static readonly SqlBigIntTypeHandler instance = new SqlBigIntTypeHandler();
+
+		internal static SqlBigIntTypeHandler GetInstance()
+		{
+			return instance;
+		}
+
+		public SqlParameter CreateParamFromValue(object value)
+		{
+			return SqlBigInt.GetParameter((long?)value);
+		}
+
+		public SqlDbType GetSqlDbType()
+		{
+			return SqlDbType.BigInt;
+		}
+
+		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
+		{
+			sdr.SetInt64(ordinal, (long)value);
+		}
+
+		public SqlMetaData CreateSqlMetaData(string name)
+		{
+			return new SqlMetaData(name, SqlDbType.BigInt);
 		}
 	}
 }
