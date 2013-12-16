@@ -211,8 +211,8 @@ namespace unQuery.Tests
 		public void GetEnumerator_VarChar()
 		{
 			var result = new StructuredDynamicYielder(new[] { new {
-				A = Col.NVarChar("A"),
-				B = Col.NVarChar(null)
+				A = Col.VarChar("A"),
+				B = Col.VarChar(null)
 			}}).First();
 
 			Assert.AreEqual(2, result.FieldCount);

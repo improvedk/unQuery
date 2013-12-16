@@ -42,7 +42,7 @@ namespace unQuery
 	}
 
 	/// <summary>
-	/// Thrown if a result row contains two columns with the same name
+	/// Thrown if a result row contains two columns with the same name.
 	/// </summary>
 	public class DuplicateColumnException : Exception
 	{
@@ -51,7 +51,7 @@ namespace unQuery
 	}
 
 	/// <summary>
-	/// Thrown if a result contains an unnamed column
+	/// Thrown if a result contains an unnamed column.
 	/// </summary>
 	public class UnnamedColumnException : Exception
 	{
@@ -60,12 +60,21 @@ namespace unQuery
 	}
 
 	/// <summary>
-	/// Thrown if trying to add a parameter to a SqlCommand that already contains a parameter
+	/// Thrown if trying to add a parameter to a SqlCommand that already contains a parameter.
 	/// with the same name.
 	/// </summary>
 	public class DuplicateParameterException : Exception
 	{
 		public DuplicateParameterException(string name) : base("Parameter '" + name + "' has already been added.")
+		{ }
+	}
+
+	/// <summary>
+	/// Thrown if properties are expected on an object, but none are present.
+	/// </summary>
+	public class ObjectHasNoPropertiesException : Exception
+	{
+		public ObjectHasNoPropertiesException(string message) : base(message)
 		{ }
 	}
 }

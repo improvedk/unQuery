@@ -34,6 +34,10 @@ namespace unQuery
 					properties = value.GetType().GetProperties();
 					schema = new SqlMetaData[properties.Length];
 
+					// If no properties are found on the provided parameter object, then there's no schema & value to read
+					if (schema.Length == 0)
+						throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
+
 					int keyCount = 0;
 					foreach (PropertyInfo prop in properties)
 					{
@@ -41,12 +45,29 @@ namespace unQuery
 						var propSqlType = propValue as ISqlType;
 						
 						if (propSqlType != null)
-							schema[keyCount++] = new SqlMetaData(prop.Name, propSqlType.GetSqlDbType());
+						{
+							if (propSqlType is SqlVarChar || propSqlType is SqlNVarChar)
+								schema[keyCount++] = new SqlMetaData(prop.Name, propSqlType.GetSqlDbType(), -1);
+							else
+								schema[keyCount++] = new SqlMetaData(prop.Name, propSqlType.GetSqlDbType());
+						}
 						else
 						{
 							try
 							{
-								schema[keyCount++] = new SqlMetaData(prop.Name, unQueryDB.ClrToSqlDbTypeMap[prop.PropertyType]);
+								SqlDbType dbType = unQueryDB.ClrToSqlDbTypeMap[prop.PropertyType];
+
+								switch (dbType)
+								{
+									case SqlDbType.VarChar:
+									case SqlDbType.NVarChar:
+										schema[keyCount++] = new SqlMetaData(prop.Name, dbType, -1);
+										break;
+
+									default:
+										schema[keyCount++] = new SqlMetaData(prop.Name, dbType);
+										break;
+								}
 							}
 							catch (KeyNotFoundException)
 							{
@@ -97,6 +118,11 @@ namespace unQuery
 
 							case SqlDbType.UniqueIdentifier:
 								sdr.SetGuid(i, (Guid)columnValue);
+								break;
+
+							case SqlDbType.NVarChar:
+							case SqlDbType.VarChar:
+								sdr.SetString(i, (string)columnValue);
 								break;
 
 							default:

@@ -13,8 +13,29 @@ namespace unQuery.Tests
 		{
 			// Non-transactional setup
 			DB.Execute(@"
-				IF TYPE_ID('MyType') IS NOT NULL DROP TYPE MyType
-				CREATE TYPE MyType AS Table (A int, B bit)
+				IF TYPE_ID('ListOfTinyInts') IS NOT NULL DROP TYPE ListOfTinyInts
+				CREATE TYPE ListOfTinyInts AS Table (A tinyint NULL)
+
+				IF TYPE_ID('ListOfSmallInts') IS NOT NULL DROP TYPE ListOfSmallInts
+				CREATE TYPE ListOfSmallInts AS Table (A smallint NULL)
+
+				IF TYPE_ID('ListOfInts') IS NOT NULL DROP TYPE ListOfInts
+				CREATE TYPE ListOfInts AS Table (A int NULL)
+
+				IF TYPE_ID('ListOfBigInts') IS NOT NULL DROP TYPE ListOfBigInts
+				CREATE TYPE ListOfBigInts AS Table (A bigint NULL)
+
+				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
+				CREATE TYPE ListOfBits AS Table (A bit NULL)
+
+				IF TYPE_ID('ListOfNVarChars') IS NOT NULL DROP TYPE ListOfNVarChars
+				CREATE TYPE ListOfNVarChars AS Table (A nvarchar(256) NULL)
+
+				IF TYPE_ID('ListOfVarChars') IS NOT NULL DROP TYPE ListOfVarChars
+				CREATE TYPE ListOfVarChars AS Table (A varchar(256) NULL)
+
+				IF TYPE_ID('ListOfUniqueIdentifiers') IS NOT NULL DROP TYPE ListOfUniqueIdentifiers
+				CREATE TYPE ListOfUniqueIdentifiers AS Table (A uniqueidentifier NULL)
 			");
 
 			ts = new TransactionScope();
