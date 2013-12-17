@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.SqlServer.Server;
+using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -46,6 +47,47 @@ namespace unQuery.Tests.SqlTypes
 		public void GetRawValue()
 		{
 			Assert.AreEqual("Test", new SqlNVarChar("Test").GetRawValue());
+		}
+
+		[Test]
+		public void TypeHandler_GetInstance()
+		{
+			Assert.NotNull(SqlNVarCharTypeHandler.GetInstance());
+		}
+
+		[Test]
+		public void TypeHandler_CreateParamFromValue()
+		{
+			var instance = SqlNVarCharTypeHandler.GetInstance();
+			TestHelper.AssertSqlParameter(instance.CreateParamFromValue("язы́к"), SqlDbType.NVarChar, null, "язы́к");
+			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.NVarChar, null, DBNull.Value);
+		}
+
+		[Test]
+		public void TypeHandler_GetSqlDbType()
+		{
+			var instance = SqlNVarCharTypeHandler.GetInstance();
+			Assert.AreEqual(SqlDbType.NVarChar, instance.GetSqlDbType());
+		}
+
+		[Test]
+		public void TypeHandler_CreateSqlMetaData()
+		{
+			var instance = SqlNVarCharTypeHandler.GetInstance();
+
+			var metaData = instance.CreateSqlMetaData("Test");
+			Assert.AreEqual("Test", metaData.Name);
+			Assert.AreEqual(SqlDbType.NVarChar, metaData.SqlDbType);
+		}
+
+		[Test]
+		public void TypeHandler_SetDataRecordValue()
+		{
+			var instance = SqlNVarCharTypeHandler.GetInstance();
+
+			var record = new SqlDataRecord(new SqlMetaData("A", SqlDbType.NVarChar, -1));
+			instance.SetDataRecordValue(0, record, "язы́к");
+			Assert.AreEqual("язы́к", record.GetValue(0));
 		}
 	}
 }

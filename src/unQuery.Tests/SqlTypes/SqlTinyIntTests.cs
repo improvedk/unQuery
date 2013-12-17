@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.SqlServer.Server;
+using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -44,6 +45,47 @@ namespace unQuery.Tests.SqlTypes
 		public void GetRawValue()
 		{
 			Assert.AreEqual(1, new SqlTinyInt(1).GetRawValue());
+		}
+
+		[Test]
+		public void TypeHandler_GetInstance()
+		{
+			Assert.NotNull(SqlTinyIntTypeHandler.GetInstance());
+		}
+
+		[Test]
+		public void TypeHandler_CreateParamFromValue()
+		{
+			var instance = SqlTinyIntTypeHandler.GetInstance();
+			TestHelper.AssertSqlParameter(instance.CreateParamFromValue((byte)5), SqlDbType.TinyInt, null, (byte)5);
+			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.TinyInt, null, DBNull.Value);
+		}
+
+		[Test]
+		public void TypeHandler_GetSqlDbType()
+		{
+			var instance = SqlTinyIntTypeHandler.GetInstance();
+			Assert.AreEqual(SqlDbType.TinyInt, instance.GetSqlDbType());
+		}
+
+		[Test]
+		public void TypeHandler_CreateSqlMetaData()
+		{
+			var instance = SqlTinyIntTypeHandler.GetInstance();
+
+			var metaData = instance.CreateSqlMetaData("Test");
+			Assert.AreEqual("Test", metaData.Name);
+			Assert.AreEqual(SqlDbType.TinyInt, metaData.SqlDbType);
+		}
+
+		[Test]
+		public void TypeHandler_SetDataRecordValue()
+		{
+			var instance = SqlTinyIntTypeHandler.GetInstance();
+
+			var record = new SqlDataRecord(new SqlMetaData("A", SqlDbType.TinyInt));
+			instance.SetDataRecordValue(0, record, (byte)5);
+			Assert.AreEqual((byte)5, record.GetValue(0));
 		}
 	}
 }

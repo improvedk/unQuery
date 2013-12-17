@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.SqlServer.Server;
+using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -36,6 +37,47 @@ namespace unQuery.Tests.SqlTypes
 		public void GetRawValue()
 		{
 			Assert.AreEqual(true, new SqlBit(true).GetRawValue());
+		}
+
+		[Test]
+		public void TypeHandler_GetInstance()
+		{
+			Assert.NotNull(SqlBitTypeHandler.GetInstance());
+		}
+
+		[Test]
+		public void TypeHandler_CreateParamFromValue()
+		{
+			var instance = SqlBitTypeHandler.GetInstance();
+			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(true), SqlDbType.Bit, null, true);
+			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.Bit, null, DBNull.Value);
+		}
+
+		[Test]
+		public void TypeHandler_GetSqlDbType()
+		{
+			var instance = SqlBitTypeHandler.GetInstance();
+			Assert.AreEqual(SqlDbType.Bit, instance.GetSqlDbType());
+		}
+
+		[Test]
+		public void TypeHandler_CreateSqlMetaData()
+		{
+			var instance = SqlBitTypeHandler.GetInstance();
+
+			var metaData = instance.CreateSqlMetaData("Test");
+			Assert.AreEqual("Test", metaData.Name);
+			Assert.AreEqual(SqlDbType.Bit, metaData.SqlDbType);
+		}
+
+		[Test]
+		public void TypeHandler_SetDataRecordValue()
+		{
+			var instance = SqlBitTypeHandler.GetInstance();
+
+			var record = new SqlDataRecord(new SqlMetaData("A", SqlDbType.Bit));
+			instance.SetDataRecordValue(0, record, false);
+			Assert.AreEqual(false, record.GetValue(0));
 		}
 	}
 }
