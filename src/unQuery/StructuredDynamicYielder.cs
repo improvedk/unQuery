@@ -37,13 +37,13 @@ namespace unQuery
 			SqlMetaData[] schema = null;
 			PropertyInfo[] properties = null;
 
-			foreach (dynamic value in values)
+			foreach (object value in values)
 			{
 				// For the very first value, we'll first have to create the schema as an array of SqlMetaData
 				if (sdr == null)
 				{
 					// To ensure we get properties in the declaration order, we need to sort by the MetaDataToken
-					properties = ((PropertyInfo[])value.GetType().GetProperties()).OrderBy(x => x.MetadataToken).ToArray();
+					properties = value.GetType().GetProperties().OrderBy(x => x.MetadataToken).ToArray();
 					schema = new SqlMetaData[properties.Length];
 					
 					// If no properties are found on the provided parameter object, then there's no schema & value to read
