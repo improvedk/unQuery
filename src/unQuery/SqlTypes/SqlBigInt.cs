@@ -28,7 +28,7 @@ namespace unQuery.SqlTypes
 			return value;
 		}
 
-		public static SqlParameter GetParameter(long? value)
+		internal static SqlParameter GetParameter(long? value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.BigInt,

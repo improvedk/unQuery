@@ -29,7 +29,7 @@ namespace unQuery.SqlTypes
 			return value;
 		}
 
-		public static SqlParameter GetParameter(Guid? value)
+		internal static SqlParameter GetParameter(Guid? value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.UniqueIdentifier,

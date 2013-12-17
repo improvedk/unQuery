@@ -26,7 +26,7 @@ namespace unQuery.SqlTypes
 			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
 		}
 
-		public static SqlParameter GetParameter(string typeName, IEnumerable<dynamic> values)
+		internal static SqlParameter GetParameter(string typeName, IEnumerable<dynamic> values)
 		{
 			object value;
 

@@ -10,7 +10,7 @@ namespace unQuery
 	/// Custom dynamic implementation that stores a single row, with a reference to a common field map so multiple rows don't have
 	/// to store the same schema.
 	/// </summary>
-	public class DynamicFieldMapRow : IDynamicMetaObjectProvider
+	internal class DynamicFieldMapRow : IDynamicMetaObjectProvider
 	{
 		// This stores the raw column values by ordinal index
 		private readonly object[] values;
@@ -18,7 +18,7 @@ namespace unQuery
 		// The field map stores the <ColumnName, ColumnOrdinal> map, allowing us to retrieve the value from the values array
 		private readonly Dictionary<string, int> fieldMap;
 
-		public DynamicFieldMapRow(object[] values, Dictionary<string, int> fieldMap)
+		internal DynamicFieldMapRow(object[] values, Dictionary<string, int> fieldMap)
 		{
 			this.values = values;
 			this.fieldMap = fieldMap;
@@ -61,7 +61,7 @@ namespace unQuery
 	internal class DynamicFieldMapRowMetaObject : DynamicMetaObject
 	{
 		private static readonly MethodInfo getColumnValueMethod = typeof(DynamicFieldMapRow).GetMethod("GetColumnValue");
-
+		
 		internal DynamicFieldMapRowMetaObject(Expression parameter, DynamicFieldMapRow value)
 			: base(parameter, BindingRestrictions.Empty, value)
 		{ }

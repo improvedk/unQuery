@@ -28,7 +28,7 @@ namespace unQuery.SqlTypes
 			return value;
 		}
 
-		public static SqlParameter GetParameter(bool? value)
+		internal static SqlParameter GetParameter(bool? value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.Bit,

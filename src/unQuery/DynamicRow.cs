@@ -7,11 +7,11 @@ namespace unQuery
 	/// <summary>
 	/// Custom dynamic implementation for storing a single row in an internal dictionary.
 	/// </summary>
-	public class DynamicRow : DynamicObject
+	internal class DynamicRow : DynamicObject
 	{
 		private readonly Dictionary<string, object> valuesDict;
 
-		public DynamicRow(Dictionary<string, object> valuesDict)
+		internal DynamicRow(Dictionary<string, object> valuesDict)
 		{
 			this.valuesDict = valuesDict;
 		}

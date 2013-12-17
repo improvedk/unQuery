@@ -28,7 +28,7 @@ namespace unQuery.SqlTypes
 			return value;
 		}
 
-		public static SqlParameter GetParameter(short? value)
+		internal static SqlParameter GetParameter(short? value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.SmallInt,

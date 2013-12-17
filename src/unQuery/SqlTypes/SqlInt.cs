@@ -28,7 +28,7 @@ namespace unQuery.SqlTypes
 			return value;
 		}
 
-		public static SqlParameter GetParameter(int? value)
+		internal static SqlParameter GetParameter(int? value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.Int,

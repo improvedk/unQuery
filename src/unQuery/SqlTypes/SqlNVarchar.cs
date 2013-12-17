@@ -35,12 +35,12 @@ namespace unQuery.SqlTypes
 			return value;
 		}
 
-		public static SqlParameter GetParameter(string value)
+		internal static SqlParameter GetParameter(string value)
 		{
 			return GetParameter(value, null);
 		}
 
-		public static SqlParameter GetParameter(string value, int? size)
+		internal static SqlParameter GetParameter(string value, int? size)
 		{
 			var param = new SqlParameter {
 				SqlDbType = SqlDbType.NVarChar,

@@ -2,7 +2,7 @@
 
 namespace unQuery.SqlTypes
 {
-	public interface ISqlType
+	internal interface ISqlType
 	{
 		SqlParameter GetParameter();
 		object GetRawValue();
