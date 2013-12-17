@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using unQuery.SqlTypes;
 
@@ -41,9 +42,10 @@ namespace unQuery
 				// For the very first value, we'll first have to create the schema as an array of SqlMetaData
 				if (sdr == null)
 				{
-					properties = value.GetType().GetProperties();
+					// To ensure we get properties in the declaration order, we need to sort by the MetaDataToken
+					properties = ((PropertyInfo[])value.GetType().GetProperties()).OrderBy(x => x.MetadataToken).ToArray();
 					schema = new SqlMetaData[properties.Length];
-
+					
 					// If no properties are found on the provided parameter object, then there's no schema & value to read
 					if (schema.Length == 0)
 						throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
