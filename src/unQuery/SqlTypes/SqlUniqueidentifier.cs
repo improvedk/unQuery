@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlUniqueIdentifier : ISqlType
+	public class SqlUniqueIdentifier : SqlType, ISqlType
 	{
 		private readonly Guid? value;
 
@@ -33,7 +33,7 @@ namespace unQuery.SqlTypes
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.UniqueIdentifier,
-				Value = TypeHelper.GetDBNullableValue(value)
+				Value = GetDBNullableValue(value)
 			};
 		}
 	}

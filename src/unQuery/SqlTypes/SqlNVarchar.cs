@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlNVarChar : ISqlType
+	public class SqlNVarChar : SqlType, ISqlType
 	{
 		private readonly string value;
 		private readonly int? size;
@@ -44,7 +44,7 @@ namespace unQuery.SqlTypes
 		{
 			var param = new SqlParameter {
 				SqlDbType = SqlDbType.NVarChar,
-				Value = TypeHelper.GetDBNullableValue(value)
+				Value = GetDBNullableValue(value)
 			};
 
 			if (size != null)

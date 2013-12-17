@@ -2,7 +2,7 @@
 
 namespace unQuery.SqlTypes
 {
-	internal static class TypeHelper
+	public abstract class SqlType
 	{
 		internal static object GetDBNullableValue(object value)
 		{

@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlSmallInt : ISqlType
+	public class SqlSmallInt : SqlType, ISqlType
 	{
 		private readonly short? value;
 
@@ -32,7 +32,7 @@ namespace unQuery.SqlTypes
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.SmallInt,
-				Value = TypeHelper.GetDBNullableValue(value)
+				Value = GetDBNullableValue(value)
 			};
 		}
 	}

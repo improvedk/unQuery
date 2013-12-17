@@ -68,7 +68,7 @@
     <Compile Include="SqlTypes\SqlVarcharTests.cs" />
     <Compile Include="SqlTypes\SqlNVarcharTests.cs" />
     <Compile Include="GetScalarTests.cs" />
-    <Compile Include="SqlTypes\TypeHelperTests.cs" />
+    <Compile Include="SqlTypes\SqlTypeTests.cs" />
     <Compile Include="StructuredDynamicYielderTests.cs" />
     <Compile Include="TestFixture.cs" />
     <Compile Include="TestHelper.cs" />
