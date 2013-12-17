@@ -18,12 +18,21 @@ namespace unQuery
 		// The field map stores the <ColumnName, ColumnOrdinal> map, allowing us to retrieve the value from the values array
 		private readonly Dictionary<string, int> fieldMap;
 
+		/// <summary>
+		/// Instantiates a DynamicFieldMapRow with the specified values and field map
+		/// </summary>
+		/// <param name="values">The raw array of values</param>
+		/// <param name="fieldMap">A dictionary that maps a column name to an array index where the value is stored</param>
 		internal DynamicFieldMapRow(object[] values, Dictionary<string, int> fieldMap)
 		{
 			this.values = values;
 			this.fieldMap = fieldMap;
 		}
 
+		/// <summary>
+		/// Returns the value for a specific column
+		/// </summary>
+		/// <param name="name">The name of the column</param>
 		public object GetColumnValue(string name)
 		{
 			// Let's take advantage of the fact that 99.9% of column access will succeed. Rather than expecting failure,
@@ -38,6 +47,9 @@ namespace unQuery
 			}
 		}
 
+		/// <summary>
+		/// Allows casting Dictionary<string, object> into a DynamicFieldMapRow directly
+		/// </summary>
 		public static explicit operator Dictionary<string, object>(DynamicFieldMapRow row)
 		{
 			var dict = new Dictionary<string, object>(row.values.Length);
@@ -60,12 +72,19 @@ namespace unQuery
 	/// </summary>
 	internal class DynamicFieldMapRowMetaObject : DynamicMetaObject
 	{
+		/// <summary>
+		/// Static reference to the GetColumnValue method which retrieves the value of a specific column. This is the
+		/// one that'll be called when we access dynamic properties.
+		/// </summary>
 		private static readonly MethodInfo getColumnValueMethod = typeof(DynamicFieldMapRow).GetMethod("GetColumnValue");
 		
 		internal DynamicFieldMapRowMetaObject(Expression parameter, DynamicFieldMapRow value)
 			: base(parameter, BindingRestrictions.Empty, value)
 		{ }
 
+		/// <summary>
+		/// This wires up the dynamic property expressions to the GetColumnValue method
+		/// </summary>
 		public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
 		{
 			var parameters = new Expression[] { Expression.Constant(binder.Name) };
