@@ -1,6 +1,7 @@
 ﻿using Microsoft.SqlServer.Server;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,12 +9,19 @@ using unQuery.SqlTypes;
 
 namespace unQuery
 {
+	internal class CachedType
+	{
+		internal SqlMetaData[] Schema;
+		internal PropertyInfo[] Properties;
+	}
+
 	/// <summary>
 	/// Datasource that yields SqlDataRecords for efficient streaming of table valued parameter data to SQL Server.
 	/// </summary>
 	internal class StructuredDynamicYielder : IEnumerable<SqlDataRecord>
 	{
 		private readonly IEnumerable<object> values;
+		private static readonly ConcurrentDictionary<Type, CachedType> typeCache = new ConcurrentDictionary<Type, CachedType>();
 
 		/// <summary>
 		/// Instantiates a StructedDynamicYielder that will efficiently stream the values to SQL Server.
@@ -34,67 +42,78 @@ namespace unQuery
 		public IEnumerator<SqlDataRecord> GetEnumerator()
 		{
 			SqlDataRecord sdr = null;
-			SqlMetaData[] schema = null;
-			PropertyInfo[] properties = null;
+			object[] recordValues = null;
+			CachedType cachedType = null;
 
 			foreach (object value in values)
 			{
 				// For the very first value, we'll first have to create the schema as an array of SqlMetaData
 				if (sdr == null)
 				{
-					// To ensure we get properties in the declaration order, we need to sort by the MetaDataToken
-					properties = value.GetType().GetProperties().OrderBy(x => x.MetadataToken).ToArray();
-					schema = new SqlMetaData[properties.Length];
-					
-					// If no properties are found on the provided parameter object, then there's no schema & value to read
-					if (schema.Length == 0)
-						throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
+					var valueType = value.GetType();
 
-					// For each property, we'll add it as a SqlMetaData to the schema array. We'll let the ISqlType create
-					// the actual SqlMetaData value.
-					int index = 0;
-					foreach (PropertyInfo prop in properties)
+					// If type schema is not cached, we'll have to create it
+					if (!typeCache.TryGetValue(valueType, out cachedType))
 					{
-						try
-						{
-							schema[index++] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateSqlMetaData(prop.Name);
-						}
-						catch (KeyNotFoundException)
-						{
-							throw new TypeNotSupportedException(prop.PropertyType);
-						}
-					}
+						// To ensure we get properties in the declaration order, we need to sort by the MetaDataToken
+						PropertyInfo[] properties = value.GetType().GetProperties().OrderBy(x => x.MetadataToken).ToArray();
+						SqlMetaData[] schema = new SqlMetaData[properties.Length];
 
-					// This is now the base SqlDataRecord that contains the schema without values. We'll be reusing this
-					// while constantly overwriting the values, for each record.
-					sdr = new SqlDataRecord(schema);
+						// If no properties are found on the provided parameter object, then there's no schema & value to read
+						if (schema.Length == 0)
+							throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
+
+						// For each property, we'll add it as a SqlMetaData to the schema array. We'll let the ISqlType create
+						// the actual SqlMetaData value.
+						int index = 0;
+						foreach (PropertyInfo prop in properties)
+						{
+							try
+							{
+								schema[index++] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateSqlMetaData(prop.Name);
+							}
+							catch (KeyNotFoundException)
+							{
+								throw new TypeNotSupportedException(prop.PropertyType);
+							}
+						}
+
+						// Cache the new schema
+						cachedType = new CachedType {
+							Properties = properties,
+							Schema = schema
+						};
+						typeCache.AddOrUpdate(valueType, cachedType, (k, v) => v);
+
+						// This is now the base SqlDataRecord that contains the schema without values. We'll be reusing this
+						// while constantly overwriting the values, for each record.
+						sdr = new SqlDataRecord(schema);
+					}
+					else
+						sdr = new SqlDataRecord(cachedType.Schema);
+
+					// This is the array that'll be used to efficiently set all values on the data record at once
+					recordValues = new object[sdr.FieldCount];
 				}
 
 				// Populate values & yield
-				for (int i = 0; i < schema.Length; i++)
+				for (int i = 0; i < recordValues.Length; i++)
 				{
-					var col = schema[i];
-					var prop = properties[i];
+					var prop = cachedType.Properties[i];
 					var columnValue = prop.GetValue(value);
 					var columnValueSqlType = columnValue as ISqlType;
 
 					// If column value is an ISqlType, get the raw value rather than the ISqlType itself
 					if (columnValueSqlType != null)
-						columnValue = columnValueSqlType.GetRawValue();
+						recordValues[i] = columnValueSqlType.GetRawValue();
+					else
+						recordValues[i] = columnValue;
 
-					try
-					{
-						// If the value is null, we'll have to write a DBNull and if it's not, we'll let the TypeHandler set the value
-						if (columnValue == null)
-							sdr.SetDBNull(i);
-						else
-							unQueryDB.SqlDbTypeHandlers[col.SqlDbType].SetDataRecordValue(i, sdr, columnValue);
-					}
-					catch (KeyNotFoundException)
-					{
-						throw new TypeNotSupportedException(col.SqlDbType.ToString());
-					}
+					if (recordValues[i] == null)
+						recordValues[i] = DBNull.Value;
 				}
+
+				sdr.SetValues(recordValues);
 
 				// Once the values have been overwritten, we can now yield it before rewriting the values again
 				yield return sdr;
