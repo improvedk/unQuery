@@ -56,11 +56,6 @@ namespace unQuery.SqlTypes
 			return SqlDbType.SmallInt;
 		}
 
-		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
-		{
-			sdr.SetInt16(ordinal, (short)value);
-		}
-
 		public SqlMetaData CreateSqlMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.SmallInt);

@@ -57,11 +57,6 @@ namespace unQuery.SqlTypes
 			return SqlDbType.UniqueIdentifier;
 		}
 
-		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
-		{
-			sdr.SetGuid(ordinal, (Guid)value);
-		}
-
 		public SqlMetaData CreateSqlMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.UniqueIdentifier);

@@ -56,11 +56,6 @@ namespace unQuery.SqlTypes
 			return SqlDbType.BigInt;
 		}
 
-		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
-		{
-			sdr.SetInt64(ordinal, (long)value);
-		}
-
 		public SqlMetaData CreateSqlMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.BigInt);

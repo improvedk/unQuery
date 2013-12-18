@@ -56,11 +56,6 @@ namespace unQuery.SqlTypes
 			return SqlDbType.Bit;
 		}
 
-		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
-		{
-			sdr.SetBoolean(ordinal, (bool)value);
-		}
-
 		public SqlMetaData CreateSqlMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.Bit);

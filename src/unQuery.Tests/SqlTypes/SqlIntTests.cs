@@ -76,15 +76,5 @@ namespace unQuery.Tests.SqlTypes
 			Assert.AreEqual("Test", metaData.Name);
 			Assert.AreEqual(SqlDbType.Int, metaData.SqlDbType);
 		}
-
-		[Test]
-		public void TypeHandler_SetDataRecordValue()
-		{
-			var instance = SqlIntTypeHandler.GetInstance();
-
-			var record = new SqlDataRecord(new SqlMetaData("A", SqlDbType.Int));
-			instance.SetDataRecordValue(0, record, 5);
-			Assert.AreEqual(5, record.GetValue(0));
-		}
 	}
 }

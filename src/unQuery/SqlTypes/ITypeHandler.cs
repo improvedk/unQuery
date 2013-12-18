@@ -8,7 +8,6 @@ namespace unQuery.SqlTypes
 	{
 		SqlParameter CreateParamFromValue(object value);
 		SqlDbType GetSqlDbType();
-		void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value);
 		SqlMetaData CreateSqlMetaData(string name);
 	}
 }

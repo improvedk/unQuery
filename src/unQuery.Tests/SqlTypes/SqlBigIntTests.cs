@@ -76,15 +76,5 @@ namespace unQuery.Tests.SqlTypes
 			Assert.AreEqual("Test", metaData.Name);
 			Assert.AreEqual(SqlDbType.BigInt, metaData.SqlDbType);
 		}
-
-		[Test]
-		public void TypeHandler_SetDataRecordValue()
-		{
-			var instance = SqlBigIntTypeHandler.GetInstance();
-
-			var record = new SqlDataRecord(new SqlMetaData("A", SqlDbType.BigInt));
-			instance.SetDataRecordValue(0, record, 5L);
-			Assert.AreEqual(5L, record.GetValue(0));
-		}
 	}
 }

@@ -72,12 +72,7 @@ namespace unQuery.SqlTypes
 		{
 			return SqlDbType.NVarChar;
 		}
-
-		public void SetDataRecordValue(int ordinal, SqlDataRecord sdr, object value)
-		{
-			sdr.SetString(ordinal, (string)value);
-		}
-
+		
 		public SqlMetaData CreateSqlMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.NVarChar, -1);
