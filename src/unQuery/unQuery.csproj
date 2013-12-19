@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB.cs" />
-    <Compile Include="DynamicRow.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\Col.cs" />
@@ -58,7 +57,7 @@
     <Compile Include="SqlTypes\SqlTinyInt.cs" />
     <Compile Include="SqlTypes\SqlBit.cs" />
     <Compile Include="SqlTypes\ISqlType.cs" />
-    <Compile Include="DynamicFieldMapRow.cs" />
+    <Compile Include="DynamicRow.cs" />
     <Compile Include="StructuredDynamicYielder.cs" />
     <Compile Include="unQueryDB.cs" />
   </ItemGroup>

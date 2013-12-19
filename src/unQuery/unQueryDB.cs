@@ -69,10 +69,7 @@ namespace unQuery
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow);
 
-				if (!reader.Read())
-					return null;
-
-				return MapReaderRowToObject(reader, reader.VisibleFieldCount);
+				return MapReaderRowsToObject(reader).SingleOrDefault();
 			}
 		}
 
@@ -157,36 +154,6 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Maps a single row from a SqlDataReader into a dynamic object. This method is optimized for just a single row.
-		/// </summary>
-		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
-		/// <param name="visibleFieldCount">The number of visible columns in the datareader.</param>
-		internal static dynamic MapReaderRowToObject(SqlDataReader reader, int visibleFieldCount)
-		{
-			var obj = new Dictionary<string, object>(visibleFieldCount);
-
-			for (int i = 0; i < visibleFieldCount; i++)
-			{
-				object value = reader[i];
-				string fieldName = reader.GetName(i);
-
-				if (string.IsNullOrWhiteSpace(fieldName))
-					throw new UnnamedColumnException(i);
-
-				try
-				{
-					obj.Add(reader.GetName(i), value is DBNull ? null : value);
-				}
-				catch (ArgumentException)
-				{
-					throw new DuplicateColumnException(fieldName);
-				}
-			}
-
-			return new DynamicRow(obj);
-		}
-
-		/// <summary>
 		/// Maps any number of rows to dynamic objects. This method is optimized for returning many rows.
 		/// </summary>
 		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
@@ -222,7 +189,7 @@ namespace unQuery
 					if (obj[i] is DBNull)
 						obj[i] = null;
 				
-				yield return new DynamicFieldMapRow(obj, fieldMap);
+				yield return new DynamicRow(obj, fieldMap);
 			}
 		}
 

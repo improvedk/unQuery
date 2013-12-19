@@ -10,34 +10,44 @@ namespace unQuery.Tests
 		[Test]
 		public void CantSetValuesExplicitly()
 		{
-			var dict = new Dictionary<string, object>();
-			dynamic row = new DynamicRow(dict);
+			var map = new Dictionary<string, int> {
+				{ "A", 0 },
+				{ "B", 1 }
+			};
+			var obj = new object[] { "Xyz", 25 };
+			dynamic row = new DynamicRow(obj, map);
 
-			Assert.Throws<InvalidOperationException>(() => row.Test = "abc");
+			Assert.Throws<InvalidOperationException>(() => row.B = "abc");
 		}
 
 		[Test]
 		public void CanGetValues()
 		{
-			var dict = new Dictionary<string, object>();
-			dict["Test"] = "abc";
+			var map = new Dictionary<string, int> {
+				{ "A", 0 },
+				{ "B", 1 }
+			};
+			var obj = new object[] { "Xyz", 25 };
+			dynamic row = new DynamicRow(obj, map);
 
-			dynamic row = new DynamicRow(dict);
-
-			Assert.AreEqual("abc", row.Test);
+			Assert.AreEqual("Xyz", row.A);
+			Assert.AreEqual(25, row.B);
 		}
 
 		[Test]
 		public void ColumnDoesNotExist()
 		{
-			var dict = new Dictionary<string, object>();
-			dict["Test"] = "abc";
+			var map = new Dictionary<string, int> {
+				{ "A", 0 }
+			};
+			var obj = new object[] { "Xyz" };
+			dynamic row = new DynamicRow(obj, map);
 
-			dynamic row = new DynamicRow(dict);
+			Assert.AreEqual("Xyz", row.A);
 
 			object dummy;
-			Assert.AreEqual("abc", row.Test);
-			Assert.Throws<ColumnDoesNotExistException>(() => dummy = row.DoesNotExist);
+			Assert.AreEqual("Xyz", row.A);
+			Assert.Throws<ColumnDoesNotExistException>(() => dummy = row.B);
 		}
 	}
 }
