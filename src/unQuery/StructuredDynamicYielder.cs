@@ -36,9 +36,9 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Enumerates all the source data and yields populated SqlDataRecords based on the source data.
+		/// Enumerates all the source data and yields populated SqlDataRecords based on the source data. Right now this is based off of
+		/// standard reflection. This needs to be optimized to avoid the reflection hit.
 		/// </summary>
-		/// <returns></returns>
 		public IEnumerator<SqlDataRecord> GetEnumerator()
 		{
 			SqlDataRecord sdr = null;
@@ -105,12 +105,9 @@ namespace unQuery
 
 					// If column value is an ISqlType, get the raw value rather than the ISqlType itself
 					if (columnValueSqlType != null)
-						recordValues[i] = columnValueSqlType.GetRawValue();
+						recordValues[i] = columnValueSqlType.GetRawValue() ?? DBNull.Value;
 					else
-						recordValues[i] = columnValue;
-
-					if (recordValues[i] == null)
-						recordValues[i] = DBNull.Value;
+						recordValues[i] = columnValue ?? DBNull.Value;
 				}
 
 				sdr.SetValues(recordValues);
