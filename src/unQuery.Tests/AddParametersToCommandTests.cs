@@ -2,6 +2,7 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using unQuery.SqlTypes;
 
 namespace unQuery.Tests
 {
@@ -61,6 +62,18 @@ namespace unQuery.Tests
 			Guid guid = Guid.NewGuid();
 			TestHelper.AssertParameterFromValue(guid, SqlDbType.UniqueIdentifier, guid);
 			TestHelper.AssertParameterFromValue((Guid?)null, SqlDbType.UniqueIdentifier, DBNull.Value);
+		}
+
+		[Test]
+		public void ExplicitTypes()
+		{
+			// string / VarChar
+			TestHelper.AssertParameterFromValue(Col.VarChar("Test"), SqlDbType.VarChar, "Test");
+			TestHelper.AssertParameterFromValue(Col.VarChar(null), SqlDbType.VarChar, DBNull.Value);
+
+			// string / NVarChar
+			TestHelper.AssertParameterFromValue(Col.NVarChar("Test ру́сский"), SqlDbType.NVarChar, "Test ру́сский");
+			TestHelper.AssertParameterFromValue(Col.NVarChar(null), SqlDbType.NVarChar, DBNull.Value);
 		}
 
 		[Test]
