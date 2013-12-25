@@ -40,7 +40,7 @@ Console.WriteLine(user.Name + " (" + user.Age + " years old)");
 
 GetRows is used when you want to return any number of rows of data. The result is a List of dynamic objects.
 
-To avoid keeping the database hanging, GetRows will aggressively read all the data and return it as a List, rather than returning a lazily evaluated IEnumerable. GetRows ensures the schema is not replicated in each row, ensuring efficient storage of large amounts of data.
+To avoid keeping the database hanging, GetRows will aggressively read all the data and return it as a List, rather than returning a lazily evaluated IEnumerable. GetRows ensures the schema is stored just once, rather than in each row, ensuring efficient handling of large amounts of rows.
 
 ```csharp
 var users = DB.GetRows("SELECT * FROM Users");
