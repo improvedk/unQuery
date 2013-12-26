@@ -55,7 +55,7 @@
     <Compile Include="GetRowTests.cs" />
     <Compile Include="ExecuteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlTypes\ColTests.cs" />
+    <Compile Include="SqlTypes\SqlBinaryTests.cs" />
     <Compile Include="SqlTypes\SqlStructuredTests.cs" />
     <Compile Include="SqlTypes\SqlUniqueIdentifierTests.cs" />
     <Compile Include="SqlTypes\SqlTinyIntTests.cs" />
@@ -63,8 +63,8 @@
     <Compile Include="SqlTypes\SqlIntTests.cs" />
     <Compile Include="SqlTypes\SqlBigIntTests.cs" />
     <Compile Include="SqlTypes\SqlBitTests.cs" />
-    <Compile Include="SqlTypes\SqlVarcharTests.cs" />
-    <Compile Include="SqlTypes\SqlNVarcharTests.cs" />
+    <Compile Include="SqlTypes\SqlVarCharTests.cs" />
+    <Compile Include="SqlTypes\SqlNVarCharTests.cs" />
     <Compile Include="GetScalarTests.cs" />
     <Compile Include="SqlTypes\SqlTypeTests.cs" />
     <Compile Include="StructuredDynamicYielderTests.cs" />

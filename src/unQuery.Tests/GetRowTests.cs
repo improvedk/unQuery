@@ -46,7 +46,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRow_CaseSensitive()
 		{
-			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") });
+			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander", 128) });
 
 			Assert.AreEqual(55, result.Age);
 			
@@ -58,7 +58,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRow_SingleColumn()
 		{
-			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") });
+			var result = DB.GetRow("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander", 128) });
 
 			Assert.AreEqual(55, result.Age);
 			Assert.AreEqual(1, ((Dictionary<string, object>)result).Count);
@@ -67,7 +67,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRow_MultipleColumns()
 		{
-			var result = DB.GetRow("SELECT Age, Sex FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Daniel Gallagher") });
+			var result = DB.GetRow("SELECT Age, Sex FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Daniel Gallagher", 128) });
 
 			Assert.AreEqual(25, result.Age);
 			Assert.AreEqual("M", result.Sex);
@@ -77,7 +77,7 @@ namespace unQuery.Tests
 		[Test]
 		public void GetRow_AllColumns()
 		{
-			var result = DB.GetRow("SELECT * FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Annie Brennan") });
+			var result = DB.GetRow("SELECT * FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Annie Brennan", 128) });
 
 			Assert.AreEqual(5, result.PersonID);
 			Assert.AreEqual("Annie Brennan", result.Name);

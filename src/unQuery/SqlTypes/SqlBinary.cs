@@ -4,15 +4,15 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlVarChar : SqlType, ISqlType, ITypeHandler
+	public class SqlBinary : SqlType, ISqlType, ITypeHandler
 	{
-		private static readonly ITypeHandler typeHandler = new SqlVarChar();
+		private static readonly ITypeHandler typeHandler = new SqlBinary();
 
-		private readonly string value;
-		private readonly int size;
+		private readonly byte[] value;
+		private readonly int maxLength;
 		private readonly bool hasValue;
 
-		private SqlVarChar()
+		private SqlBinary()
 		{ }
 
 		internal static ITypeHandler GetTypeHandler()
@@ -30,13 +30,13 @@ namespace unQuery.SqlTypes
 			if (!hasValue)
 				throw new TypeCannotBeUsedAsAClrTypeException();
 
-			return new SqlMetaData(name, SqlDbType.VarChar, size);
+			return new SqlMetaData(name, SqlDbType.Binary, maxLength);
 		}
 
-		public SqlVarChar(string value, int size)
+		public SqlBinary(byte[] value, int maxLength)
 		{
 			this.value = value;
-			this.size = size;
+			this.maxLength = maxLength;
 
 			hasValue = true;
 		}
@@ -44,9 +44,9 @@ namespace unQuery.SqlTypes
 		SqlParameter ISqlType.GetParameter()
 		{
 			return new SqlParameter {
-				SqlDbType = SqlDbType.VarChar,
+				SqlDbType = SqlDbType.Binary,
 				Value = GetDBNullableValue(value),
-				Size = size
+				Size = maxLength
 			};
 		}
 

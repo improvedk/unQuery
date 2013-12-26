@@ -4,61 +4,48 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlBigInt : SqlType, ISqlType
+	public class SqlBigInt : SqlType, ISqlType, ITypeHandler
 	{
+		private static readonly ITypeHandler typeHandler = new SqlBigInt();
 		private readonly long? value;
 
-		public SqlBigInt(long? value)
-		{
-			this.value = value;
-		}
+		private SqlBigInt()
+		{ }
 
-		public static explicit operator SqlBigInt(long? value)
-		{
-			return new SqlBigInt(value);
-		}
-
-		public SqlParameter GetParameter()
-		{
-			return GetParameter(value);
-		}
-
-		public object GetRawValue()
-		{
-			return value;
-		}
-
-		internal static SqlParameter GetParameter(long? value)
+		SqlParameter ITypeHandler.CreateParamFromValue(object value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.BigInt,
 				Value = GetDBNullableValue(value)
 			};
 		}
-	}
 
-	internal class SqlBigIntTypeHandler : ITypeHandler
-	{
-		private static readonly SqlBigIntTypeHandler instance = new SqlBigIntTypeHandler();
-
-		internal static SqlBigIntTypeHandler GetInstance()
-		{
-			return instance;
-		}
-
-		public SqlParameter CreateParamFromValue(object value)
-		{
-			return SqlBigInt.GetParameter((long?)value);
-		}
-
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.BigInt;
-		}
-
-		public SqlMetaData CreateSqlMetaData(string name)
+		SqlMetaData ITypeHandler.CreateMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.BigInt);
+		}
+
+		internal static ITypeHandler GetTypeHandler()
+		{
+			return typeHandler;
+		}
+
+		public SqlBigInt(long? value)
+		{
+			this.value = value;
+		}
+
+		SqlParameter ISqlType.GetParameter()
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.BigInt,
+				Value = GetDBNullableValue(value)
+			};
+		}
+
+		object ISqlType.GetRawValue()
+		{
+			return value;
 		}
 	}
 }

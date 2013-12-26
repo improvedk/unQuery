@@ -9,7 +9,7 @@ namespace unQuery.Tests
 	[TestFixture]
 	public class AddParametersToCommandTests
 	{
-		private unQueryDB db = new unQueryDB(null);
+		private readonly unQueryDB db = new unQueryDB(null);
 
 		[Test]
 		public void AddToExistingParameterCollection()
@@ -38,42 +38,28 @@ namespace unQuery.Tests
 		[Test]
 		public void ImplicitTypes()
 		{
-			// bool / bit
-			TestHelper.AssertParameterFromValue(true, SqlDbType.Bit, true);
-			TestHelper.AssertParameterFromValue((bool?)null, SqlDbType.Bit, DBNull.Value);
+			var cmd = new SqlCommand();
 
-			// byte / tinyint
-			TestHelper.AssertParameterFromValue((byte)55, SqlDbType.TinyInt, (byte)55);
-			TestHelper.AssertParameterFromValue((byte?)null, SqlDbType.TinyInt, DBNull.Value);
+			db.AddParametersToCommand(cmd, new {
+				A = true,
+				B = Col.Bit(false),
+				C = new SqlSmallInt(null),
+				D = new SqlInt(5),
+				E = Col.VarChar("Test", 10)
+			});
 
-			// short / smallint
-			TestHelper.AssertParameterFromValue((short)55, SqlDbType.SmallInt, (short)55);
-			TestHelper.AssertParameterFromValue((short?)null, SqlDbType.SmallInt, DBNull.Value);
-
-			// int / int
-			TestHelper.AssertParameterFromValue(55, SqlDbType.Int, 55);
-			TestHelper.AssertParameterFromValue((int?)null, SqlDbType.Int, DBNull.Value);
-
-			// long / bigint
-			TestHelper.AssertParameterFromValue(55L, SqlDbType.BigInt, 55L);
-			TestHelper.AssertParameterFromValue((long?)null, SqlDbType.BigInt, DBNull.Value);
-
-			// Guid / uniqueidentifier
-			Guid guid = Guid.NewGuid();
-			TestHelper.AssertParameterFromValue(guid, SqlDbType.UniqueIdentifier, guid);
-			TestHelper.AssertParameterFromValue((Guid?)null, SqlDbType.UniqueIdentifier, DBNull.Value);
-		}
-
-		[Test]
-		public void ExplicitTypes()
-		{
-			// string / VarChar
-			TestHelper.AssertParameterFromValue(Col.VarChar("Test"), SqlDbType.VarChar, "Test");
-			TestHelper.AssertParameterFromValue(Col.VarChar(null), SqlDbType.VarChar, DBNull.Value);
-
-			// string / NVarChar
-			TestHelper.AssertParameterFromValue(Col.NVarChar("Test ру́сский"), SqlDbType.NVarChar, "Test ру́сский");
-			TestHelper.AssertParameterFromValue(Col.NVarChar(null), SqlDbType.NVarChar, DBNull.Value);
+			Assert.AreEqual(5, cmd.Parameters.Count);
+			Assert.AreEqual(SqlDbType.Bit, cmd.Parameters[0].SqlDbType);
+			Assert.AreEqual(true, cmd.Parameters[0].Value);
+			Assert.AreEqual(SqlDbType.Bit, cmd.Parameters[1].SqlDbType);
+			Assert.AreEqual(false, cmd.Parameters[1].Value);
+			Assert.AreEqual(SqlDbType.SmallInt, cmd.Parameters[2].SqlDbType);
+			Assert.AreEqual(DBNull.Value, cmd.Parameters[2].Value);
+			Assert.AreEqual(SqlDbType.Int, cmd.Parameters[3].SqlDbType);
+			Assert.AreEqual(5, cmd.Parameters[3].Value);
+			Assert.AreEqual(SqlDbType.VarChar, cmd.Parameters[4].SqlDbType);
+			Assert.AreEqual("Test", cmd.Parameters[4].Value);
+			Assert.AreEqual(10, cmd.Parameters[4].Size);
 		}
 
 		[Test]

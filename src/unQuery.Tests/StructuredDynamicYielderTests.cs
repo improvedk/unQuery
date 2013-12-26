@@ -197,8 +197,8 @@ namespace unQuery.Tests
 		public void GetEnumerator_NVarChar()
 		{
 			var result = new StructuredDynamicYielder(new[] { new {
-				A = Col.NVarChar("A"),
-				B = Col.NVarChar(null)
+				A = Col.NVarChar("A", 10),
+				B = Col.NVarChar(null, 10)
 			}}).First();
 			
 			Assert.AreEqual(2, result.FieldCount);
@@ -211,13 +211,27 @@ namespace unQuery.Tests
 		public void GetEnumerator_VarChar()
 		{
 			var result = new StructuredDynamicYielder(new[] { new {
-				A = Col.VarChar("A"),
-				B = Col.VarChar(null)
+				A = Col.VarChar("A", 10),
+				B = Col.VarChar(null, 10)
 			}}).First();
 
 			Assert.AreEqual(2, result.FieldCount);
 			Assert.AreEqual(typeof(string), result.GetValue(0).GetType());
 			Assert.AreEqual("A", result.GetValue(0));
+			Assert.AreEqual(DBNull.Value, result.GetValue(1));
+		}
+
+		[Test]
+		public void GetEnumerator_Binary()
+		{
+			var result = new StructuredDynamicYielder(new[] { new {
+				A = Col.Binary(new byte[] { 0xAA, 0xBB }, 2),
+				B = Col.Binary(null, 2)
+			}}).First();
+
+			Assert.AreEqual(2, result.FieldCount);
+			Assert.AreEqual(typeof(byte[]), result.GetValue(0).GetType());
+			Assert.AreEqual(new byte[] { 0xAA, 0xBB }, result.GetValue(0));
 			Assert.AreEqual(DBNull.Value, result.GetValue(1));
 		}
 	}

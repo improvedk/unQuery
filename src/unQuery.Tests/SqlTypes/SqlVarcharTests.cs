@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -9,85 +8,68 @@ namespace unQuery.Tests.SqlTypes
 	public class SqlVarCharTests : TestFixture
 	{
 		[Test]
-		public void Casting()
+		public void GetTypeHandler()
 		{
-			var col = (SqlVarChar)"Test";
-			var param = col.GetParameter();
-
-			TestHelper.AssertSqlParameter(param, SqlDbType.VarChar, 4, "Test");
+			Assert.IsInstanceOf<ITypeHandler>(SqlVarChar.GetTypeHandler());
 		}
 
 		[Test]
-		public void Constructor()
+		public void CreateParamFromValue()
 		{
-			var col = new SqlVarChar("Test");
-			var param = col.GetParameter();
-
-			TestHelper.AssertSqlParameter(param, SqlDbType.VarChar, 4, "Test");
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlVarChar.GetTypeHandler().CreateParamFromValue(null));
 		}
 
 		[Test]
-		public void ExplicitSize()
+		public void CreateMetaData()
 		{
-			var col = new SqlVarChar("Test", 10);
-			var param = col.GetParameter();
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlVarChar.GetTypeHandler().CreateMetaData(null));
 
-			TestHelper.AssertSqlParameter(param, SqlDbType.VarChar, 10, "Test");
+			ITypeHandler col = new SqlVarChar("Test", 10);
+			var meta = col.CreateMetaData("Test");
+			Assert.AreEqual(SqlDbType.VarChar, meta.SqlDbType);
+			Assert.AreEqual("Test", meta.Name);
 		}
 
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlVarChar.GetParameter("Test"), SqlDbType.VarChar, 4, "Test");
-			TestHelper.AssertSqlParameter(SqlVarChar.GetParameter("Test", 10), SqlDbType.VarChar, 10, "Test");
-			TestHelper.AssertSqlParameter(SqlVarChar.GetParameter(null), SqlDbType.VarChar, null, DBNull.Value);
+			ISqlType type = new SqlVarChar("Hello", 10);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.VarChar, 10, "Hello");
+
+			type = new SqlVarChar(null, 10);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.VarChar, 10, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			Assert.AreEqual("Test", new SqlVarChar("Test").GetRawValue());
+			ISqlType type = new SqlVarChar("Hello", 10);
+			Assert.AreEqual("Hello", type.GetRawValue());
+
+			type = new SqlVarChar(null, 10);
+			Assert.Null(type.GetRawValue());
 		}
 
 		[Test]
-		public void TypeHandler_GetInstance()
+		public void Factory()
 		{
-			Assert.NotNull(SqlVarCharTypeHandler.GetInstance());
+			Assert.IsInstanceOf<SqlVarChar>(Col.VarChar("Test", 10));
 		}
 
 		[Test]
-		public void TypeHandler_CreateParamFromValue()
+		public void Structured()
 		{
-			var instance = SqlVarCharTypeHandler.GetInstance();
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue("Test"), SqlDbType.VarChar, null, "Test");
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.VarChar, null, DBNull.Value);
-		}
+			var rows = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfVarChars", new[] {
+					new { A = Col.VarChar("ABC", 256) },
+					new { A = Col.VarChar(null, 256) }
+				})
+			});
 
-		[Test]
-		public void TypeHandler_GetSqlDbType()
-		{
-			var instance = SqlVarCharTypeHandler.GetInstance();
-			Assert.AreEqual(SqlDbType.VarChar, instance.GetSqlDbType());
-		}
-
-		[Test]
-		public void TypeHandler_CreateSqlMetaData()
-		{
-			var instance = SqlVarCharTypeHandler.GetInstance();
-
-			var metaData = instance.CreateSqlMetaData("Test");
-			Assert.AreEqual("Test", metaData.Name);
-			Assert.AreEqual(SqlDbType.VarChar, metaData.SqlDbType);
-		}
-
-		[Test]
-		public void TypeHandler_SetDataRecordValue()
-		{
-			var instance = SqlVarCharTypeHandler.GetInstance();
-
-			var record = new SqlDataRecord(new SqlMetaData("A", SqlDbType.VarChar, -1));
-			instance.SetDataRecordValue(0, record, "Test");
-			Assert.AreEqual("Test", record.GetValue(0));
+			Assert.AreEqual(2, rows.Count);
+			Assert.AreEqual(typeof(string), rows[0].A.GetType());
+			Assert.AreEqual("ABC", rows[0].A);
+			Assert.AreEqual(null, rows[1].A);
 		}
 	}
 }

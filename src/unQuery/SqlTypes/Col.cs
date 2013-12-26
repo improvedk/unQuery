@@ -17,6 +17,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a binary value
+		/// </summary>
+		public static SqlBinary Binary(byte[] value, int maxLength)
+		{
+			return new SqlBinary(value, maxLength);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)
@@ -49,14 +57,6 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
-		/// Creates an nvarchar value. Size will be set to the length of the value.
-		/// </summary>
-		public static SqlNVarChar NVarChar(string value)
-		{
-			return new SqlNVarChar(value);
-		}
-
-		/// <summary>
 		/// Creates an nvarchar value
 		/// </summary>
 		/// <param name="value">The value</param>
@@ -74,14 +74,6 @@ namespace unQuery.SqlTypes
 		public static SqlStructured Structured(string typeName, IEnumerable<object> values)
 		{
 			return new SqlStructured(typeName, values);
-		}
-
-		/// <summary>
-		/// Creates a varchar value. Size will be set to the length of the value.
-		/// </summary>
-		public static SqlVarChar VarChar(string value)
-		{
-			return new SqlVarChar(value);
 		}
 
 		/// <summary>

@@ -5,61 +5,49 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlUniqueIdentifier : SqlType, ISqlType
+	public class SqlUniqueIdentifier : SqlType, ISqlType, ITypeHandler
 	{
+		private static readonly ITypeHandler typeHandler = new SqlUniqueIdentifier();
+
 		private readonly Guid? value;
 
-		public SqlUniqueIdentifier(Guid? value)
+		private SqlUniqueIdentifier()
+		{ }
+
+		internal static ITypeHandler GetTypeHandler()
 		{
-			this.value = value;
+			return typeHandler;
 		}
 
-		public static explicit operator SqlUniqueIdentifier(Guid? value)
-		{
-			return new SqlUniqueIdentifier(value);
-		}
-
-		public SqlParameter GetParameter()
-		{
-			return GetParameter(value);
-		}
-
-		public object GetRawValue()
-		{
-			return value;
-		}
-
-		internal static SqlParameter GetParameter(Guid? value)
+		SqlParameter ITypeHandler.CreateParamFromValue(object value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.UniqueIdentifier,
 				Value = GetDBNullableValue(value)
 			};
 		}
-	}
 
-	internal class SqlUniqueIdentifierTypeHandler : ITypeHandler
-	{
-		private static readonly SqlUniqueIdentifierTypeHandler instance = new SqlUniqueIdentifierTypeHandler();
-
-		internal static SqlUniqueIdentifierTypeHandler GetInstance()
-		{
-			return instance;
-		}
-
-		public SqlParameter CreateParamFromValue(object value)
-		{
-			return SqlUniqueIdentifier.GetParameter((Guid?)value);
-		}
-
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.UniqueIdentifier;
-		}
-
-		public SqlMetaData CreateSqlMetaData(string name)
+		SqlMetaData ITypeHandler.CreateMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.UniqueIdentifier);
+		}
+
+		public SqlUniqueIdentifier(Guid? value)
+		{
+			this.value = value;
+		}
+
+		SqlParameter ISqlType.GetParameter()
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.UniqueIdentifier,
+				Value = GetDBNullableValue(value)
+			};
+		}
+
+		object ISqlType.GetRawValue()
+		{
+			return value;
 		}
 	}
 }

@@ -4,61 +4,49 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlInt : SqlType, ISqlType
+	public class SqlInt : SqlType, ISqlType, ITypeHandler
 	{
+		private static readonly ITypeHandler typeHandler = new SqlInt();
+
 		private readonly int? value;
 
-		public SqlInt(int? value)
+		private SqlInt()
+		{ }
+
+		internal static ITypeHandler GetTypeHandler()
 		{
-			this.value = value;
+			return typeHandler;
 		}
 
-		public static explicit operator SqlInt(long? value)
-		{
-			return new SqlInt((int?)value);
-		}
-
-		public SqlParameter GetParameter()
-		{
-			return GetParameter(value);
-		}
-
-		public object GetRawValue()
-		{
-			return value;
-		}
-
-		internal static SqlParameter GetParameter(int? value)
+		SqlParameter ITypeHandler.CreateParamFromValue(object value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.Int,
 				Value = GetDBNullableValue(value)
 			};
 		}
-	}
 
-	internal class SqlIntTypeHandler : ITypeHandler
-	{
-		private static readonly SqlIntTypeHandler instance = new SqlIntTypeHandler();
-
-		internal static SqlIntTypeHandler GetInstance()
-		{
-			return instance;
-		}
-
-		public SqlParameter CreateParamFromValue(object value)
-		{
-			return SqlInt.GetParameter((int?)value);
-		}
-
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.Int;
-		}
-
-		public SqlMetaData CreateSqlMetaData(string name)
+		SqlMetaData ITypeHandler.CreateMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.Int);
+		}
+
+		public SqlInt(int? value)
+		{
+			this.value = value;
+		}
+
+		SqlParameter ISqlType.GetParameter()
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.Int,
+				Value = GetDBNullableValue(value)
+			};
+		}
+
+		object ISqlType.GetRawValue()
+		{
+			return value;
 		}
 	}
 }

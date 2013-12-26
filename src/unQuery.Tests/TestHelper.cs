@@ -6,19 +6,9 @@ namespace unQuery.Tests
 {
 	public class TestHelper
 	{
-		private static unQueryDB db = new unQueryDB(null);
-
 		internal static void AssertParameterFromValue<TValue, TParamValue>(TValue value, SqlDbType expectedType, TParamValue paramValue, int? size = null)
 		{
-			var cmd = new SqlCommand();
-			
-			db.AddParametersToCommand(cmd, new {
-				Test = value
-			});
-
-			var param = cmd.Parameters[0];
-
-			Assert.AreEqual("@Test", param.ParameterName);
+			var param = unQueryDB.ClrTypeHandlers[typeof(TValue)].CreateParamFromValue(value);
 			Assert.AreEqual(expectedType, param.SqlDbType);
 			Assert.AreEqual(paramValue, param.Value);
 			Assert.AreEqual(paramValue.GetType(), param.Value.GetType());

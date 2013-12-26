@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -9,73 +8,66 @@ namespace unQuery.Tests.SqlTypes
 	public class SqlTinyIntTests : TestFixture
 	{
 		[Test]
-		public void Casting()
+		public void GetTypeHandler()
 		{
-			var col = (SqlTinyInt)(byte)5;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
-
-			col = (SqlTinyInt)(short)5;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
-
-			col = (SqlTinyInt)5;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
-
-			col = (SqlTinyInt)5L;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
-
+			Assert.IsInstanceOf<ITypeHandler>(SqlTinyInt.GetTypeHandler());
 		}
 
 		[Test]
-		public void Constructor()
+		public void CreateParamFromValue()
 		{
-			var col = new SqlTinyInt(5);
-			var param = col.GetParameter();
+			TestHelper.AssertParameterFromValue((byte)5, SqlDbType.TinyInt, (byte)5);
+			TestHelper.AssertParameterFromValue((byte?)null, SqlDbType.TinyInt, DBNull.Value);
+		}
 
-			TestHelper.AssertSqlParameter(param, SqlDbType.TinyInt, null, (byte)5);
+		[Test]
+		public void CreateMetaData()
+		{
+			var meta = SqlTinyInt.GetTypeHandler().CreateMetaData("Test");
+			Assert.AreEqual(SqlDbType.TinyInt, meta.SqlDbType);
+			Assert.AreEqual("Test", meta.Name);
 		}
 
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlTinyInt.GetParameter(5), SqlDbType.TinyInt, null, (byte)5);
-			TestHelper.AssertSqlParameter(SqlTinyInt.GetParameter(null), SqlDbType.TinyInt, null, DBNull.Value);
+			ISqlType type = new SqlTinyInt(5);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.TinyInt, null, (byte)5);
+
+			type = new SqlTinyInt(null);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.TinyInt, null, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			Assert.AreEqual(1, new SqlTinyInt(1).GetRawValue());
+			ISqlType type = new SqlTinyInt(5);
+			Assert.AreEqual((byte)5, type.GetRawValue());
+
+			type = new SqlTinyInt(null);
+			Assert.Null(type.GetRawValue());
 		}
 
 		[Test]
-		public void TypeHandler_GetInstance()
+		public void Factory()
 		{
-			Assert.NotNull(SqlTinyIntTypeHandler.GetInstance());
+			Assert.IsInstanceOf<SqlTinyInt>(Col.TinyInt(5));
 		}
 
 		[Test]
-		public void TypeHandler_CreateParamFromValue()
+		public void Structured()
 		{
-			var instance = SqlTinyIntTypeHandler.GetInstance();
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue((byte)5), SqlDbType.TinyInt, null, (byte)5);
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.TinyInt, null, DBNull.Value);
-		}
+			var rows = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfTinyInts", new[] {
+					new { A = (byte?)1 },
+					new { A = (byte?)null }
+				})
+			});
 
-		[Test]
-		public void TypeHandler_GetSqlDbType()
-		{
-			var instance = SqlTinyIntTypeHandler.GetInstance();
-			Assert.AreEqual(SqlDbType.TinyInt, instance.GetSqlDbType());
-		}
-
-		[Test]
-		public void TypeHandler_CreateSqlMetaData()
-		{
-			var instance = SqlTinyIntTypeHandler.GetInstance();
-
-			var metaData = instance.CreateSqlMetaData("Test");
-			Assert.AreEqual("Test", metaData.Name);
-			Assert.AreEqual(SqlDbType.TinyInt, metaData.SqlDbType);
+			Assert.AreEqual(2, rows.Count);
+			Assert.AreEqual(typeof(byte), rows[0].A.GetType());
+			Assert.AreEqual(1, rows[0].A);
+			Assert.AreEqual(null, rows[1].A);
 		}
 	}
 }

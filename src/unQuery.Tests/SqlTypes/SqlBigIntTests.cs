@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -9,72 +8,66 @@ namespace unQuery.Tests.SqlTypes
 	public class SqlBigIntTests : TestFixture
 	{
 		[Test]
-		public void Casting()
+		public void GetTypeHandler()
 		{
-			var col = (SqlBigInt)(byte)5;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.BigInt, null, 5L);
-
-			col = (SqlBigInt)(short)5;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.BigInt, null, 5L);
-
-			col = (SqlBigInt)5;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.BigInt, null, 5L);
-
-			col = (SqlBigInt)5L;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.BigInt, null, 5L);
+			Assert.IsInstanceOf<ITypeHandler>(SqlBigInt.GetTypeHandler());
 		}
 
 		[Test]
-		public void Constructor()
+		public void CreateParamFromValue()
 		{
-			var col = new SqlBigInt(5);
-			var param = col.GetParameter();
+			TestHelper.AssertParameterFromValue((long)5, SqlDbType.BigInt, (long)5);
+			TestHelper.AssertParameterFromValue((long?)null, SqlDbType.BigInt, DBNull.Value);
+		}
 
-			TestHelper.AssertSqlParameter(param, SqlDbType.BigInt, null, 5L);
+		[Test]
+		public void CreateMetaData()
+		{
+			var meta = SqlBigInt.GetTypeHandler().CreateMetaData("Test");
+			Assert.AreEqual(SqlDbType.BigInt, meta.SqlDbType);
+			Assert.AreEqual("Test", meta.Name);
 		}
 
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlBigInt.GetParameter(5L), SqlDbType.BigInt, null, 5L);
-			TestHelper.AssertSqlParameter(SqlBigInt.GetParameter(null), SqlDbType.BigInt, null, DBNull.Value);
+			ISqlType type = new SqlBigInt(5);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, null, (long)5);
+
+			type = new SqlBigInt(null);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, null, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			Assert.AreEqual(1, new SqlBigInt(1).GetRawValue());
+			ISqlType type = new SqlBigInt(5);
+			Assert.AreEqual((long)5, type.GetRawValue());
+
+			type = new SqlBigInt(null);
+			Assert.Null(type.GetRawValue());
 		}
 
 		[Test]
-		public void TypeHandler_GetInstance()
+		public void Factory()
 		{
-			Assert.NotNull(SqlBigIntTypeHandler.GetInstance());
+			Assert.IsInstanceOf<SqlBigInt>(Col.BigInt(5));
 		}
 
 		[Test]
-		public void TypeHandler_CreateParamFromValue()
+		public void Structured()
 		{
-			var instance = SqlBigIntTypeHandler.GetInstance();
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(5L), SqlDbType.BigInt, null, 5L);
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.BigInt, null, DBNull.Value);
-		}
+			var rows = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfBigInts", new[] {
+					new { A = (long?)1 },
+					new { A = (long?)null }
+				})
+			});
 
-		[Test]
-		public void TypeHandler_GetSqlDbType()
-		{
-			var instance = SqlBigIntTypeHandler.GetInstance();
-			Assert.AreEqual(SqlDbType.BigInt, instance.GetSqlDbType());
-		}
-
-		[Test]
-		public void TypeHandler_CreateSqlMetaData()
-		{
-			var instance = SqlBigIntTypeHandler.GetInstance();
-
-			var metaData = instance.CreateSqlMetaData("Test");
-			Assert.AreEqual("Test", metaData.Name);
-			Assert.AreEqual(SqlDbType.BigInt, metaData.SqlDbType);
+			Assert.AreEqual(2, rows.Count);
+			Assert.AreEqual(typeof(long), rows[0].A.GetType());
+			Assert.AreEqual(1, rows[0].A);
+			Assert.AreEqual(null, rows[1].A);
 		}
 	}
 }

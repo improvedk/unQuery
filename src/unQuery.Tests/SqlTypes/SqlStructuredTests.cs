@@ -16,26 +16,14 @@ namespace unQuery.Tests.SqlTypes
 		};
 
 		[Test]
-		public void Constructor()
-		{
-			var col = new SqlStructured("MyType", value);
-			var param = col.GetParameter();
-
-			Assert.AreEqual("MyType", param.TypeName);
-			Assert.AreEqual(SqlDbType.Structured, param.SqlDbType);
-			Assert.AreEqual(typeof(StructuredDynamicYielder), param.Value.GetType());
-			
-			var sdr = (IEnumerable<SqlDataRecord>)param.Value;
-
-			Assert.AreEqual(2, sdr.Count());
-		}
-
-		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlStructured.GetParameter("MyType", null), SqlDbType.Structured, null, DBNull.Value);
+			ISqlType col = new SqlStructured("MyType", null);
+			var param = col.GetParameter();
+			TestHelper.AssertSqlParameter(param, SqlDbType.Structured, null, DBNull.Value);
 
-			var param = SqlStructured.GetParameter("MyType", value);
+			col = new SqlStructured("MyType", value);
+			param = col.GetParameter();
 			Assert.AreEqual(SqlDbType.Structured, param.SqlDbType);
 			Assert.AreEqual("MyType", param.TypeName);
 			Assert.AreEqual(typeof(StructuredDynamicYielder), param.Value.GetType());
@@ -51,144 +39,22 @@ namespace unQuery.Tests.SqlTypes
 		}
 
 		[Test]
-		public void StructuredParameter_TinyInt()
+		public void Factory()
 		{
-			var rows = DB.GetRows("SELECT * FROM @Input", new {
-				Input = Col.Structured("ListOfTinyInts", new[] {
-					new { A = (byte?)1 },
-					new { A = (byte?)null }
-				})
-			});
+			ISqlType col = Col.Structured("MyType", new dynamic[] { new { A = 5, B = true } });
+			var param = col.GetParameter();
 
-			Assert.AreEqual(2, rows.Count);
-			Assert.AreEqual(typeof(byte), rows[0].A.GetType());
-			Assert.AreEqual(1, rows[0].A);
-			Assert.AreEqual(null, rows[1].A);
-		}
-
-		[Test]
-		public void StructuredParameter_SmallInt()
-		{
-			var rows = DB.GetRows("SELECT * FROM @Input", new {
-				Input = Col.Structured("ListOfSmallInts", new[] {
-					new { A = (short?)1 },
-					new { A = (short?)null }
-				})
-			});
-
-			Assert.AreEqual(2, rows.Count);
-			Assert.AreEqual(typeof(short), rows[0].A.GetType());
-			Assert.AreEqual(1, rows[0].A);
-			Assert.AreEqual(null, rows[1].A);
-		}
-
-		[Test]
-		public void StructuredParameter_Int()
-		{
-			var rows = DB.GetRows("SELECT * FROM @Input", new {
-				Input = Col.Structured("ListOfInts", new[] {
-					new { A = (int?)1 },
-					new { A = (int?)null }
-				})
-			});
-
-			Assert.AreEqual(2, rows.Count);
-			Assert.AreEqual(typeof(int), rows[0].A.GetType());
-			Assert.AreEqual(1, rows[0].A);
-			Assert.AreEqual(null, rows[1].A);
-		}
-
-		[Test]
-		public void StructuredParameter_BigInt()
-		{
-			var rows = DB.GetRows("SELECT * FROM @Input", new {
-				Input = Col.Structured("ListOfBigInts", new[] {
-					new { A = (long?)1 },
-					new { A = (long?)null }
-				})
-			});
-
-			Assert.AreEqual(2, rows.Count);
-			Assert.AreEqual(typeof(long), rows[0].A.GetType());
-			Assert.AreEqual(1, rows[0].A);
-			Assert.AreEqual(null, rows[1].A);
-		}
-
-		[Test]
-		public void StructuredParameter_Bit()
-		{
-			var rows = DB.GetRows("SELECT * FROM @Input", new {
-				Input = Col.Structured("ListOfBits", new[] {
-					new { A = (bool?)true },
-					new { A = (bool?)false },
-					new { A = (bool?)null }
-				})
-			});
-
-			Assert.AreEqual(3, rows.Count);
-			Assert.AreEqual(typeof(bool), rows[0].A.GetType());
-			Assert.AreEqual(true, rows[0].A);
-			Assert.AreEqual(false, rows[1].A);
-			Assert.AreEqual(null, rows[2].A);
-		}
-
-		[Test]
-		public void StructuredParameter_UniqueIdentifier()
-		{
-			var guid = Guid.NewGuid();
-
-			var rows = DB.GetRows("SELECT * FROM @Input", new
-			{
-				Input = Col.Structured("ListOfUniqueIdentifiers", new[] {
-					new { A = (Guid?)guid },
-					new { A = (Guid?)null }
-				})
-			});
-
-			Assert.AreEqual(2, rows.Count);
-			Assert.AreEqual(typeof(Guid), rows[0].A.GetType());
-			Assert.AreEqual(guid, rows[0].A);
-			Assert.AreEqual(null, rows[1].A);
-		}
-
-		[Test]
-		public void StructuredParameter_NVarChar()
-		{
-			var rows = DB.GetRows("SELECT * FROM @Input", new
-			{
-				Input = Col.Structured("ListOfNVarChars", new[] {
-					new { A = Col.NVarChar("слово") },
-					new { A = Col.NVarChar(null) }
-				})
-			});
-
-			Assert.AreEqual(2, rows.Count);
-			Assert.AreEqual(typeof(string), rows[0].A.GetType());
-			Assert.AreEqual("слово", rows[0].A);
-			Assert.AreEqual(null, rows[1].A);
-		}
-
-		[Test]
-		public void StructuredParameter_VarChar()
-		{
-			var rows = DB.GetRows("SELECT * FROM @Input", new
-			{
-				Input = Col.Structured("ListOfVarChars", new[] {
-					new { A = Col.VarChar("ABC") },
-					new { A = Col.VarChar(null) }
-				})
-			});
-
-			Assert.AreEqual(2, rows.Count);
-			Assert.AreEqual(typeof(string), rows[0].A.GetType());
-			Assert.AreEqual("ABC", rows[0].A);
-			Assert.AreEqual(null, rows[1].A);
+			Assert.AreEqual("MyType", param.TypeName);
+			Assert.AreEqual(SqlDbType.Structured, param.SqlDbType);
+			Assert.AreEqual(typeof(StructuredDynamicYielder), param.Value.GetType());
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			Assert.Throws<InvalidOperationException>(() => new SqlStructured("A", null).GetRawValue());
+			ISqlType col = new SqlStructured("A", null);
+
+			Assert.Throws<InvalidOperationException>(() => col.GetRawValue());
 		}
 	}
 }

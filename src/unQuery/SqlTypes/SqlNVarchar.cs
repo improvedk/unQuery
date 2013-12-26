@@ -4,78 +4,55 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlNVarChar : SqlType, ISqlType
+	public class SqlNVarChar : SqlType, ISqlType, ITypeHandler
 	{
-		private readonly string value;
-		private readonly int? size;
+		private static readonly ITypeHandler typeHandler = new SqlNVarChar();
 
-		public SqlNVarChar(string value)
+		private readonly string value;
+		private readonly int size;
+		private readonly bool hasValue;
+
+		private SqlNVarChar()
+		{ }
+
+		internal static ITypeHandler GetTypeHandler()
 		{
-			this.value = value;
+			return typeHandler;
+		}
+
+		SqlParameter ITypeHandler.CreateParamFromValue(object value)
+		{
+			throw new TypeCannotBeUsedAsAClrTypeException();
+		}
+
+		SqlMetaData ITypeHandler.CreateMetaData(string name)
+		{
+			if (!hasValue)
+				throw new TypeCannotBeUsedAsAClrTypeException();
+
+			return new SqlMetaData(name, SqlDbType.NVarChar, size);
 		}
 
 		public SqlNVarChar(string value, int size)
 		{
 			this.value = value;
 			this.size = size;
+
+			hasValue = true;
 		}
 
-		public static explicit operator SqlNVarChar(string value)
+		SqlParameter ISqlType.GetParameter()
 		{
-			return new SqlNVarChar(value);
+			return new SqlParameter {
+				SqlDbType = SqlDbType.NVarChar,
+				Value = GetDBNullableValue(value),
+				Size = size
+			};
 		}
 
-		public SqlParameter GetParameter()
-		{
-			return GetParameter(value, size);
-		}
-
-		public object GetRawValue()
+		object ISqlType.GetRawValue()
 		{
 			return value;
-		}
-
-		internal static SqlParameter GetParameter(string value)
-		{
-			return GetParameter(value, null);
-		}
-
-		internal static SqlParameter GetParameter(string value, int? size)
-		{
-			var param = new SqlParameter {
-				SqlDbType = SqlDbType.NVarChar,
-				Value = GetDBNullableValue(value)
-			};
-
-			if (size != null)
-				param.Size = size.Value;
-
-			return param;
-		}
-	}
-
-	internal class SqlNVarCharTypeHandler : ITypeHandler
-	{
-		private static readonly SqlNVarCharTypeHandler instance = new SqlNVarCharTypeHandler();
-
-		internal static SqlNVarCharTypeHandler GetInstance()
-		{
-			return instance;
-		}
-
-		public SqlParameter CreateParamFromValue(object value)
-		{
-			return SqlNVarChar.GetParameter((string)value);
-		}
-
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.NVarChar;
-		}
-		
-		public SqlMetaData CreateSqlMetaData(string name)
-		{
-			return new SqlMetaData(name, SqlDbType.NVarChar, -1);
 		}
 	}
 }

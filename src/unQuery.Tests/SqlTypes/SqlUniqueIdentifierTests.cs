@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -8,67 +7,69 @@ namespace unQuery.Tests.SqlTypes
 {
 	public class SqlUniqueIdentifierTests : TestFixture
 	{
-		private Guid guid = Guid.NewGuid();
+		private readonly Guid guid = Guid.NewGuid();
 
 		[Test]
-		public void Casting()
+		public void GetTypeHandler()
 		{
-			
-			var col = (SqlUniqueIdentifier)guid;
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.UniqueIdentifier, null, guid);
+			Assert.IsInstanceOf<ITypeHandler>(SqlUniqueIdentifier.GetTypeHandler());
 		}
 
 		[Test]
-		public void Constructor()
+		public void CreateParamFromValue()
 		{
-			var col = new SqlUniqueIdentifier(guid);
-			var param = col.GetParameter();
+			TestHelper.AssertParameterFromValue(guid, SqlDbType.UniqueIdentifier, guid);
+			TestHelper.AssertParameterFromValue((Guid?)null, SqlDbType.UniqueIdentifier, DBNull.Value);
+		}
 
-			TestHelper.AssertSqlParameter(param, SqlDbType.UniqueIdentifier, null, guid);
+		[Test]
+		public void CreateMetaData()
+		{
+			var meta = SqlUniqueIdentifier.GetTypeHandler().CreateMetaData("Test");
+			Assert.AreEqual(SqlDbType.UniqueIdentifier, meta.SqlDbType);
+			Assert.AreEqual("Test", meta.Name);
 		}
 
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlUniqueIdentifier.GetParameter(guid), SqlDbType.UniqueIdentifier, null, guid);
-			TestHelper.AssertSqlParameter(SqlUniqueIdentifier.GetParameter(null), SqlDbType.UniqueIdentifier, null, DBNull.Value);
+			ISqlType type = new SqlUniqueIdentifier(guid);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, null, guid);
+
+			type = new SqlUniqueIdentifier(null);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, null, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			Assert.AreEqual(guid, new SqlUniqueIdentifier(guid).GetRawValue());
+			ISqlType type = new SqlUniqueIdentifier(guid);
+			Assert.AreEqual(guid, type.GetRawValue());
+
+			type = new SqlUniqueIdentifier(null);
+			Assert.Null(type.GetRawValue());
 		}
 
 		[Test]
-		public void TypeHandler_GetInstance()
+		public void Factory()
 		{
-			Assert.NotNull(SqlUniqueIdentifierTypeHandler.GetInstance());
+			Assert.IsInstanceOf<SqlUniqueIdentifier>(Col.UniqueIdentifier(guid));
 		}
 
 		[Test]
-		public void TypeHandler_CreateParamFromValue()
+		public void Structured()
 		{
-			var instance = SqlUniqueIdentifierTypeHandler.GetInstance();
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(guid), SqlDbType.UniqueIdentifier, null, guid);
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.UniqueIdentifier, null, DBNull.Value);
-		}
+			var rows = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfUniqueIdentifiers", new[] {
+					new { A = (Guid?)guid },
+					new { A = (Guid?)null }
+				})
+			});
 
-		[Test]
-		public void TypeHandler_GetSqlDbType()
-		{
-			var instance = SqlUniqueIdentifierTypeHandler.GetInstance();
-			Assert.AreEqual(SqlDbType.UniqueIdentifier, instance.GetSqlDbType());
-		}
-
-		[Test]
-		public void TypeHandler_CreateSqlMetaData()
-		{
-			var instance = SqlUniqueIdentifierTypeHandler.GetInstance();
-
-			var metaData = instance.CreateSqlMetaData("Test");
-			Assert.AreEqual("Test", metaData.Name);
-			Assert.AreEqual(SqlDbType.UniqueIdentifier, metaData.SqlDbType);
+			Assert.AreEqual(2, rows.Count);
+			Assert.AreEqual(typeof(Guid), rows[0].A.GetType());
+			Assert.AreEqual(guid, rows[0].A);
+			Assert.AreEqual(null, rows[1].A);
 		}
 	}
 }

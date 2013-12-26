@@ -4,61 +4,49 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlSmallInt : SqlType, ISqlType
+	public class SqlSmallInt : SqlType, ISqlType, ITypeHandler
 	{
+		private static readonly ITypeHandler typeHandler = new SqlSmallInt();
+
 		private readonly short? value;
 
-		public SqlSmallInt(short? value)
+		private SqlSmallInt()
+		{ }
+
+		internal static ITypeHandler GetTypeHandler()
 		{
-			this.value = value;
+			return typeHandler;
 		}
 
-		public static explicit operator SqlSmallInt(long? value)
-		{
-			return new SqlSmallInt((short?)value);
-		}
-
-		public SqlParameter GetParameter()
-		{
-			return GetParameter(value);
-		}
-
-		public object GetRawValue()
-		{
-			return value;
-		}
-
-		internal static SqlParameter GetParameter(short? value)
+		SqlParameter ITypeHandler.CreateParamFromValue(object value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.SmallInt,
 				Value = GetDBNullableValue(value)
 			};
 		}
-	}
 
-	internal class SqlSmallIntTypeHandler : ITypeHandler
-	{
-		private static readonly SqlSmallIntTypeHandler instance = new SqlSmallIntTypeHandler();
-
-		internal static SqlSmallIntTypeHandler GetInstance()
-		{
-			return instance;
-		}
-
-		public SqlParameter CreateParamFromValue(object value)
-		{
-			return SqlSmallInt.GetParameter((short?)value);
-		}
-
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.SmallInt;
-		}
-
-		public SqlMetaData CreateSqlMetaData(string name)
+		SqlMetaData ITypeHandler.CreateMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.SmallInt);
+		}
+
+		public SqlSmallInt(short? value)
+		{
+			this.value = value;
+		}
+
+		SqlParameter ISqlType.GetParameter()
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.SmallInt,
+				Value = GetDBNullableValue(value)
+			};
+		}
+
+		object ISqlType.GetRawValue()
+		{
+			return value;
 		}
 	}
 }

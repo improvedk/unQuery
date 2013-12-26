@@ -198,42 +198,44 @@ namespace unQuery
 		/// </summary>
 		internal static Dictionary<Type, ITypeHandler> ClrTypeHandlers = new Dictionary<Type, ITypeHandler> {
 			// Core CLR types
-			{ typeof(short), SqlSmallIntTypeHandler.GetInstance() },
-			{ typeof(int), SqlIntTypeHandler.GetInstance() },
-			{ typeof(int?), SqlIntTypeHandler.GetInstance() },
-			{ typeof(bool), SqlBitTypeHandler.GetInstance() },
-			{ typeof(bool?), SqlBitTypeHandler.GetInstance() },
-			{ typeof(byte), SqlTinyIntTypeHandler.GetInstance() },
-			{ typeof(byte?), SqlTinyIntTypeHandler.GetInstance() },
-			{ typeof(long), SqlBigIntTypeHandler.GetInstance() },
-			{ typeof(short?), SqlSmallIntTypeHandler.GetInstance() },
-			{ typeof(long?), SqlBigIntTypeHandler.GetInstance() },	
-			{ typeof(Guid), SqlUniqueIdentifierTypeHandler.GetInstance() },
-			{ typeof(Guid?), SqlUniqueIdentifierTypeHandler.GetInstance() },
+			{ typeof(byte), SqlTinyInt.GetTypeHandler() },
+			{ typeof(byte?), SqlTinyInt.GetTypeHandler() },
+			{ typeof(short), SqlSmallInt.GetTypeHandler() },
+			{ typeof(short?), SqlSmallInt.GetTypeHandler() },
+			{ typeof(int), SqlInt.GetTypeHandler() },
+			{ typeof(int?), SqlInt.GetTypeHandler() },
+			{ typeof(long), SqlBigInt.GetTypeHandler() },
+			{ typeof(long?), SqlBigInt.GetTypeHandler() },
+			{ typeof(bool), SqlBit.GetTypeHandler() },
+			{ typeof(bool?), SqlBit.GetTypeHandler() },
+			{ typeof(Guid), SqlUniqueIdentifier.GetTypeHandler() },
+			{ typeof(Guid?), SqlUniqueIdentifier.GetTypeHandler() },
 
 			// ISqlTypes
-			{ typeof(SqlBigInt), SqlBigIntTypeHandler.GetInstance() },  
-			{ typeof(SqlBit), SqlBitTypeHandler.GetInstance() },
-			{ typeof(SqlInt), SqlIntTypeHandler.GetInstance() },
-			{ typeof(SqlSmallInt), SqlSmallIntTypeHandler.GetInstance() },
-			{ typeof(SqlTinyInt), SqlTinyIntTypeHandler.GetInstance() },
-			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifierTypeHandler.GetInstance() },
-			{ typeof(SqlVarChar), SqlVarCharTypeHandler.GetInstance() },
-			{ typeof(SqlNVarChar), SqlNVarCharTypeHandler.GetInstance() }
+			{ typeof(SqlBigInt), SqlBigInt.GetTypeHandler() },
+			{ typeof(SqlBinary), SqlBinary.GetTypeHandler() },
+			{ typeof(SqlBit), SqlBit.GetTypeHandler() },
+			{ typeof(SqlInt), SqlInt.GetTypeHandler() },
+			{ typeof(SqlSmallInt), SqlSmallInt.GetTypeHandler() },
+			{ typeof(SqlTinyInt), SqlTinyInt.GetTypeHandler() },
+			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifier.GetTypeHandler() },
+			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() },
+			{ typeof(SqlNVarChar), SqlNVarChar.GetTypeHandler() }
 		};
 
 		/// <summary>
 		/// Map between SqlDbType and their corresponding ITypeHandlers
 		/// </summary>
 		internal static Dictionary<SqlDbType, ITypeHandler> SqlDbTypeHandlers = new Dictionary<SqlDbType, ITypeHandler> {	
-			{ SqlDbType.BigInt, SqlBigIntTypeHandler.GetInstance() },  
-			{ SqlDbType.Bit, SqlBitTypeHandler.GetInstance() },		   
-			{ SqlDbType.Int, SqlIntTypeHandler.GetInstance() },
-			{ SqlDbType.NVarChar, SqlNVarCharTypeHandler.GetInstance() },
-			{ SqlDbType.SmallInt, SqlSmallIntTypeHandler.GetInstance() },
-			{ SqlDbType.TinyInt, SqlTinyIntTypeHandler.GetInstance() },
-			{ SqlDbType.UniqueIdentifier, SqlUniqueIdentifierTypeHandler.GetInstance() },
-			{ SqlDbType.VarChar, SqlVarCharTypeHandler.GetInstance() }
+			{ SqlDbType.BigInt, SqlBigInt.GetTypeHandler() },  
+			{ SqlDbType.Binary, SqlBinary.GetTypeHandler() },  
+			{ SqlDbType.Bit, SqlBit.GetTypeHandler() },		   
+			{ SqlDbType.Int, SqlInt.GetTypeHandler() },
+			{ SqlDbType.NVarChar, SqlNVarChar.GetTypeHandler() },
+			{ SqlDbType.SmallInt, SqlSmallInt.GetTypeHandler() },
+			{ SqlDbType.TinyInt, SqlTinyInt.GetTypeHandler() },
+			{ SqlDbType.UniqueIdentifier, SqlUniqueIdentifier.GetTypeHandler() },
+			{ SqlDbType.VarChar, SqlVarChar.GetTypeHandler() }
 		};
 		
 		/// <summary>

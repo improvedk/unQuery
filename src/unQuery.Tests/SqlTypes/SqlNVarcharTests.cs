@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -9,75 +8,68 @@ namespace unQuery.Tests.SqlTypes
 	public class SqlNVarCharTests : TestFixture
 	{
 		[Test]
-		public void Casting()
+		public void GetTypeHandler()
 		{
-			var col = (SqlNVarChar)"Test";
-			var param = col.GetParameter();
-
-			TestHelper.AssertSqlParameter(param, SqlDbType.NVarChar, 4, "Test");
+			Assert.IsInstanceOf<ITypeHandler>(SqlNVarChar.GetTypeHandler());
 		}
 
 		[Test]
-		public void Constructor()
+		public void CreateParamFromValue()
 		{
-			var col = new SqlNVarChar("Test");
-			var param = col.GetParameter();
-
-			TestHelper.AssertSqlParameter(param, SqlDbType.NVarChar, 4, "Test");
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNVarChar.GetTypeHandler().CreateParamFromValue(null));
 		}
 
 		[Test]
-		public void ExplicitSize()
+		public void CreateMetaData()
 		{
-			var col = new SqlNVarChar("Test", 10);
-			var param = col.GetParameter();
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNVarChar.GetTypeHandler().CreateMetaData(null));
 
-			TestHelper.AssertSqlParameter(param, SqlDbType.NVarChar, 10, "Test");
+			ITypeHandler col = new SqlNVarChar("Test", 10);
+			var meta = col.CreateMetaData("Test");
+			Assert.AreEqual(SqlDbType.NVarChar, meta.SqlDbType);
+			Assert.AreEqual("Test", meta.Name);
 		}
 
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlNVarChar.GetParameter("Test"), SqlDbType.NVarChar, 4, "Test");
-			TestHelper.AssertSqlParameter(SqlNVarChar.GetParameter("Test", 10), SqlDbType.NVarChar, 10, "Test");
-			TestHelper.AssertSqlParameter(SqlNVarChar.GetParameter(null), SqlDbType.NVarChar, null, DBNull.Value);
+			ISqlType type = new SqlNVarChar("Hello ру́сский", 15);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, 15, "Hello ру́сский");
+
+			type = new SqlNVarChar(null, 15);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, 15, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			Assert.AreEqual("Test", new SqlNVarChar("Test").GetRawValue());
+			ISqlType type = new SqlNVarChar("Hello ру́сский", 15);
+			Assert.AreEqual("Hello ру́сский", type.GetRawValue());
+
+			type = new SqlNVarChar(null, 15);
+			Assert.Null(type.GetRawValue());
 		}
 
 		[Test]
-		public void TypeHandler_GetInstance()
+		public void Factory()
 		{
-			Assert.NotNull(SqlNVarCharTypeHandler.GetInstance());
+			Assert.IsInstanceOf<SqlNVarChar>(Col.NVarChar("Test", 10));
 		}
 
 		[Test]
-		public void TypeHandler_CreateParamFromValue()
+		public void Structured()
 		{
-			var instance = SqlNVarCharTypeHandler.GetInstance();
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue("язы́к"), SqlDbType.NVarChar, null, "язы́к");
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.NVarChar, null, DBNull.Value);
-		}
+			var rows = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfNVarChars", new[] {
+					new { A = Col.NVarChar("слово", 256) },
+					new { A = Col.NVarChar(null, 256) }
+				})
+			});
 
-		[Test]
-		public void TypeHandler_GetSqlDbType()
-		{
-			var instance = SqlNVarCharTypeHandler.GetInstance();
-			Assert.AreEqual(SqlDbType.NVarChar, instance.GetSqlDbType());
-		}
-
-		[Test]
-		public void TypeHandler_CreateSqlMetaData()
-		{
-			var instance = SqlNVarCharTypeHandler.GetInstance();
-
-			var metaData = instance.CreateSqlMetaData("Test");
-			Assert.AreEqual("Test", metaData.Name);
-			Assert.AreEqual(SqlDbType.NVarChar, metaData.SqlDbType);
+			Assert.AreEqual(2, rows.Count);
+			Assert.AreEqual(typeof(string), rows[0].A.GetType());
+			Assert.AreEqual("слово", rows[0].A);
+			Assert.AreEqual(null, rows[1].A);
 		}
 	}
 }

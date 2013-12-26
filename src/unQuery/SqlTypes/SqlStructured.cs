@@ -16,17 +16,7 @@ namespace unQuery.SqlTypes
 			this.values = values;
 		}
 
-		public SqlParameter GetParameter()
-		{
-			return GetParameter(typeName, values);
-		}
-
-		public object GetRawValue()
-		{
-			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
-		}
-
-		internal static SqlParameter GetParameter(string typeName, IEnumerable<dynamic> values)
+		SqlParameter ISqlType.GetParameter()
 		{
 			object value;
 
@@ -40,6 +30,11 @@ namespace unQuery.SqlTypes
 				TypeName = typeName,
 				Value = value
 			};
+		}
+
+		object ISqlType.GetRawValue()
+		{
+			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
 		}
 	}
 }

@@ -60,7 +60,7 @@ namespace unQuery.Tests
 		[Test]
 		public void CaseSensitive()
 		{
-			var result = DB.GetRows("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") }).First();
+			var result = DB.GetRows("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander", 128) }).First();
 
 			Assert.AreEqual(55, result.Age);
 
@@ -72,7 +72,7 @@ namespace unQuery.Tests
 		[Test]
 		public void SingleRow()
 		{
-			var result = DB.GetRows("SELECT Age, Name FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander") });
+			var result = DB.GetRows("SELECT Age, Name FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander", 128) });
 
 			Assert.AreEqual(1, result.Count());
 

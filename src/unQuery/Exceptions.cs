@@ -77,4 +77,13 @@ namespace unQuery
 		public ObjectHasNoPropertiesException(string message) : base(message)
 		{ }
 	}
+
+	/// <summary>
+	/// Throw if a SqlType is used as if it could be auto converted from the native CLR type. E.g. valid for ints but not for strings.
+	/// </summary>
+	public class TypeCannotBeUsedAsAClrTypeException : InvalidOperationException
+	{
+		public TypeCannotBeUsedAsAClrTypeException() : base("This type can only be used explicitly and not implicitly from a native CLR type.")
+		{ }
+	}
 }

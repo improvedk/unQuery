@@ -59,7 +59,7 @@ namespace unQuery.Tests
 		{
 			var result = DB.Execute("UPDATE Persons SET Name = Name, Age = Age WHERE Name = @Name AND Age = @Age", new {
 				Age = 25,
-				Name = Col.NVarChar("Daniel Gallagher")
+				Name = Col.NVarChar("Daniel Gallagher", 128)
 			});
 
 			Assert.AreEqual(1, result);

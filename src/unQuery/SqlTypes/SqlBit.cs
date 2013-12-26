@@ -4,61 +4,49 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlBit : SqlType, ISqlType
-	{
+	public class SqlBit : SqlType, ISqlType, ITypeHandler
+	{				   
+		private static readonly ITypeHandler typeHandler = new SqlBit();
+
 		private readonly bool? value;
 
-		public SqlBit(bool? value)
+		private SqlBit()
+		{ }
+
+		internal static ITypeHandler GetTypeHandler()
 		{
-			this.value = value;
+			return typeHandler;
 		}
 
-		public static explicit operator SqlBit(bool? value)
-		{
-			return new SqlBit(value);
-		}
-
-		public SqlParameter GetParameter()
-		{
-			return GetParameter(value);
-		}
-
-		public object GetRawValue()
-		{
-			return value;
-		}
-
-		internal static SqlParameter GetParameter(bool? value)
+		SqlParameter ITypeHandler.CreateParamFromValue(object value)
 		{
 			return new SqlParameter {
 				SqlDbType = SqlDbType.Bit,
 				Value = GetDBNullableValue(value)
 			};
 		}
-	}
 
-	internal class SqlBitTypeHandler : ITypeHandler
-	{
-		private static readonly SqlBitTypeHandler instance = new SqlBitTypeHandler();
-
-		internal static SqlBitTypeHandler GetInstance()
-		{
-			return instance;
-		}
-
-		public SqlParameter CreateParamFromValue(object value)
-		{
-			return SqlBit.GetParameter((bool?)value);
-		}
-
-		public SqlDbType GetSqlDbType()
-		{
-			return SqlDbType.Bit;
-		}
-
-		public SqlMetaData CreateSqlMetaData(string name)
+		SqlMetaData ITypeHandler.CreateMetaData(string name)
 		{
 			return new SqlMetaData(name, SqlDbType.Bit);
+		}
+
+		public SqlBit(bool? value)
+		{
+			this.value = value;
+		}
+
+		SqlParameter ISqlType.GetParameter()
+		{
+			return new SqlParameter {
+				SqlDbType = SqlDbType.Bit,
+				Value = GetDBNullableValue(value)
+			};
+		}
+
+		object ISqlType.GetRawValue()
+		{
+			return value;
 		}
 	}
 }

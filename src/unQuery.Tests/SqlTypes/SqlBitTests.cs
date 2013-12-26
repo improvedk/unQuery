@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Data;
 using unQuery.SqlTypes;
@@ -9,65 +8,74 @@ namespace unQuery.Tests.SqlTypes
 	public class SqlBitTests : TestFixture
 	{
 		[Test]
-		public void Casting()
+		public void GetTypeHandler()
 		{
-			var col = (SqlBit)true;
-
-			TestHelper.AssertSqlParameter(col.GetParameter(), SqlDbType.Bit, null, true);
+			Assert.IsInstanceOf<ITypeHandler>(SqlBit.GetTypeHandler());
 		}
 
 		[Test]
-		public void Constructor()
+		public void CreateParamFromValue()
 		{
-			var col = new SqlBit(true);
-			var param = col.GetParameter();
+			TestHelper.AssertParameterFromValue(true, SqlDbType.Bit, true);
+			TestHelper.AssertParameterFromValue((bool?)null, SqlDbType.Bit, DBNull.Value);
+		}
 
-			TestHelper.AssertSqlParameter(param, SqlDbType.Bit, null, true);
+		[Test]
+		public void CreateMetaData()
+		{
+			var meta = SqlBit.GetTypeHandler().CreateMetaData("Test");
+			Assert.AreEqual(SqlDbType.Bit, meta.SqlDbType);
+			Assert.AreEqual("Test", meta.Name);
 		}
 
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(SqlBit.GetParameter(true), SqlDbType.Bit, null, true);
-			TestHelper.AssertSqlParameter(SqlBit.GetParameter(false), SqlDbType.Bit, null, false);
-			TestHelper.AssertSqlParameter(SqlBit.GetParameter(null), SqlDbType.Bit, null, DBNull.Value);
+			ISqlType type = new SqlBit(true);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Bit, null, true);
+
+			type = new SqlBit(null);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Bit, null, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			Assert.AreEqual(true, new SqlBit(true).GetRawValue());
+			ISqlType type = new SqlBit(false);
+			Assert.AreEqual(false, type.GetRawValue());
+
+			type = new SqlBit(null);
+			Assert.Null(type.GetRawValue());
 		}
 
 		[Test]
-		public void TypeHandler_GetInstance()
+		public void Factory()
 		{
-			Assert.NotNull(SqlBitTypeHandler.GetInstance());
+			Assert.IsInstanceOf<SqlBit>(Col.Bit(true));
 		}
 
 		[Test]
-		public void TypeHandler_CreateParamFromValue()
+		public void Structured()
 		{
-			var instance = SqlBitTypeHandler.GetInstance();
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(true), SqlDbType.Bit, null, true);
-			TestHelper.AssertSqlParameter(instance.CreateParamFromValue(null), SqlDbType.Bit, null, DBNull.Value);
+			var rows = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfBits", new[] {
+					new { A = (bool?)true },
+					new { A = (bool?)false },
+					new { A = (bool?)null }
+				})
+			});
+
+			Assert.AreEqual(3, rows.Count);
+			Assert.AreEqual(typeof(bool), rows[0].A.GetType());
+			Assert.AreEqual(true, rows[0].A);
+			Assert.AreEqual(false, rows[1].A);
+			Assert.AreEqual(null, rows[2].A);
 		}
 
 		[Test]
-		public void TypeHandler_GetSqlDbType()
+		public void AddParametersToCommand()
 		{
-			var instance = SqlBitTypeHandler.GetInstance();
-			Assert.AreEqual(SqlDbType.Bit, instance.GetSqlDbType());
-		}
-
-		[Test]
-		public void TypeHandler_CreateSqlMetaData()
-		{
-			var instance = SqlBitTypeHandler.GetInstance();
-
-			var metaData = instance.CreateSqlMetaData("Test");
-			Assert.AreEqual("Test", metaData.Name);
-			Assert.AreEqual(SqlDbType.Bit, metaData.SqlDbType);
+			
 		}
 	}
 }

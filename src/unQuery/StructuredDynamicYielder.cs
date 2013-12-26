@@ -45,18 +45,18 @@ namespace unQuery
 			object[] recordValues = null;
 			CachedType cachedType = null;
 
-			foreach (object value in values)
+			foreach (object row in values)
 			{
 				// For the very first value, we'll first have to create the schema as an array of SqlMetaData
 				if (sdr == null)
 				{
-					var valueType = value.GetType();
+					var valueType = row.GetType();
 
 					// If type schema is not cached, we'll have to create it
 					if (!typeCache.TryGetValue(valueType, out cachedType))
 					{
 						// To ensure we get properties in the declaration order, we need to sort by the MetaDataToken
-						PropertyInfo[] properties = value.GetType().GetProperties().OrderBy(x => x.MetadataToken).ToArray();
+						PropertyInfo[] properties = valueType.GetProperties().OrderBy(x => x.MetadataToken).ToArray();
 						SqlMetaData[] schema = new SqlMetaData[properties.Length];
 
 						// If no properties are found on the provided parameter object, then there's no schema & value to read
@@ -70,7 +70,13 @@ namespace unQuery
 						{
 							try
 							{
-								schema[index++] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateSqlMetaData(prop.Name);
+								if (typeof(ITypeHandler).IsAssignableFrom(prop.PropertyType))
+								{
+									ITypeHandler value = (ITypeHandler)prop.GetValue(row);
+									schema[index++] = value.CreateMetaData(prop.Name);
+								}
+								else
+									schema[index++] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateMetaData(prop.Name);
 							}
 							catch (KeyNotFoundException)
 							{
@@ -100,7 +106,7 @@ namespace unQuery
 				for (int i = 0; i < recordValues.Length; i++)
 				{
 					var prop = cachedType.Properties[i];
-					var columnValue = prop.GetValue(value);
+					var columnValue = prop.GetValue(row);
 					var columnValueSqlType = columnValue as ISqlType;
 
 					// If column value is an ISqlType, get the raw value rather than the ISqlType itself
