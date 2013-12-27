@@ -49,6 +49,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a datetime2 value
+		/// </summary>
+		public static SqlDateTime2 DateTime2(DateTime? date, byte scale)
+		{
+			return new SqlDateTime2(date, scale);
+		}
+
+		/// <summary>
 		/// Creates a decimal value
 		/// </summary>
 		public static SqlDecimal Decimal(decimal? value, byte precision, byte scale)

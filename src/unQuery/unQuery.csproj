@@ -45,6 +45,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\Col.cs" />
+    <Compile Include="SqlTypes\SqlDateTime2.cs" />
     <Compile Include="SqlTypes\SqlDateTime.cs" />
     <Compile Include="SqlTypes\SqlDate.cs" />
     <Compile Include="SqlTypes\SqlChar.cs" />

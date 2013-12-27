@@ -37,6 +37,9 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfDateTimes') IS NOT NULL DROP TYPE ListOfDateTimes
 				CREATE TYPE ListOfDateTimes AS Table (A datetime NULL)
 
+				IF TYPE_ID('ListOfDateTime2s') IS NOT NULL DROP TYPE ListOfDateTime2s
+				CREATE TYPE ListOfDateTime2s AS Table (A datetime2(5) NULL)
+
 				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
 				CREATE TYPE ListOfBits AS Table (A bit NULL)
 
