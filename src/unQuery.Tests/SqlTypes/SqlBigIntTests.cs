@@ -32,10 +32,10 @@ namespace unQuery.Tests.SqlTypes
 		public void GetParameter()
 		{
 			ISqlType type = new SqlBigInt(5);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, null, (long)5);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, (long)5);
 
 			type = new SqlBigInt(null);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, null, DBNull.Value);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, DBNull.Value);
 		}
 
 		[Test]

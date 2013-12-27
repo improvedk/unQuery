@@ -34,10 +34,10 @@ namespace unQuery.Tests.SqlTypes
 		public void GetParameter()
 		{
 			ISqlType type = new SqlNVarChar("Hello ру́сский", 15);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, 15, "Hello ру́сский");
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, "Hello ру́сский");
 
 			type = new SqlNVarChar(null, 15);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, 15, DBNull.Value);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, DBNull.Value);
 		}
 
 		[Test]

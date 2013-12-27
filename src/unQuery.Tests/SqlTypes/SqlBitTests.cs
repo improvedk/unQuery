@@ -32,10 +32,10 @@ namespace unQuery.Tests.SqlTypes
 		public void GetParameter()
 		{
 			ISqlType type = new SqlBit(true);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Bit, null, true);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Bit, true);
 
 			type = new SqlBit(null);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Bit, null, DBNull.Value);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Bit, DBNull.Value);
 		}
 
 		[Test]
@@ -70,12 +70,6 @@ namespace unQuery.Tests.SqlTypes
 			Assert.AreEqual(true, rows[0].A);
 			Assert.AreEqual(false, rows[1].A);
 			Assert.AreEqual(null, rows[2].A);
-		}
-
-		[Test]
-		public void AddParametersToCommand()
-		{
-			
 		}
 	}
 }

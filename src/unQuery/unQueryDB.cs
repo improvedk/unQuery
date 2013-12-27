@@ -220,7 +220,8 @@ namespace unQuery
 			{ typeof(SqlTinyInt), SqlTinyInt.GetTypeHandler() },
 			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifier.GetTypeHandler() },
 			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() },
-			{ typeof(SqlNVarChar), SqlNVarChar.GetTypeHandler() }
+			{ typeof(SqlNVarChar), SqlNVarChar.GetTypeHandler() },
+			{ typeof(SqlDecimal), SqlDecimal.GetTypeHandler() }
 		};
 
 		/// <summary>
@@ -229,7 +230,8 @@ namespace unQuery
 		internal static Dictionary<SqlDbType, ITypeHandler> SqlDbTypeHandlers = new Dictionary<SqlDbType, ITypeHandler> {	
 			{ SqlDbType.BigInt, SqlBigInt.GetTypeHandler() },  
 			{ SqlDbType.Binary, SqlBinary.GetTypeHandler() },  
-			{ SqlDbType.Bit, SqlBit.GetTypeHandler() },		   
+			{ SqlDbType.Bit, SqlBit.GetTypeHandler() },
+ 			{ SqlDbType.Decimal, SqlDecimal.GetTypeHandler() },
 			{ SqlDbType.Int, SqlInt.GetTypeHandler() },
 			{ SqlDbType.NVarChar, SqlNVarChar.GetTypeHandler() },
 			{ SqlDbType.SmallInt, SqlSmallInt.GetTypeHandler() },

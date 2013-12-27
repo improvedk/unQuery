@@ -6,18 +6,25 @@ namespace unQuery.Tests
 {
 	public class TestHelper
 	{
-		internal static void AssertParameterFromValue<TValue, TParamValue>(TValue value, SqlDbType expectedType, TParamValue paramValue, int? size = null)
+		internal static void AssertParameterFromValue<TValue, TParamValue>(TValue value, SqlDbType expectedType, TParamValue paramValue, int? size = null, byte? precision = null, int? scale = null)
 		{
 			var param = unQueryDB.ClrTypeHandlers[typeof(TValue)].CreateParamFromValue(value);
+
 			Assert.AreEqual(expectedType, param.SqlDbType);
 			Assert.AreEqual(paramValue, param.Value);
 			Assert.AreEqual(paramValue.GetType(), param.Value.GetType());
 
 			if (size != null)
 				Assert.AreEqual(size, param.Size);
+
+			if (precision != null)
+				Assert.AreEqual(precision, param.Precision);
+
+			if (scale != null)
+				Assert.AreEqual(scale, param.Scale);
 		}
 
-		internal static void AssertSqlParameter(SqlParameter param, SqlDbType expectedDbType, int? size, object value)
+		internal static void AssertSqlParameter(SqlParameter param, SqlDbType expectedDbType, object value, int? size = null, byte? precision = null, int? scale = null)
 		{
 			Assert.AreEqual(expectedDbType, param.SqlDbType);
 			Assert.AreEqual(value, param.Value);
@@ -25,6 +32,12 @@ namespace unQuery.Tests
 
 			if (size != null)
 				Assert.AreEqual(size, param.Size);
+
+			if (precision != null)
+				Assert.AreEqual(precision, param.Precision);
+
+			if (scale != null)
+				Assert.AreEqual(scale, param.Scale);
 		}
 	}
 }

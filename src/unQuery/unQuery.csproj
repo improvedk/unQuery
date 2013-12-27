@@ -45,6 +45,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\Col.cs" />
+    <Compile Include="SqlTypes\SqlDecimal.cs" />
     <Compile Include="SqlTypes\SqlBinary.cs" />
     <Compile Include="SqlTypes\SqlStructured.cs" />
     <Compile Include="SqlTypes\ITypeHandler.cs" />

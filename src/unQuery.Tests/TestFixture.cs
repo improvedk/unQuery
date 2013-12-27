@@ -31,6 +31,9 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
 				CREATE TYPE ListOfBits AS Table (A bit NULL)
 
+				IF TYPE_ID('ListOfDecimals') IS NOT NULL DROP TYPE ListOfDecimals
+				CREATE TYPE ListOfDecimals AS Table (A decimal(10, 5) NULL)
+
 				IF TYPE_ID('ListOfNVarChars') IS NOT NULL DROP TYPE ListOfNVarChars
 				CREATE TYPE ListOfNVarChars AS Table (A nvarchar(256) NULL)
 

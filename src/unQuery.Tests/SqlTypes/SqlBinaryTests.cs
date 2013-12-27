@@ -36,10 +36,10 @@ namespace unQuery.Tests.SqlTypes
 		public void GetParameter()
 		{
 			ISqlType type = new SqlBinary(data, 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Binary, 10, data);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Binary, data, size: 10);
 
 			type = new SqlBinary(null, 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Binary, 10, DBNull.Value);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Binary, DBNull.Value, size: 10);
 		}
 
 		[Test]

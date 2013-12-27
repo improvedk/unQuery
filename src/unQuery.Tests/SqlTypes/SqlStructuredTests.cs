@@ -20,7 +20,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			ISqlType col = new SqlStructured("MyType", null);
 			var param = col.GetParameter();
-			TestHelper.AssertSqlParameter(param, SqlDbType.Structured, null, DBNull.Value);
+			TestHelper.AssertSqlParameter(param, SqlDbType.Structured, DBNull.Value);
 
 			col = new SqlStructured("MyType", value);
 			param = col.GetParameter();

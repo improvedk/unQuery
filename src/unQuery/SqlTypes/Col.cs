@@ -25,6 +25,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a decimal value
+		/// </summary>
+		public static SqlDecimal Decimal(decimal? value, byte precision, byte scale)
+		{
+			return new SqlDecimal(value, precision, scale);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)

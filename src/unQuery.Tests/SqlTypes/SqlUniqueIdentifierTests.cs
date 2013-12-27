@@ -34,10 +34,10 @@ namespace unQuery.Tests.SqlTypes
 		public void GetParameter()
 		{
 			ISqlType type = new SqlUniqueIdentifier(guid);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, null, guid);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, guid);
 
 			type = new SqlUniqueIdentifier(null);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, null, DBNull.Value);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, DBNull.Value);
 		}
 
 		[Test]
