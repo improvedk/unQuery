@@ -57,6 +57,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a datetimeoffset value
+		/// </summary>
+		public static SqlDateTimeOffset DateTimeOffset(DateTimeOffset? dateTimeOffset, byte scale)
+		{
+			return new SqlDateTimeOffset(dateTimeOffset, scale);
+		}
+
+		/// <summary>
 		/// Creates a decimal value
 		/// </summary>
 		public static SqlDecimal Decimal(decimal? value, byte precision, byte scale)
