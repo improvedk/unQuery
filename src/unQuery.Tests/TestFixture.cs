@@ -28,6 +28,9 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfBinary') IS NOT NULL DROP TYPE ListOfBinary
 				CREATE TYPE ListOfBinary AS Table (A binary(2) NULL)
 
+				IF TYPE_ID('ListOfChars') IS NOT NULL DROP TYPE ListOfChars
+				CREATE TYPE ListOfChars AS Table (A char(10) NULL)
+
 				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
 				CREATE TYPE ListOfBits AS Table (A bit NULL)
 

@@ -25,6 +25,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a char value
+		/// </summary>
+		public static SqlChar Char(string value, int maxLength)
+		{
+			return new SqlChar(value, maxLength);
+		}
+
+		/// <summary>
 		/// Creates a decimal value
 		/// </summary>
 		public static SqlDecimal Decimal(decimal? value, byte precision, byte scale)
