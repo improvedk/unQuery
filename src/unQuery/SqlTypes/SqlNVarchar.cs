@@ -9,7 +9,7 @@ namespace unQuery.SqlTypes
 		private static readonly ITypeHandler typeHandler = new SqlNVarChar();
 
 		private readonly string value;
-		private readonly int size;
+		private readonly int maxLength;
 		private readonly bool hasValue;
 
 		private SqlNVarChar()
@@ -30,13 +30,13 @@ namespace unQuery.SqlTypes
 			if (!hasValue)
 				throw new TypeCannotBeUsedAsAClrTypeException();
 
-			return new SqlMetaData(name, SqlDbType.NVarChar, size);
+			return new SqlMetaData(name, SqlDbType.NVarChar, maxLength);
 		}
 
-		public SqlNVarChar(string value, int size)
+		public SqlNVarChar(string value, int maxLength)
 		{
 			this.value = value;
-			this.size = size;
+			this.maxLength = maxLength;
 
 			hasValue = true;
 		}
@@ -46,7 +46,7 @@ namespace unQuery.SqlTypes
 			return new SqlParameter {
 				SqlDbType = SqlDbType.NVarChar,
 				Value = GetDBNullableValue(value),
-				Size = size
+				Size = maxLength
 			};
 		}
 

@@ -60,10 +60,10 @@ namespace unQuery.SqlTypes
 		/// Creates an nvarchar value
 		/// </summary>
 		/// <param name="value">The value</param>
-		/// <param name="size">The size of the column value - ignores the actual size of the value</param>
-		public static SqlNVarChar NVarChar(string value, int size)
+		/// <param name="maxLength">The max length of the column value - should match the one defined on the column</param>
+		public static SqlNVarChar NVarChar(string value, int maxLength)
 		{
-			return new SqlNVarChar(value, size);
+			return new SqlNVarChar(value, maxLength);
 		}
 
 		/// <summary>
@@ -80,10 +80,10 @@ namespace unQuery.SqlTypes
 		/// Creates a varchar value
 		/// </summary>
 		/// <param name="value">The value</param>
-		/// <param name="size">The size of the column value - ignores the actual size of the value</param>
-		public static SqlVarChar VarChar(string value, int size)
+		/// <param name="maxLength">The max length of the column value - should match the one defined on the column</param>
+		public static SqlVarChar VarChar(string value, int maxLength)
 		{
-			return new SqlVarChar(value, size);
+			return new SqlVarChar(value, maxLength);
 		}
 
 		/// <summary>
