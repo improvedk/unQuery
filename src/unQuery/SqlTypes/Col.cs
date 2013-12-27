@@ -73,6 +73,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a float value
+		/// </summary>
+		public static SqlFloat Float(double? value)
+		{
+			return new SqlFloat(value);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)
