@@ -27,6 +27,7 @@ namespace unQuery.Tests.SqlTypes
 			ITypeHandler col = new SqlNVarChar("Test", 10);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.NVarChar, meta.SqlDbType);
+			Assert.AreEqual(10, meta.MaxLength);
 			Assert.AreEqual("Test", meta.Name);
 		}
 

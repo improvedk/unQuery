@@ -29,6 +29,7 @@ namespace unQuery.Tests.SqlTypes
 			ITypeHandler col = new SqlBinary(data, 10);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Binary, meta.SqlDbType);
+			Assert.AreEqual(10, meta.MaxLength);
 			Assert.AreEqual("Test", meta.Name);
 		}
 
