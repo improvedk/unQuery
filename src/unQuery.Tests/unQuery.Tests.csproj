@@ -55,6 +55,7 @@
     <Compile Include="GetRowTests.cs" />
     <Compile Include="ExecuteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlTypes\SqlDateTimeTests.cs" />
     <Compile Include="SqlTypes\SqlDateTests.cs" />
     <Compile Include="SqlTypes\SqlCharTests.cs" />
     <Compile Include="SqlTypes\SqlDecimalTests.cs" />

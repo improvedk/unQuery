@@ -215,15 +215,16 @@ namespace unQuery
 			{ typeof(SqlBigInt), SqlBigInt.GetTypeHandler() },
 			{ typeof(SqlBinary), SqlBinary.GetTypeHandler() },
 			{ typeof(SqlBit), SqlBit.GetTypeHandler() },
-			{ typeof(SqlInt), SqlInt.GetTypeHandler() },
+			{ typeof(SqlChar), SqlChar.GetTypeHandler() },
+			{ typeof(SqlDate), SqlDate.GetTypeHandler() },
+			{ typeof(SqlDateTime), SqlDateTime.GetTypeHandler() },	 
+			{ typeof(SqlDecimal), SqlDecimal.GetTypeHandler() },
+			{ typeof(SqlInt), SqlInt.GetTypeHandler() },		
+			{ typeof(SqlNVarChar), SqlNVarChar.GetTypeHandler() },
 			{ typeof(SqlSmallInt), SqlSmallInt.GetTypeHandler() },
 			{ typeof(SqlTinyInt), SqlTinyInt.GetTypeHandler() },
 			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifier.GetTypeHandler() },
-			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() },
-			{ typeof(SqlNVarChar), SqlNVarChar.GetTypeHandler() },
-			{ typeof(SqlDecimal), SqlDecimal.GetTypeHandler() },
-			{ typeof(SqlChar), SqlChar.GetTypeHandler() },
-			{ typeof(SqlDate), SqlDate.GetTypeHandler() }
+			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() }
 		};
 
 		/// <summary>
@@ -235,6 +236,7 @@ namespace unQuery
 			{ SqlDbType.Bit, SqlBit.GetTypeHandler() },
 			{ SqlDbType.Char, SqlChar.GetTypeHandler() },
 			{ SqlDbType.Date, SqlDate.GetTypeHandler() },
+			{ SqlDbType.DateTime, SqlDateTime.GetTypeHandler() },
  			{ SqlDbType.Decimal, SqlDecimal.GetTypeHandler() },
 			{ SqlDbType.Int, SqlInt.GetTypeHandler() },
 			{ SqlDbType.NVarChar, SqlNVarChar.GetTypeHandler() },
