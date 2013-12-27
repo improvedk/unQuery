@@ -69,5 +69,14 @@ namespace unQuery.Tests.SqlTypes
 			Assert.AreEqual(1, rows[0].A);
 			Assert.AreEqual(null, rows[1].A);
 		}
+
+		[Test]
+		public void TypeMaps()
+		{
+			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(byte)]);
+			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(byte?)]);
+			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlTinyInt)]);
+			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.TinyInt]);
+		}
 	}
 }

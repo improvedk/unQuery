@@ -72,5 +72,12 @@ namespace unQuery.Tests.SqlTypes
 			Assert.AreEqual("ABC", rows[0].A);
 			Assert.AreEqual(null, rows[1].A);
 		}
+
+		[Test]
+		public void TypeMaps()
+		{
+			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlVarChar)]);
+			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.VarChar]);
+		}
 	}
 }
