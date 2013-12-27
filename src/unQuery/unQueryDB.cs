@@ -222,7 +222,8 @@ namespace unQuery
 			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() },
 			{ typeof(SqlNVarChar), SqlNVarChar.GetTypeHandler() },
 			{ typeof(SqlDecimal), SqlDecimal.GetTypeHandler() },
-			{ typeof(SqlChar), SqlChar.GetTypeHandler() }
+			{ typeof(SqlChar), SqlChar.GetTypeHandler() },
+			{ typeof(SqlDate), SqlDate.GetTypeHandler() }
 		};
 
 		/// <summary>
@@ -233,6 +234,7 @@ namespace unQuery
 			{ SqlDbType.Binary, SqlBinary.GetTypeHandler() },
 			{ SqlDbType.Bit, SqlBit.GetTypeHandler() },
 			{ SqlDbType.Char, SqlChar.GetTypeHandler() },
+			{ SqlDbType.Date, SqlDate.GetTypeHandler() },
  			{ SqlDbType.Decimal, SqlDecimal.GetTypeHandler() },
 			{ SqlDbType.Int, SqlInt.GetTypeHandler() },
 			{ SqlDbType.NVarChar, SqlNVarChar.GetTypeHandler() },

@@ -33,6 +33,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a date value
+		/// </summary>
+		public static SqlDate Date(DateTime? date)
+		{
+			return new SqlDate(date);
+		}
+
+		/// <summary>
 		/// Creates a decimal value
 		/// </summary>
 		public static SqlDecimal Decimal(decimal? value, byte precision, byte scale)
