@@ -89,6 +89,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a money value
+		/// </summary>
+		public static SqlMoney Money(decimal? value)
+		{
+			return new SqlMoney(value);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)

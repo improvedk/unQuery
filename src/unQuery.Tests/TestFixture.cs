@@ -49,6 +49,9 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfFloats') IS NOT NULL DROP TYPE ListOfFloats
 				CREATE TYPE ListOfFloats AS Table (A float NULL)
 
+				IF TYPE_ID('ListOfMoneys') IS NOT NULL DROP TYPE ListOfMoneys
+				CREATE TYPE ListOfMoneys AS Table (A money NULL)
+
 				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
 				CREATE TYPE ListOfBits AS Table (A bit NULL)
 
