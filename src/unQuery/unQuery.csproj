@@ -49,7 +49,7 @@
     <Compile Include="SqlTypes\SqlReal.cs" />
     <Compile Include="SqlTypes\SqlNText.cs" />
     <Compile Include="SqlTypes\ExplicitValueType.cs" />
-    <Compile Include="SqlTypes\MaxLengthType.cs" />
+    <Compile Include="SqlTypes\ExplicitMaxLengthType.cs" />
     <Compile Include="SqlTypes\SqlNChar.cs" />
     <Compile Include="SqlTypes\SqlMoney.cs" />
     <Compile Include="SqlTypes\SqlImage.cs" />

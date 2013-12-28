@@ -2,7 +2,7 @@
 
 namespace unQuery.SqlTypes
 {
-	public class SqlBinary : MaxLengthType<byte[]>
+	public class SqlBinary : ExplicitMaxLengthType<byte[]>
 	{
 		private SqlBinary() :
 			base(SqlDbType.Binary)

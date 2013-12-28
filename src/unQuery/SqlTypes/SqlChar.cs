@@ -2,7 +2,7 @@
 
 namespace unQuery.SqlTypes
 {
-	public class SqlChar : MaxLengthType<string>
+	public class SqlChar : ExplicitMaxLengthType<string>
 	{
 		private SqlChar() :
 			base(SqlDbType.Char)

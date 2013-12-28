@@ -4,19 +4,19 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public abstract class MaxLengthType<TValue> : SqlType, ISqlType, ITypeHandler
+	public abstract class ExplicitMaxLengthType<TValue> : SqlType, ISqlType, ITypeHandler
 	{
 		private readonly TValue value;
 		private readonly int maxLength;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
 
-		internal MaxLengthType(SqlDbType dbType)
+		internal ExplicitMaxLengthType(SqlDbType dbType)
 		{
 			this.dbType = dbType;
 		}
 
-		internal MaxLengthType(TValue value, int maxLength, SqlDbType dbType)
+		internal ExplicitMaxLengthType(TValue value, int maxLength, SqlDbType dbType)
 		{
 			this.value = value;
 			this.maxLength = maxLength;
