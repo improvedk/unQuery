@@ -1,51 +1,21 @@
-﻿using Microsoft.SqlServer.Server;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlBigInt : SqlType, ISqlType, ITypeHandler
+	public class SqlBigInt : ImplicitValueType<long?>
 	{
-		private static readonly ITypeHandler typeHandler = new SqlBigInt();
-		private readonly long? value;
-
-		private SqlBigInt()
+		private SqlBigInt() :
+			base(SqlDbType.BigInt)
 		{ }
 
-		SqlParameter ITypeHandler.CreateParamFromValue(object value)
-		{
-			return new SqlParameter {
-				SqlDbType = SqlDbType.BigInt,
-				Value = GetDBNullableValue(value)
-			};
-		}
+		public SqlBigInt(long? value) :
+			base(value, SqlDbType.BigInt)
+		{ }
 
-		SqlMetaData ITypeHandler.CreateMetaData(string name)
-		{
-			return new SqlMetaData(name, SqlDbType.BigInt);
-		}
-
+		private static readonly ITypeHandler typeHandler = new SqlBigInt();
 		internal static ITypeHandler GetTypeHandler()
 		{
 			return typeHandler;
-		}
-
-		public SqlBigInt(long? value)
-		{
-			this.value = value;
-		}
-
-		SqlParameter ISqlType.GetParameter()
-		{
-			return new SqlParameter {
-				SqlDbType = SqlDbType.BigInt,
-				Value = GetDBNullableValue(value)
-			};
-		}
-
-		object ISqlType.GetRawValue()
-		{
-			return value;
 		}
 	}
 }

@@ -1,52 +1,21 @@
-﻿using Microsoft.SqlServer.Server;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlBit : SqlType, ISqlType, ITypeHandler
-	{				   
-		private static readonly ITypeHandler typeHandler = new SqlBit();
-
-		private readonly bool? value;
-
-		private SqlBit()
+	public class SqlBit : ImplicitValueType<bool?>
+	{
+		private SqlBit() :
+			base(SqlDbType.Bit)
 		{ }
 
+		public SqlBit(bool? value) :
+			base(value, SqlDbType.Bit)
+		{ }
+
+		private static readonly ITypeHandler typeHandler = new SqlBit();
 		internal static ITypeHandler GetTypeHandler()
 		{
 			return typeHandler;
-		}
-
-		SqlParameter ITypeHandler.CreateParamFromValue(object value)
-		{
-			return new SqlParameter {
-				SqlDbType = SqlDbType.Bit,
-				Value = GetDBNullableValue(value)
-			};
-		}
-
-		SqlMetaData ITypeHandler.CreateMetaData(string name)
-		{
-			return new SqlMetaData(name, SqlDbType.Bit);
-		}
-
-		public SqlBit(bool? value)
-		{
-			this.value = value;
-		}
-
-		SqlParameter ISqlType.GetParameter()
-		{
-			return new SqlParameter {
-				SqlDbType = SqlDbType.Bit,
-				Value = GetDBNullableValue(value)
-			};
-		}
-
-		object ISqlType.GetRawValue()
-		{
-			return value;
 		}
 	}
 }

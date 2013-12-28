@@ -70,6 +70,7 @@
     <Compile Include="SqlTypes\SqlBit.cs" />
     <Compile Include="SqlTypes\ISqlType.cs" />
     <Compile Include="DynamicRow.cs" />
+    <Compile Include="SqlTypes\ImplicitValueType.cs" />
     <Compile Include="StructuredDynamicYielder.cs" />
     <Compile Include="unQueryDB.cs" />
   </ItemGroup>
