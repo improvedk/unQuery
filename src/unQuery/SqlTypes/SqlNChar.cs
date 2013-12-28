@@ -1,58 +1,21 @@
-﻿using Microsoft.SqlServer.Server;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlNChar : SqlType, ISqlType, ITypeHandler
+	public class SqlNChar : MaxLengthType<string>
 	{
-		private static readonly ITypeHandler typeHandler = new SqlNChar();
-
-		private readonly string value;
-		private readonly int maxLength;
-		private readonly bool hasValue;
-
-		private SqlNChar()
+		private SqlNChar() :
+			base(SqlDbType.NChar)
 		{ }
 
+		public SqlNChar(string value, int maxLength) :
+			base(value, maxLength, SqlDbType.NChar)
+		{ }
+
+		private static readonly ITypeHandler typeHandler = new SqlNChar();
 		internal static ITypeHandler GetTypeHandler()
 		{
 			return typeHandler;
-		}
-
-		SqlParameter ITypeHandler.CreateParamFromValue(object value)
-		{
-			throw new TypeCannotBeUsedAsAClrTypeException();
-		}
-
-		SqlMetaData ITypeHandler.CreateMetaData(string name)
-		{
-			if (!hasValue)
-				throw new TypeCannotBeUsedAsAClrTypeException();
-
-			return new SqlMetaData(name, SqlDbType.NChar, maxLength);
-		}
-
-		public SqlNChar(string value, int maxLength)
-		{
-			this.value = value;
-			this.maxLength = maxLength;
-
-			hasValue = true;
-		}
-
-		SqlParameter ISqlType.GetParameter()
-		{
-			return new SqlParameter {
-				SqlDbType = SqlDbType.NChar,
-				Value = GetDBNullableValue(value),
-				Size = maxLength
-			};
-		}
-
-		object ISqlType.GetRawValue()
-		{
-			return value;
 		}
 	}
 }
