@@ -55,6 +55,7 @@
     <Compile Include="GetRowTests.cs" />
     <Compile Include="ExecuteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlTypes\SqlNTextTests.cs" />
     <Compile Include="SqlTypes\SqlNCharTests.cs" />
     <Compile Include="SqlTypes\SqlMoneyTests.cs" />
     <Compile Include="SqlTypes\SqlImageTests.cs" />
