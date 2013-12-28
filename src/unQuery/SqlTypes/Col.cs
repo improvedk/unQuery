@@ -81,6 +81,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a image value
+		/// </summary>
+		public static SqlImage Image(byte[] value)
+		{
+			return new SqlImage(value);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)
