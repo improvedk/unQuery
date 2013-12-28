@@ -58,6 +58,9 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfNTexts') IS NOT NULL DROP TYPE ListOfNTexts
 				CREATE TYPE ListOfNTexts AS Table (A ntext NULL)
 
+				IF TYPE_ID('ListOfReals') IS NOT NULL DROP TYPE ListOfReals
+				CREATE TYPE ListOfReals AS Table (A real NULL)
+
 				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
 				CREATE TYPE ListOfBits AS Table (A bit NULL)
 

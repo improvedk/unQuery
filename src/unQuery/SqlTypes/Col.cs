@@ -9,6 +9,14 @@ namespace unQuery.SqlTypes
 	public static class Col
 	{
 		/// <summary>
+		/// Creates a bigint value
+		/// </summary>
+		public static SqlBigInt BigInt(long? value)
+		{
+			return new SqlBigInt(value);
+		}
+
+		/// <summary>
 		/// Creates a bit value
 		/// </summary>
 		public static SqlBit Bit(bool? value)
@@ -89,6 +97,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates an int value
+		/// </summary>
+		public static SqlInt Int(int? value)
+		{
+			return new SqlInt(value);
+		}
+
+		/// <summary>
 		/// Creates a money value
 		/// </summary>
 		public static SqlMoney Money(decimal? value)
@@ -113,14 +129,6 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
-		/// Creates a tinyint value
-		/// </summary>
-		public static SqlTinyInt TinyInt(byte? value)
-		{
-			return new SqlTinyInt(value);
-		}
-
-		/// <summary>
 		/// Creates a smallint value
 		/// </summary>
 		public static SqlSmallInt SmallInt(byte? value)
@@ -129,19 +137,11 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
-		/// Creates an int value
+		/// Creates a tinyint value
 		/// </summary>
-		public static SqlInt Int(int? value)
+		public static SqlTinyInt TinyInt(byte? value)
 		{
-			return new SqlInt(value);
-		}
-
-		/// <summary>
-		/// Creates a bigint value
-		/// </summary>
-		public static SqlBigInt BigInt(long? value)
-		{
-			return new SqlBigInt(value);
+			return new SqlTinyInt(value);
 		}
 
 		/// <summary>
@@ -155,6 +155,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a real value
+		/// </summary>
+		public static SqlReal Real(float? value)
+		{
+			return new SqlReal(value);
+		}
+
+		/// <summary>
 		/// Creates a structured value for use as a table valued parameter
 		/// </summary>
 		/// <param name="typeName">The name of the SQL Server table valued type</param>
@@ -165,6 +173,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a uniqueidentifier value
+		/// </summary>
+		public static SqlUniqueIdentifier UniqueIdentifier(Guid? value)
+		{
+			return new SqlUniqueIdentifier(value);
+		}
+
+		/// <summary>
 		/// Creates a varchar value
 		/// </summary>
 		/// <param name="value">The value</param>
@@ -172,14 +188,6 @@ namespace unQuery.SqlTypes
 		public static SqlVarChar VarChar(string value, int maxLength)
 		{
 			return new SqlVarChar(value, maxLength);
-		}
-
-		/// <summary>
-		/// Creates a uniqueidentifier value
-		/// </summary>
-		public static SqlUniqueIdentifier UniqueIdentifier(Guid? value)
-		{
-			return new SqlUniqueIdentifier(value);
 		}
 	}
 }
