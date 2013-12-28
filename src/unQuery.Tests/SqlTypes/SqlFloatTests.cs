@@ -35,10 +35,10 @@ namespace unQuery.Tests.SqlTypes
 		public void GetParameter()
 		{
 			ISqlType type = new SqlFloat(5.27d);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Float, 5.27d, precision: 53);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Float, 5.27d);
 
 			type = new SqlFloat(null);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Float, DBNull.Value, precision: 53);
+			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Float, DBNull.Value);
 		}
 
 		[Test]
