@@ -45,6 +45,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\Col.cs" />
+    <Compile Include="SqlTypes\SqlNChar.cs" />
     <Compile Include="SqlTypes\SqlMoney.cs" />
     <Compile Include="SqlTypes\SqlImage.cs" />
     <Compile Include="SqlTypes\SqlFloat.cs" />

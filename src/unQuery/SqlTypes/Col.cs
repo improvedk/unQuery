@@ -97,6 +97,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a nchar value
+		/// </summary>
+		public static SqlNChar NChar(string value, int maxLength)
+		{
+			return new SqlNChar(value, maxLength);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)
