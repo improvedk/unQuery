@@ -232,6 +232,7 @@ namespace unQuery
 			{ typeof(SqlSmallDateTime), SqlSmallDateTime.GetTypeHandler() },
 			{ typeof(SqlSmallInt), SqlSmallInt.GetTypeHandler() },
 			{ typeof(SqlSmallMoney), SqlSmallMoney.GetTypeHandler() },
+			{ typeof(SqlText), SqlText.GetTypeHandler() },
 			{ typeof(SqlTinyInt), SqlTinyInt.GetTypeHandler() },
 			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifier.GetTypeHandler() },
 			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() }
@@ -261,6 +262,7 @@ namespace unQuery
 			{ SqlDbType.SmallDateTime, SqlSmallDateTime.GetTypeHandler() },
 			{ SqlDbType.SmallInt, SqlSmallInt.GetTypeHandler() },
 			{ SqlDbType.SmallMoney, SqlSmallMoney.GetTypeHandler() },
+			{ SqlDbType.Text, SqlText.GetTypeHandler() },
 			{ SqlDbType.TinyInt, SqlTinyInt.GetTypeHandler() },
 			{ SqlDbType.UniqueIdentifier, SqlUniqueIdentifier.GetTypeHandler() },
 			{ SqlDbType.VarChar, SqlVarChar.GetTypeHandler() }

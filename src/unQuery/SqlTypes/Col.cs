@@ -173,6 +173,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a text value
+		/// </summary>
+		public static SqlText Text(string value)
+		{
+			return new SqlText(value);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)

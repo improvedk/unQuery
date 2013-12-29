@@ -13,14 +13,6 @@ namespace unQuery.Tests
 		{
 			// Non-transactional setup
 			DB.Execute(@"
-				IF TYPE_ID('ListOfTinyInts') IS NOT NULL DROP TYPE ListOfTinyInts
-				CREATE TYPE ListOfTinyInts AS Table (A tinyint NULL)
-
-				IF TYPE_ID('ListOfSmallInts') IS NOT NULL DROP TYPE ListOfSmallInts
-				CREATE TYPE ListOfSmallInts AS Table (A smallint NULL)
-
-				IF TYPE_ID('ListOfInts') IS NOT NULL DROP TYPE ListOfInts
-				CREATE TYPE ListOfInts AS Table (A int NULL)
 
 				IF TYPE_ID('ListOfBigInts') IS NOT NULL DROP TYPE ListOfBigInts
 				CREATE TYPE ListOfBigInts AS Table (A bigint NULL)
@@ -28,8 +20,8 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfBinary') IS NOT NULL DROP TYPE ListOfBinary
 				CREATE TYPE ListOfBinary AS Table (A binary(2) NULL)
 
-				IF TYPE_ID('ListOfImages') IS NOT NULL DROP TYPE ListOfImages
-				CREATE TYPE ListOfImages AS Table (A image NULL)
+				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
+				CREATE TYPE ListOfBits AS Table (A bit NULL)
 
 				IF TYPE_ID('ListOfChars') IS NOT NULL DROP TYPE ListOfChars
 				CREATE TYPE ListOfChars AS Table (A char(10) NULL)
@@ -46,8 +38,17 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfDateTimeOffsets') IS NOT NULL DROP TYPE ListOfDateTimeOffsets
 				CREATE TYPE ListOfDateTimeOffsets AS Table (A datetimeoffset(4) NULL)
 
+				IF TYPE_ID('ListOfDecimals') IS NOT NULL DROP TYPE ListOfDecimals
+				CREATE TYPE ListOfDecimals AS Table (A decimal(10, 5) NULL)
+
 				IF TYPE_ID('ListOfFloats') IS NOT NULL DROP TYPE ListOfFloats
 				CREATE TYPE ListOfFloats AS Table (A float NULL)
+
+				IF TYPE_ID('ListOfImages') IS NOT NULL DROP TYPE ListOfImages
+				CREATE TYPE ListOfImages AS Table (A image NULL)
+
+				IF TYPE_ID('ListOfInts') IS NOT NULL DROP TYPE ListOfInts
+				CREATE TYPE ListOfInts AS Table (A int NULL)
 
 				IF TYPE_ID('ListOfMoneys') IS NOT NULL DROP TYPE ListOfMoneys
 				CREATE TYPE ListOfMoneys AS Table (A money NULL)
@@ -58,23 +59,26 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfNTexts') IS NOT NULL DROP TYPE ListOfNTexts
 				CREATE TYPE ListOfNTexts AS Table (A ntext NULL)
 
+				IF TYPE_ID('ListOfNVarChars') IS NOT NULL DROP TYPE ListOfNVarChars
+				CREATE TYPE ListOfNVarChars AS Table (A nvarchar(256) NULL)
+
 				IF TYPE_ID('ListOfReals') IS NOT NULL DROP TYPE ListOfReals
 				CREATE TYPE ListOfReals AS Table (A real NULL)
 
 				IF TYPE_ID('ListOfSmallDateTimes') IS NOT NULL DROP TYPE ListOfSmallDateTimes
 				CREATE TYPE ListOfSmallDateTimes AS Table (A smalldatetime NULL)
 
+				IF TYPE_ID('ListOfSmallInts') IS NOT NULL DROP TYPE ListOfSmallInts
+				CREATE TYPE ListOfSmallInts AS Table (A smallint NULL)
+
 				IF TYPE_ID('ListOfSmallMoneys') IS NOT NULL DROP TYPE ListOfSmallMoneys
 				CREATE TYPE ListOfSmallMoneys AS Table (A smallmoney NULL)
 
-				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
-				CREATE TYPE ListOfBits AS Table (A bit NULL)
+				IF TYPE_ID('ListOfTexts') IS NOT NULL DROP TYPE ListOfTexts
+				CREATE TYPE ListOfTexts AS Table (A text NULL)
 
-				IF TYPE_ID('ListOfDecimals') IS NOT NULL DROP TYPE ListOfDecimals
-				CREATE TYPE ListOfDecimals AS Table (A decimal(10, 5) NULL)
-
-				IF TYPE_ID('ListOfNVarChars') IS NOT NULL DROP TYPE ListOfNVarChars
-				CREATE TYPE ListOfNVarChars AS Table (A nvarchar(256) NULL)
+				IF TYPE_ID('ListOfTinyInts') IS NOT NULL DROP TYPE ListOfTinyInts
+				CREATE TYPE ListOfTinyInts AS Table (A tinyint NULL)
 
 				IF TYPE_ID('ListOfVarChars') IS NOT NULL DROP TYPE ListOfVarChars
 				CREATE TYPE ListOfVarChars AS Table (A varchar(256) NULL)
