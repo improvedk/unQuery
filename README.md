@@ -76,29 +76,56 @@ All access methods support supplying an anonymous objects with parameters.
 
 ```csharp
 var children = DB.GetRows("SELECT * FROM Users WHERE Age < @AdultThreshold", new {
-	AdultThreshold = 18
+	AdultThreshold = 18 // int
 });
 
 var marks = DB.GetRow("SELECT TOP 1 * FROM Users WHERE Name = @Name", new {
-	Name = Col.NVarChar("Mark", 64)
+	Name = Col.NVarChar("Mark", 64) // nvarchar(64)
 });
 
 DB.Execute("INSERT INTO Users (Name, Age, Active) VALUES (@Name, @Age, @Active)", new {
-	Name = Col.NVarChar("Mark", 64),
-	Age = 28,
-	Active = true
+	Name = Col.NVarChar("Mark", 64), // nvarchar(64)
+	Age = 28, // int
+	Active = true // bit
 });
 ```
 
-Simple C# types like byte, short, int, bigint, bool & Guid are automatically mapped to their equivalent database type. Ambiguous types like strings need to be mapped to a specific type using the Col factory. There are several ways of specifying the types explicitly.
+### Type Support
 
-```csharp
-var row = DB.GetRow("SELECT @A, @B, @C", new {
-	A = Col.VarChar("A"), // Length is based on the input
-	B = Col.VarChar("A", 1), // Sets length explicitly for optimal plan reuse
-	C = (SqlVarchar)"A" // Casts a string into a SqlVarChar with length based on the input
-});
-```
+unQuery supports almost all of the built-in types in SQL Server. Types that can be mapped between .NET and SQL Server automatically are supported as implicit types, whereas all others require you to use the `Col` factory for creating parameter values.
+
+The table below shows which native .NET types can be automatically mapped to the equivanlent SQL Server types, as well as how to use the Col factory class, for types that do not support auto-mapping.
+
+|SQL Server Type|Implicit .NET Type (C#)|Col Syntax|
+|---------------|:---------------------:|:---------|
+|**bigint**|`long` / `long?`|`Col.BigInt(long? value)`|
+|**binary**|N/A|`Col.Binary(byte[] value, int maxLength)`|
+|**bit**|`bool` / `bool?`|`Col.Bit(bool? value)`|
+|**char**|N/A|`Col.Char(string value, int maxLength)`|
+|**date**|N/A|`Col.Date(DateTime? value)`|
+|**datetime**|N/A|`Col.DateTime(DateTime? value)`|
+|**datetime2**|N/A|`Col.DateTime2(DateTime? value, byte scale)`|
+|**datetimeoffset**|N/A|`Col.DateTimeOffset(DateTimeOffset? value, byte scale)`|
+|**decimal**|N/A|`Col.Decimal(decimal? value, byte precision, byte scale)`|
+|**float**|N/A|`Col.Float(double? value)`|
+|**image**|N/A|`Col.Image(byte[] value)`|
+|**int**|`int` / `int?`|`Col.Int(int? value)`|
+|**money**|N/A|`Col.Money(decimal? value)`|
+|**nchar**|N/A|`Col.NChar(string value, int maxLength)`|
+|**ntext**|N/A|`Col.NText(string value)`|
+|**numeric**|N/A|`Col.Decimal(decimal? value, byte precision, byte scale)`|
+|**nvarchar**|N/A|`Col.NVarChar(string value, int maxLength)`|
+|**real**|N/A|`Col.Real(float? value)`|
+|**smalldatetime**|N/A|`Col.SmallDateTime(DateTime? value)`|
+|**smallint**|`short` / `short?`|`Col.SmallInt(short? value)`|
+|**smallmoney**|N/A|`Col.SmallMoney(decimal? value)`|
+|**text**|N/A|`Col.Text(string value)`|
+|**time**|N/A|`Col.Time(TimeSpan? value, byte scale)`|
+|**tinyint**|`byte` / `byte?`|`Col.TinyInt(byte? value)`|
+|**uniqueidentifier**|`Guid` / `Guid?`|`Col.UniqueIdentifier(Guid? value)`|
+|**varbinary**|N/A|`Col.VarBinary(byte[] value, int maxLength)`|
+|**varchar**|N/A|`Col.VarChar(string value, int maxLength)`|
+|**xml**|N/A|`Col.Xml(string value)`|
 
 ## Nulls
 
