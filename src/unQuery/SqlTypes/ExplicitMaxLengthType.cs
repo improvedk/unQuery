@@ -7,7 +7,7 @@ namespace unQuery.SqlTypes
 	public abstract class ExplicitMaxLengthType<TValue> : SqlType, ISqlType, ITypeHandler
 	{
 		private readonly TValue value;
-		private readonly int maxLength;
+		private readonly int? maxLength;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
 
@@ -16,7 +16,7 @@ namespace unQuery.SqlTypes
 			this.dbType = dbType;
 		}
 
-		internal ExplicitMaxLengthType(TValue value, int maxLength, SqlDbType dbType)
+		internal ExplicitMaxLengthType(TValue value, int? maxLength, SqlDbType dbType)
 		{
 			this.value = value;
 			this.maxLength = maxLength;
@@ -32,11 +32,15 @@ namespace unQuery.SqlTypes
 
 		SqlParameter ISqlType.GetParameter()
 		{
-			return new SqlParameter {
+			var param = new SqlParameter {
 				SqlDbType = dbType,
-				Value = GetDBNullableValue(value),
-				Size = maxLength
+				Value = GetDBNullableValue(value)
 			};
+
+			if (maxLength != null)
+				param.Size = maxLength.Value;
+
+			return param;
 		}
 
 		SqlParameter ITypeHandler.CreateParamFromValue(object value)
@@ -49,7 +53,10 @@ namespace unQuery.SqlTypes
 			if (!hasValue)
 				throw new TypeCannotBeUsedAsAClrTypeException();
 
-			return new SqlMetaData(name, dbType, maxLength);
+			if (maxLength == null)
+				throw new TypePropertiesMustBeSetExplicitlyException("maxLength");
+
+			return new SqlMetaData(name, dbType, maxLength.Value);
 		}
 	}
 }

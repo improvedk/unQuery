@@ -26,7 +26,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlBinary.GetTypeHandler().CreateMetaData(null));
 
-			ITypeHandler col = new SqlBinary(data, 10);
+			ITypeHandler col = new SqlBinary(data);
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlBinary(data, 10);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Binary, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -36,11 +39,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlBinary(data, 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Binary, data, size: 10);
-
-			type = new SqlBinary(null, 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Binary, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlBinary(data, 10)).GetParameter(), SqlDbType.Binary, data, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlBinary(null, 10)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlBinary(data)).GetParameter(), SqlDbType.Binary, data, size: data.Length);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlBinary(null)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 0);
 		}
 
 		[Test]
@@ -57,6 +59,7 @@ namespace unQuery.Tests.SqlTypes
 		public void Factory()
 		{
 			Assert.IsInstanceOf<SqlBinary>(Col.Binary(data, 10));
+			Assert.IsInstanceOf<SqlBinary>(Col.Binary(data));
 		}
 
 		[Test]

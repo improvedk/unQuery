@@ -27,9 +27,20 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a binary value
 		/// </summary>
+		/// <param name="value">The binary data</param>
+		/// <param name="maxLength">The max length of the column, as specified in the database</param>
 		public static SqlBinary Binary(byte[] value, int maxLength)
 		{
 			return new SqlBinary(value, maxLength);
+		}
+
+		/// <summary>
+		/// Creates a binary value
+		/// </summary>
+		/// <param name="value">The binary data</param>
+		public static SqlBinary Binary(byte[] value)
+		{
+			return new SqlBinary(value);
 		}
 
 		/// <summary>

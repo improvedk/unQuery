@@ -102,7 +102,7 @@ Note that MAX types should have their length set to -1.
 |SQL Server Type|Implicit .NET Type (C#)|Col Syntax|
 |---------------|:---------------------:|:---------|
 |**bigint**|`long` / `long?`|`Col.BigInt(long? value)`|
-|**binary**|N/A|`Col.Binary(byte[] value, int maxLength)`|
+|**binary**|N/A|`Col.Binary(byte[] value)`<br/>`Col.Binary(byte[] value, int maxLength)`|
 |**bit**|`bool` / `bool?`|`Col.Bit(bool? value)`|
 |**char**|N/A|`Col.Char(string value, int maxLength)`|
 |**date**|N/A|`Col.Date(DateTime? value)`|

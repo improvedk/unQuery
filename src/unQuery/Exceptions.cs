@@ -79,11 +79,20 @@ namespace unQuery
 	}
 
 	/// <summary>
-	/// Throw if a SqlType is used as if it could be auto converted from the native CLR type. E.g. valid for ints but not for strings.
+	/// Thrown if a SqlType is used as if it could be auto converted from the native CLR type. E.g. valid for ints but not for strings.
 	/// </summary>
 	public class TypeCannotBeUsedAsAClrTypeException : InvalidOperationException
 	{
 		public TypeCannotBeUsedAsAClrTypeException() : base("This type can only be used explicitly and not implicitly from a native CLR type.")
+		{ }
+	}
+
+	/// <summary>
+	/// Thrown if a type is used in situations that requires types to be specified explicitly (like for structured use)
+	/// </summary>
+	public class TypePropertiesMustBeSetExplicitlyException : InvalidOperationException
+	{
+		public TypePropertiesMustBeSetExplicitlyException(string properties) : base(properties + " must be set explicitly.")
 		{ }
 	}
 }
