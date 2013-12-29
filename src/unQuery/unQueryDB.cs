@@ -237,7 +237,8 @@ namespace unQuery
 			{ typeof(SqlTinyInt), SqlTinyInt.GetTypeHandler() },
 			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifier.GetTypeHandler() },
 			{ typeof(SqlVarBinary), SqlVarBinary.GetTypeHandler() },
-			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() }
+			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() },
+			{ typeof(SqlXml), SqlXml.GetTypeHandler() }
 		};
 
 		/// <summary>
@@ -269,7 +270,8 @@ namespace unQuery
 			{ SqlDbType.TinyInt, SqlTinyInt.GetTypeHandler() },
 			{ SqlDbType.UniqueIdentifier, SqlUniqueIdentifier.GetTypeHandler() },
 			{ SqlDbType.VarBinary, SqlVarBinary.GetTypeHandler() },
-			{ SqlDbType.VarChar, SqlVarChar.GetTypeHandler() }
+			{ SqlDbType.VarChar, SqlVarChar.GetTypeHandler() },
+			{ SqlDbType.Xml, SqlXml.GetTypeHandler() }
 		};
 		
 		/// <summary>

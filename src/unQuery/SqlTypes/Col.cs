@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace unQuery.SqlTypes
 {
@@ -228,6 +229,14 @@ namespace unQuery.SqlTypes
 		public static SqlVarChar VarChar(string value, int maxLength)
 		{
 			return new SqlVarChar(value, maxLength);
+		}
+
+		/// <summary>
+		/// Creates an xml value
+		/// </summary>
+		public static SqlXml Xml(string value)
+		{
+			return new SqlXml(value);
 		}
 	}
 }

@@ -83,14 +83,17 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfTinyInts') IS NOT NULL DROP TYPE ListOfTinyInts
 				CREATE TYPE ListOfTinyInts AS Table (A tinyint NULL)
 
+				IF TYPE_ID('ListOfUniqueIdentifiers') IS NOT NULL DROP TYPE ListOfUniqueIdentifiers
+				CREATE TYPE ListOfUniqueIdentifiers AS Table (A uniqueidentifier NULL)
+
 				IF TYPE_ID('ListOfVarBinaries') IS NOT NULL DROP TYPE ListOfVarBinaries
 				CREATE TYPE ListOfVarBinaries AS Table (A varbinary(10) NULL)
 
 				IF TYPE_ID('ListOfVarChars') IS NOT NULL DROP TYPE ListOfVarChars
 				CREATE TYPE ListOfVarChars AS Table (A varchar(256) NULL)
 
-				IF TYPE_ID('ListOfUniqueIdentifiers') IS NOT NULL DROP TYPE ListOfUniqueIdentifiers
-				CREATE TYPE ListOfUniqueIdentifiers AS Table (A uniqueidentifier NULL)
+				IF TYPE_ID('ListOfXmls') IS NOT NULL DROP TYPE ListOfXmls
+				CREATE TYPE ListOfXmls AS Table (A xml NULL)
 			");
 
 			ts = new TransactionScope();
