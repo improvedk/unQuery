@@ -135,8 +135,9 @@ Note that MAX types should have their length set to -1.
 Nulls are handled automatically and translated ito & from DBNull.Value.
 
 ```csharp
-DB.Execute("UPDATE Users SET Active = @Active WHERE UserID = @UserID", new {
-	Active = (int?)null,
+DB.Execute("UPDATE Users SET Active = @Active, Age = @Age WHERE UserID = @UserID", new {
+	Active = (bool?)null,
+	Age = Col.SmallInt(null),
 	UserID = 5
 });
 
