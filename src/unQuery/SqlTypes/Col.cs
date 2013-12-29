@@ -181,6 +181,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a time value
+		/// </summary>
+		public static SqlTime Time(TimeSpan? value, byte scale)
+		{
+			return new SqlTime(value, scale);
+		}
+
+		/// <summary>
 		/// Creates a tinyint value
 		/// </summary>
 		public static SqlTinyInt TinyInt(byte? value)

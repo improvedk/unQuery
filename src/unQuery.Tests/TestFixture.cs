@@ -77,6 +77,9 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfTexts') IS NOT NULL DROP TYPE ListOfTexts
 				CREATE TYPE ListOfTexts AS Table (A text NULL)
 
+				IF TYPE_ID('ListOfTimes') IS NOT NULL DROP TYPE ListOfTimes
+				CREATE TYPE ListOfTimes AS Table (A time(5) NULL)
+
 				IF TYPE_ID('ListOfTinyInts') IS NOT NULL DROP TYPE ListOfTinyInts
 				CREATE TYPE ListOfTinyInts AS Table (A tinyint NULL)
 
