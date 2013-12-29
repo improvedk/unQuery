@@ -83,10 +83,11 @@ var marks = DB.GetRow("SELECT TOP 1 * FROM Users WHERE Name = @Name", new {
 	Name = Col.NVarChar("Mark", 64) // nvarchar(64)
 });
 
-DB.Execute("INSERT INTO Users (Name, Age, Active) VALUES (@Name, @Age, @Active)", new {
+DB.Execute("INSERT INTO Users (Name, Age, Active, Comments) VALUES (@Name, @Age, @Active, @Comments)", new {
 	Name = Col.NVarChar("Mark", 64), // nvarchar(64)
 	Age = 28, // int
-	Active = true // bit
+	Active = true, // bit
+	Comments = Col.NVarChar(null, -1) // nvarchar(MAX)
 });
 ```
 
@@ -95,6 +96,8 @@ DB.Execute("INSERT INTO Users (Name, Age, Active) VALUES (@Name, @Age, @Active)"
 unQuery supports almost all of the built-in types in SQL Server. Types that can be mapped between .NET and SQL Server automatically are supported as implicit types, whereas all others require you to use the `Col` factory for creating parameter values.
 
 The table below shows which native .NET types can be automatically mapped to the equivanlent SQL Server types, as well as how to use the Col factory class, for types that do not support auto-mapping.
+
+Note that MAX types should have their length set to -1.
 
 |SQL Server Type|Implicit .NET Type (C#)|Col Syntax|
 |---------------|:---------------------:|:---------|
