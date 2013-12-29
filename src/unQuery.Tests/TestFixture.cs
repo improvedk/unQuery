@@ -64,6 +64,9 @@ namespace unQuery.Tests
 				IF TYPE_ID('ListOfSmallDateTimes') IS NOT NULL DROP TYPE ListOfSmallDateTimes
 				CREATE TYPE ListOfSmallDateTimes AS Table (A smalldatetime NULL)
 
+				IF TYPE_ID('ListOfSmallMoneys') IS NOT NULL DROP TYPE ListOfSmallMoneys
+				CREATE TYPE ListOfSmallMoneys AS Table (A smallmoney NULL)
+
 				IF TYPE_ID('ListOfBits') IS NOT NULL DROP TYPE ListOfBits
 				CREATE TYPE ListOfBits AS Table (A bit NULL)
 

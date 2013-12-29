@@ -155,6 +155,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a smallmoney value
+		/// </summary>
+		public static SqlSmallMoney SmallMoney(decimal? value)
+		{
+			return new SqlSmallMoney(value);
+		}
+
+		/// <summary>
 		/// Creates a structured value for use as a table valued parameter
 		/// </summary>
 		/// <param name="typeName">The name of the SQL Server table valued type</param>
