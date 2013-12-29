@@ -236,6 +236,7 @@ namespace unQuery
 			{ typeof(SqlTime), SqlTime.GetTypeHandler() },
 			{ typeof(SqlTinyInt), SqlTinyInt.GetTypeHandler() },
 			{ typeof(SqlUniqueIdentifier), SqlUniqueIdentifier.GetTypeHandler() },
+			{ typeof(SqlVarBinary), SqlVarBinary.GetTypeHandler() },
 			{ typeof(SqlVarChar), SqlVarChar.GetTypeHandler() }
 		};
 
@@ -267,6 +268,7 @@ namespace unQuery
 			{ SqlDbType.Time, SqlTime.GetTypeHandler() },
 			{ SqlDbType.TinyInt, SqlTinyInt.GetTypeHandler() },
 			{ SqlDbType.UniqueIdentifier, SqlUniqueIdentifier.GetTypeHandler() },
+			{ SqlDbType.VarBinary, SqlVarBinary.GetTypeHandler() },
 			{ SqlDbType.VarChar, SqlVarChar.GetTypeHandler() }
 		};
 		

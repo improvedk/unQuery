@@ -45,6 +45,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlTypes\Col.cs" />
+    <Compile Include="SqlTypes\SqlVarBinary.cs" />
     <Compile Include="SqlTypes\SqlTime.cs" />
     <Compile Include="SqlTypes\SqlText.cs" />
     <Compile Include="SqlTypes\SqlSmallMoney.cs" />

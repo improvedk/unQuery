@@ -213,6 +213,14 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates a varbinary value
+		/// </summary>
+		public static SqlVarBinary VarBinary(byte[] value, int maxLength)
+		{
+			return new SqlVarBinary(value, maxLength);
+		}
+
+		/// <summary>
 		/// Creates a varchar value
 		/// </summary>
 		/// <param name="value">The value</param>
