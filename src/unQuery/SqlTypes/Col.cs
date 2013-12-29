@@ -129,11 +129,39 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
+		/// Creates an nvarchar value
+		/// </summary>
+		/// <param name="value">The value</param>
+		/// <param name="maxLength">The max length of the column value - should match the one defined on the column</param>
+		public static SqlNVarChar NVarChar(string value, int maxLength)
+		{
+			return new SqlNVarChar(value, maxLength);
+		}
+
+		/// <summary>
+		/// Creates a smalldatetime value
+		/// </summary>
+		public static SqlSmallDateTime SmallDateTime(DateTime? value)
+		{
+			return new SqlSmallDateTime(value);
+		}
+
+		/// <summary>
 		/// Creates a smallint value
 		/// </summary>
 		public static SqlSmallInt SmallInt(byte? value)
 		{
 			return new SqlSmallInt(value);
+		}
+
+		/// <summary>
+		/// Creates a structured value for use as a table valued parameter
+		/// </summary>
+		/// <param name="typeName">The name of the SQL Server table valued type</param>
+		/// <param name="values">The values to be passed onto the type. The properties on the value must match the SQL Server type directly.</param>
+		public static SqlStructured Structured(string typeName, IEnumerable<object> values)
+		{
+			return new SqlStructured(typeName, values);
 		}
 
 		/// <summary>
@@ -145,31 +173,11 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
-		/// Creates an nvarchar value
-		/// </summary>
-		/// <param name="value">The value</param>
-		/// <param name="maxLength">The max length of the column value - should match the one defined on the column</param>
-		public static SqlNVarChar NVarChar(string value, int maxLength)
-		{
-			return new SqlNVarChar(value, maxLength);
-		}
-
-		/// <summary>
 		/// Creates a real value
 		/// </summary>
 		public static SqlReal Real(float? value)
 		{
 			return new SqlReal(value);
-		}
-
-		/// <summary>
-		/// Creates a structured value for use as a table valued parameter
-		/// </summary>
-		/// <param name="typeName">The name of the SQL Server table valued type</param>
-		/// <param name="values">The values to be passed onto the type. The properties on the value must match the SQL Server type directly.</param>
-		public static SqlStructured Structured(string typeName, IEnumerable<object> values)
-		{
-			return new SqlStructured(typeName, values);
 		}
 
 		/// <summary>
