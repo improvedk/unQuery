@@ -113,6 +113,14 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a decimal value
 		/// </summary>
+		public static SqlDecimal Decimal(decimal? value)
+		{
+			return new SqlDecimal(value);
+		}
+
+		/// <summary>
+		/// Creates a decimal value
+		/// </summary>
 		public static SqlDecimal Decimal(decimal? value, byte precision, byte scale)
 		{
 			return new SqlDecimal(value, precision, scale);

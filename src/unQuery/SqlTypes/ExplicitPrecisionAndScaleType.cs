@@ -7,8 +7,8 @@ namespace unQuery.SqlTypes
 	public abstract class ExplicitPrecisionAndScaleType<TValue> : SqlType, ISqlType, ITypeHandler
 	{
 		private readonly TValue value;
-		private readonly byte scale;
-		private readonly byte precision;
+		private readonly byte? scale;
+		private readonly byte? precision;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
 
@@ -17,7 +17,7 @@ namespace unQuery.SqlTypes
 			this.dbType = dbType;
 		}
 
-		internal ExplicitPrecisionAndScaleType(TValue value, byte precision, byte scale, SqlDbType dbType)
+		internal ExplicitPrecisionAndScaleType(TValue value, byte? precision, byte? scale, SqlDbType dbType)
 		{
 			this.value = value;
 			this.precision = precision;
@@ -34,12 +34,18 @@ namespace unQuery.SqlTypes
 
 		SqlParameter ISqlType.GetParameter()
 		{
-			return new SqlParameter {
+			var param = new SqlParameter {
 				SqlDbType = dbType,
-				Value = GetDBNullableValue(value),
-				Precision = precision,
-				Scale = scale
+				Value = GetDBNullableValue(value)
 			};
+
+			if (precision != null && scale != null)
+			{
+				param.Precision = precision.Value;
+				param.Scale = scale.Value;
+			}
+
+			return param;
 		}
 
 		SqlParameter ITypeHandler.CreateParamFromValue(object value)
@@ -52,7 +58,10 @@ namespace unQuery.SqlTypes
 			if (!hasValue)
 				throw new TypeCannotBeUsedAsAClrTypeException();
 
-			return new SqlMetaData(name, dbType, precision, scale);
+			if (precision == null || scale == null)
+				throw new TypePropertiesMustBeSetExplicitlyException("precision & scale");
+
+			return new SqlMetaData(name, dbType, precision.Value, scale.Value);
 		}
 	}
 }

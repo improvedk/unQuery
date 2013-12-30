@@ -22,9 +22,12 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateMetaData()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDecimal.GetTypeHandler().CreateMetaData(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDecimal.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlDecimal(5.27m, 10, 5);
+			ITypeHandler col = new SqlDecimal(5.27m);
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlDecimal(5.27m, 10, 5);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Decimal, meta.SqlDbType);
 			Assert.AreEqual(10, meta.Precision);
@@ -35,11 +38,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlDecimal(5.27m, 10, 5);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
-
-			type = new SqlDecimal(null, 10, 5);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(5.27m, 10, 5)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(null, 10, 5)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(5.27m)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 3, scale: 2);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(null)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 0, scale: 0);
 		}
 
 		[Test]
@@ -56,6 +58,7 @@ namespace unQuery.Tests.SqlTypes
 		public void Factory()
 		{
 			Assert.IsInstanceOf<SqlDecimal>(Col.Decimal(5.27m, 10, 5));
+			Assert.IsInstanceOf<SqlDecimal>(Col.Decimal(5.27m));
 		}
 
 		[Test]

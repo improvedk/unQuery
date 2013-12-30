@@ -8,6 +8,10 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Decimal)
 		{ }
 
+		public SqlDecimal(decimal? value) :
+			base(value, null, null, SqlDbType.Decimal)
+		{ }
+
 		public SqlDecimal(decimal? value, byte precision, byte scale) :
 			base(value, precision, scale, SqlDbType.Decimal)
 		{ }
