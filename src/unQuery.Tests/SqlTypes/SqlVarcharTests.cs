@@ -22,9 +22,12 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateMetaData()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlVarChar.GetTypeHandler().CreateMetaData(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlVarChar.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlVarChar("Test", 10);
+			ITypeHandler col = new SqlVarChar("Test");
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlVarChar("Test", 10);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.VarChar, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -34,11 +37,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlVarChar("Hello", 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.VarChar, "Hello");
-
-			type = new SqlVarChar(null, 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.VarChar, DBNull.Value);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarChar("Hello", 10)).GetParameter(), SqlDbType.VarChar, "Hello", size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarChar(null, 5)).GetParameter(), SqlDbType.VarChar, DBNull.Value, size: 5);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarChar("Hello")).GetParameter(), SqlDbType.VarChar, "Hello", size: 5);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarChar(null)).GetParameter(), SqlDbType.VarChar, DBNull.Value, size: 0);
 		}
 
 		[Test]
@@ -55,6 +57,7 @@ namespace unQuery.Tests.SqlTypes
 		public void Factory()
 		{
 			Assert.IsInstanceOf<SqlVarChar>(Col.VarChar("Test", 10));
+			Assert.IsInstanceOf<SqlVarChar>(Col.VarChar("Test"));
 		}
 
 		[Test]

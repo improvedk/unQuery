@@ -301,6 +301,14 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a varchar value
 		/// </summary>
+		public static SqlVarChar VarChar(string value)
+		{
+			return new SqlVarChar(value);
+		}
+
+		/// <summary>
+		/// Creates a varchar value
+		/// </summary>
 		/// <param name="value">The value</param>
 		/// <param name="maxLength">The max length of the column value - should match the one defined on the column</param>
 		public static SqlVarChar VarChar(string value, int maxLength)

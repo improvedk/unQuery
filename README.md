@@ -127,7 +127,7 @@ Note that MAX types should have their length set to -1.
 |**tinyint**|`byte` / `byte?`|`Col.TinyInt(byte? value)`|
 |**uniqueidentifier**|`Guid` / `Guid?`|`Col.UniqueIdentifier(Guid? value)`|
 |**varbinary**|N/A|`Col.VarBinary(byte[] value)`<br/>`Col.VarBinary(byte[] value, int maxLength)`|
-|**varchar**|N/A|`Col.VarChar(string value, int maxLength)`|
+|**varchar**|N/A|`Col.VarChar(string value)`<br/>`Col.VarChar(string value, int maxLength)`|
 |**xml**|N/A|`Col.Xml(string value)`|
 
 ## Nulls
