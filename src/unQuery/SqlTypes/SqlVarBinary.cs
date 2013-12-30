@@ -8,6 +8,10 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.VarBinary)
 		{ }
 
+		public SqlVarBinary(byte[] value) :
+			base(value, null, SqlDbType.VarBinary)
+		{ }
+
 		public SqlVarBinary(byte[] value, int maxLength) :
 			base(value, maxLength, SqlDbType.VarBinary)
 		{ }
