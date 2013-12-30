@@ -14,6 +14,9 @@ namespace unQuery.Tests
 			// Non-transactional setup
 			DB.Execute(@"
 
+				IF TYPE_ID('MyPersonType') IS NOT NULL DROP TYPE MyPersonType
+				CREATE TYPE MyPersonType AS Table (Name nvarchar(50) NOT NULL, Age smallint NOT NULL, Active bit NULL)
+
 				IF TYPE_ID('ListOfBigInts') IS NOT NULL DROP TYPE ListOfBigInts
 				CREATE TYPE ListOfBigInts AS Table (A bigint NULL)
 

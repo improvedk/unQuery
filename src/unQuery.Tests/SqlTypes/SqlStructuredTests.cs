@@ -31,11 +31,51 @@ namespace unQuery.Tests.SqlTypes
 		}
 
 		[Test]
-		public void StructuredParameter_NoPropertiesObject()
+		public void NoPropertiesObject()
 		{
 			Assert.Throws<ObjectHasNoPropertiesException>(() => DB.GetRows("SELECT * FROM @Input", new {
 				Input = Col.Structured("ListOfTinyInts", new object[] { (byte)1 })
 			}));
+		}
+
+		public class MyPersonType
+		{
+			public SqlNVarChar Name { get; set; }
+			public short Age { get; set; }
+			public bool? Active { get; set; }
+
+			public MyPersonType(string name, short age, bool? active)
+			{
+				Name = Col.NVarChar(name, 50);
+				Age = age;
+				Active = active;
+			}
+		}
+
+		[Test]
+		public void StronglyTypedValues()
+		{
+			var persons = DB.GetRows("SELECT * FROM @Persons", new {
+				Persons = Col.Structured("MyPersonType", new [] {
+					new MyPersonType("ABC", 25, true),
+					new MyPersonType("XYZ", 2, false),
+					new MyPersonType("IJK", 17, null)
+				})
+			});
+
+			Assert.AreEqual(3, persons.Count);
+
+			Assert.AreEqual("ABC", persons[0].Name);
+			Assert.AreEqual(25, persons[0].Age);
+			Assert.AreEqual(true, persons[0].Active);
+
+			Assert.AreEqual("XYZ", persons[1].Name);
+			Assert.AreEqual(2, persons[1].Age);
+			Assert.AreEqual(false, persons[1].Active);
+
+			Assert.AreEqual("IJK", persons[2].Name);
+			Assert.AreEqual(17, persons[2].Age);
+			Assert.AreEqual(null, persons[2].Active);
 		}
 
 		[Test]
