@@ -9,6 +9,10 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Time)
 		{ }
 
+		public SqlTime(TimeSpan? value) :
+			base(value, null, SqlDbType.Time)
+		{ }
+
 		public SqlTime(TimeSpan? value, byte scale) :
 			base(value, scale, SqlDbType.Time)
 		{ }

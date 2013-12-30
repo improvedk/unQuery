@@ -123,7 +123,7 @@ Note that MAX types should have their length set to -1.
 |**smallint**|`short` / `short?`|`Col.SmallInt(short? value)`|
 |**smallmoney**|N/A|`Col.SmallMoney(decimal? value)`|
 |**text**|N/A|`Col.Text(string value)`|
-|**time**|N/A|`Col.Time(TimeSpan? value, byte scale)`|
+|**time**|N/A|`Col.Time(TimeSpan? value)`<br/>`Col.Time(TimeSpan? value, byte scale)`|
 |**tinyint**|`byte` / `byte?`|`Col.TinyInt(byte? value)`|
 |**uniqueidentifier**|`Guid` / `Guid?`|`Col.UniqueIdentifier(Guid? value)`|
 |**varbinary**|N/A|`Col.VarBinary(byte[] value, int maxLength)`|

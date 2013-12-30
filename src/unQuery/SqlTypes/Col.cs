@@ -245,6 +245,14 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a time value
 		/// </summary>
+		public static SqlTime Time(TimeSpan? value)
+		{
+			return new SqlTime(value);
+		}
+
+		/// <summary>
+		/// Creates a time value
+		/// </summary>
 		public static SqlTime Time(TimeSpan? value, byte scale)
 		{
 			return new SqlTime(value, scale);

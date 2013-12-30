@@ -7,7 +7,7 @@ namespace unQuery.Tests.SqlTypes
 {
 	public class SqlTimeTests : TestFixture
 	{
-		private readonly TimeSpan testDateTime = new TimeSpan(0, 22, 17, 11, 352);
+		private readonly TimeSpan testValue = new TimeSpan(0, 22, 17, 11, 352);
 
 		[Test]
 		public void GetTypeHandler()
@@ -24,9 +24,12 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateMetaData()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlTime.GetTypeHandler().CreateMetaData(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlTime.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlTime(testDateTime, 6);
+			ITypeHandler col = new SqlTime(testValue);
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlTime(testValue, 6);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Time, meta.SqlDbType);
 			Assert.AreEqual(6, meta.Scale);
@@ -36,18 +39,17 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlTime(testDateTime, 5);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Time, testDateTime, scale: 5);
-
-			type = new SqlTime(null, 4);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Time, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(testValue, 2)).GetParameter(), SqlDbType.Time, testValue, scale: 2);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(null, 5)).GetParameter(), SqlDbType.Time, DBNull.Value, scale: 5);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(testValue)).GetParameter(), SqlDbType.Time, testValue, scale: 0);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(null)).GetParameter(), SqlDbType.Time, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlTime(testDateTime, 2);
-			Assert.AreEqual(testDateTime, type.GetRawValue());
+			ISqlType type = new SqlTime(testValue, 2);
+			Assert.AreEqual(testValue, type.GetRawValue());
 
 			type = new SqlTime(null, 1);
 			Assert.Null(type.GetRawValue());
@@ -56,7 +58,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void Factory()
 		{
-			Assert.IsInstanceOf<SqlTime>(Col.Time(testDateTime, 4));
+			Assert.IsInstanceOf<SqlTime>(Col.Time(testValue, 4));
+			Assert.IsInstanceOf<SqlTime>(Col.Time(testValue));
 		}
 
 		[Test]
@@ -64,14 +67,14 @@ namespace unQuery.Tests.SqlTypes
 		{
 			var rows = DB.GetRows("SELECT * FROM @Input", new {
 				Input = Col.Structured("ListOfTimes", new[] {
-					new { A = Col.Time(testDateTime, 5) },
+					new { A = Col.Time(testValue, 5) },
 					new { A = Col.Time(null, 5) }
 				})
 			});
 
 			Assert.AreEqual(2, rows.Count);
 			Assert.AreEqual(typeof(TimeSpan), rows[0].A.GetType());
-			Assert.AreEqual(testDateTime, rows[0].A);
+			Assert.AreEqual(testValue, rows[0].A);
 			Assert.AreEqual(null, rows[1].A);
 		}
 
