@@ -9,6 +9,10 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.DateTimeOffset)
 		{ }
 
+		public SqlDateTimeOffset(DateTimeOffset? value) :
+			base(value, null, SqlDbType.DateTimeOffset)
+		{ }
+
 		public SqlDateTimeOffset(DateTimeOffset? value, byte scale) :
 			base(value, scale, SqlDbType.DateTimeOffset)
 		{ }

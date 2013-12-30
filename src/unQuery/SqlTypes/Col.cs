@@ -97,9 +97,17 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a datetimeoffset value
 		/// </summary>
-		public static SqlDateTimeOffset DateTimeOffset(DateTimeOffset? dateTimeOffset, byte scale)
+		public static SqlDateTimeOffset DateTimeOffset(DateTimeOffset? value)
 		{
-			return new SqlDateTimeOffset(dateTimeOffset, scale);
+			return new SqlDateTimeOffset(value);
+		}
+
+		/// <summary>
+		/// Creates a datetimeoffset value
+		/// </summary>
+		public static SqlDateTimeOffset DateTimeOffset(DateTimeOffset? value, byte scale)
+		{
+			return new SqlDateTimeOffset(value, scale);
 		}
 
 		/// <summary>

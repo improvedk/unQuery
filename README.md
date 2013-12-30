@@ -108,7 +108,7 @@ Note that MAX types should have their length set to -1.
 |**date**|N/A|`Col.Date(DateTime? value)`|
 |**datetime**|N/A|`Col.DateTime(DateTime? value)`|
 |**datetime2**|N/A|`Col.DateTime2(DateTime? value)`<br/>`Col.DateTime2(DateTime? value, byte scale)`|
-|**datetimeoffset**|N/A|`Col.DateTimeOffset(DateTimeOffset? value, byte scale)`|
+|**datetimeoffset**|N/A|`Col.DateTimeOffset(DateTimeOffset? value)`<br/>`Col.DateTimeOffset(DateTimeOffset? value, byte scale)`|
 |**decimal**|N/A|`Col.Decimal(decimal? value, byte precision, byte scale)`|
 |**float**|N/A|`Col.Float(double? value)`|
 |**image**|N/A|`Col.Image(byte[] value)`|
