@@ -159,7 +159,15 @@ namespace unQuery.SqlTypes
 		}
 
 		/// <summary>
-		/// Creates a nchar value
+		/// Creates an nchar value
+		/// </summary>
+		public static SqlNChar NChar(string value)
+		{
+			return new SqlNChar(value);
+		}
+
+		/// <summary>
+		/// Creates an nchar value
 		/// </summary>
 		public static SqlNChar NChar(string value, int maxLength)
 		{

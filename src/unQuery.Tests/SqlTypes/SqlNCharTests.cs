@@ -22,9 +22,12 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateMetaData()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNChar.GetTypeHandler().CreateMetaData(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNChar.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlNChar("ру́сский", 10);
+			ITypeHandler col = new SqlNChar("ру́сский");
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlNChar("ру́сский", 10);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.NChar, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -34,11 +37,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlNChar("ру́сский", 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
-
-			type = new SqlNChar(null, 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar("ру́сский", 10)).GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar(null, 10)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar("рæøåсски")).GetParameter(), SqlDbType.NChar, "рæøåсски", size: 8);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar(null)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 0);
 		}
 
 		[Test]
@@ -55,6 +57,7 @@ namespace unQuery.Tests.SqlTypes
 		public void Factory()
 		{
 			Assert.IsInstanceOf<SqlNChar>(Col.NChar("ру́сский", 10));
+			Assert.IsInstanceOf<SqlNChar>(Col.NChar("ру́сский"));
 		}
 
 		[Test]

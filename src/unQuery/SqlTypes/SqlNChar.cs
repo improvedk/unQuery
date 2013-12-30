@@ -8,6 +8,10 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.NChar)
 		{ }
 
+		public SqlNChar(string value) :
+			base(value, null, SqlDbType.NChar)
+		{ }
+
 		public SqlNChar(string value, int maxLength) :
 			base(value, maxLength, SqlDbType.NChar)
 		{ }
