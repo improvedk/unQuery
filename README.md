@@ -117,7 +117,7 @@ Note that MAX types should have their length set to -1.
 |**nchar**|N/A|`Col.NChar(string value)`<br/>`Col.NChar(string value, int maxLength)`|
 |**ntext**|N/A|`Col.NText(string value)`|
 |**numeric**|N/A|`Col.Decimal(decimal? value)`<br/>`Col.Decimal(decimal? value, byte precision, byte scale)`|
-|**nvarchar**|N/A|`Col.NVarChar(string value, int maxLength)`|
+|**nvarchar**|N/A|`Col.NVarChar(string value)`<br/>`Col.NVarChar(string value, int maxLength)`|
 |**real**|N/A|`Col.Real(float? value)`|
 |**smalldatetime**|N/A|`Col.SmallDateTime(DateTime? value)`|
 |**smallint**|`short` / `short?`|`Col.SmallInt(short? value)`|

@@ -185,6 +185,14 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates an nvarchar value
 		/// </summary>
+		public static SqlNVarChar NVarChar(string value)
+		{
+			return new SqlNVarChar(value);
+		}
+
+		/// <summary>
+		/// Creates an nvarchar value
+		/// </summary>
 		/// <param name="value">The value</param>
 		/// <param name="maxLength">The max length of the column value - should match the one defined on the column</param>
 		public static SqlNVarChar NVarChar(string value, int maxLength)

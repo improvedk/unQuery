@@ -22,9 +22,12 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateMetaData()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNVarChar.GetTypeHandler().CreateMetaData(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNVarChar.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlNVarChar("Test", 10);
+			ITypeHandler col = new SqlNVarChar("Test");
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlNVarChar("Test", 10);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.NVarChar, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -34,11 +37,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlNVarChar("Hello ру́сский", 15);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, "Hello ру́сский");
-
-			type = new SqlNVarChar(null, 15);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NVarChar, DBNull.Value);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar("Hello рæøåсски", 20)).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 20);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar(null, 10)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar("Hello рæøåсски")).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 14);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar(null)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 0);
 		}
 
 		[Test]
@@ -55,6 +57,7 @@ namespace unQuery.Tests.SqlTypes
 		public void Factory()
 		{
 			Assert.IsInstanceOf<SqlNVarChar>(Col.NVarChar("Test", 10));
+			Assert.IsInstanceOf<SqlNVarChar>(Col.NVarChar("Test"));
 		}
 
 		[Test]
