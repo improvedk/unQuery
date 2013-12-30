@@ -95,9 +95,7 @@ DB.Execute("INSERT INTO Users (Name, Age, Active, Comments) VALUES (@Name, @Age,
 
 unQuery supports almost all of the built-in types in SQL Server. Types that can be mapped between .NET and SQL Server automatically are supported as implicit types, whereas all others require you to use the `Col` factory for creating parameter values.
 
-The table below shows which native .NET types can be automatically mapped to the equivanlent SQL Server types, as well as how to use the Col factory class, for types that do not support auto-mapping.
-
-Note that MAX types should have their length set to -1.
+The table below shows which native .NET types can be automatically mapped to the equivalent SQL Server types, as well as how to use the Col factory class, for types that do not support auto-mapping.
 
 |SQL Server Type|Implicit .NET Type (C#)|Col Syntax|
 |---------------|:---------------------:|:---------|
@@ -129,6 +127,20 @@ Note that MAX types should have their length set to -1.
 |**varbinary**|N/A|`Col.VarBinary(byte[] value)`<br/>`Col.VarBinary(byte[] value, int maxLength)`|
 |**varchar**|N/A|`Col.VarChar(string value)`<br/>`Col.VarChar(string value, int maxLength)`|
 |**xml**|N/A|`Col.Xml(string value)`|
+
+While all types allow you to just specify a value and ignore the max length, precision and/or scale properties, it is **highly recommended** that you use the full constructors that specify all type properties. This allows SQL Server to reuse the execution plans across values, rather than compiling and caching a new plan for each combination of value properties that you send it.
+
+```csharp
+// This would cause two plans to be created and cached
+DB.Execute("SELECT @Input", new { Input = Col.VarChar("Hello") });
+DB.Execute("SELECT @Input", new { Input = Col.VarChar("Hello world") });
+
+// Whereas this would result in just one plan
+DB.Execute("SELECT @Input", new { Input = Col.VarChar("Hello", 50) });
+DB.Execute("SELECT @Input", new { Input = Col.VarChar("Hello world", 50) });
+```
+
+Note that MAX types should have their length set to -1.
 
 ## Nulls
 
