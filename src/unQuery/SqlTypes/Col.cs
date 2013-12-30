@@ -81,9 +81,17 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a datetime2 value
 		/// </summary>
-		public static SqlDateTime2 DateTime2(DateTime? date, byte scale)
+		public static SqlDateTime2 DateTime2(DateTime? value)
 		{
-			return new SqlDateTime2(date, scale);
+			return new SqlDateTime2(value);
+		}
+
+		/// <summary>
+		/// Creates a datetime2 value
+		/// </summary>
+		public static SqlDateTime2 DateTime2(DateTime? value, byte scale)
+		{
+			return new SqlDateTime2(value, scale);
 		}
 
 		/// <summary>

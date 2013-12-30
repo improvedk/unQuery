@@ -7,7 +7,7 @@ namespace unQuery.SqlTypes
 	public abstract class ExplicitScaleType<TValue> : SqlType, ISqlType, ITypeHandler
 	{
 		private readonly TValue value;
-		private readonly byte scale;
+		private readonly byte? scale;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
 
@@ -16,7 +16,7 @@ namespace unQuery.SqlTypes
 			this.dbType = dbType;
 		}
 
-		internal ExplicitScaleType(TValue value, byte scale, SqlDbType dbType)
+		internal ExplicitScaleType(TValue value, byte? scale, SqlDbType dbType)
 		{
 			this.value = value;
 			this.scale = scale;
@@ -32,11 +32,15 @@ namespace unQuery.SqlTypes
 
 		SqlParameter ISqlType.GetParameter()
 		{
-			return new SqlParameter {
+			var param = new SqlParameter {
 				SqlDbType = dbType,
-				Value = GetDBNullableValue(value),
-				Scale = scale
+				Value = GetDBNullableValue(value)
 			};
+
+			if (scale != null)
+				param.Scale = scale.Value;
+
+			return param;
 		}
 
 		SqlParameter ITypeHandler.CreateParamFromValue(object value)
@@ -49,7 +53,10 @@ namespace unQuery.SqlTypes
 			if (!hasValue)
 				throw new TypeCannotBeUsedAsAClrTypeException();
 
-			return new SqlMetaData(name, dbType, 0, scale);
+			if (scale == null)
+				throw new TypePropertiesMustBeSetExplicitlyException("scale");
+
+			return new SqlMetaData(name, dbType, 0, scale.Value);
 		}
 	}
 }

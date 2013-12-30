@@ -9,6 +9,10 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.DateTime2)
 		{ }
 
+		public SqlDateTime2(DateTime? value) :
+			base(value, null, SqlDbType.DateTime2)
+		{ }
+
 		public SqlDateTime2(DateTime? value, byte scale) :
 			base(value, scale, SqlDbType.DateTime2)
 		{ }

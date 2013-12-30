@@ -107,7 +107,7 @@ Note that MAX types should have their length set to -1.
 |**char**|N/A|`Col.Char(string value)`<br/>`Col.Char(string value, int maxLength)`|
 |**date**|N/A|`Col.Date(DateTime? value)`|
 |**datetime**|N/A|`Col.DateTime(DateTime? value)`|
-|**datetime2**|N/A|`Col.DateTime2(DateTime? value, byte scale)`|
+|**datetime2**|N/A|`Col.DateTime2(DateTime? value)`<br/>`Col.DateTime2(DateTime? value, byte scale)`|
 |**datetimeoffset**|N/A|`Col.DateTimeOffset(DateTimeOffset? value, byte scale)`|
 |**decimal**|N/A|`Col.Decimal(decimal? value, byte precision, byte scale)`|
 |**float**|N/A|`Col.Float(double? value)`|

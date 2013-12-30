@@ -24,9 +24,12 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateMetaData()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTime2.GetTypeHandler().CreateMetaData(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTime2.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlDateTime2(testDateTime, 6);
+			ITypeHandler col = new SqlDateTime2(testDateTime);
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlDateTime2(testDateTime, 6);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.DateTime2, meta.SqlDbType);
 			Assert.AreEqual(6, meta.Scale);
@@ -36,11 +39,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlDateTime2(testDateTime, 5);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 5);
-
-			type = new SqlDateTime2(null, 4);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(testDateTime, 6)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 6);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(null, 4)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(testDateTime)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 0);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(null)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 0);
 		}
 
 		[Test]
@@ -57,6 +59,7 @@ namespace unQuery.Tests.SqlTypes
 		public void Factory()
 		{
 			Assert.IsInstanceOf<SqlDateTime2>(Col.DateTime2(testDateTime, 4));
+			Assert.IsInstanceOf<SqlDateTime2>(Col.DateTime2(testDateTime));
 		}
 
 		[Test]
