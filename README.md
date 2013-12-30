@@ -132,7 +132,7 @@ Note that MAX types should have their length set to -1.
 
 ## Nulls
 
-Nulls are handled automatically and translated ito & from DBNull.Value.
+Nulls are handled automatically and translated to & from DBNull.Value.
 
 ```csharp
 DB.Execute("UPDATE Users SET Active = @Active, Age = @Age WHERE UserID = @UserID", new {
