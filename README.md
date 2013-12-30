@@ -104,7 +104,7 @@ Note that MAX types should have their length set to -1.
 |**bigint**|`long` / `long?`|`Col.BigInt(long? value)`|
 |**binary**|N/A|`Col.Binary(byte[] value)`<br/>`Col.Binary(byte[] value, int maxLength)`|
 |**bit**|`bool` / `bool?`|`Col.Bit(bool? value)`|
-|**char**|N/A|`Col.Char(string value, int maxLength)`|
+|**char**|N/A|`Col.Char(string value)`<br/>`Col.Char(string value, int maxLength)`|
 |**date**|N/A|`Col.Date(DateTime? value)`|
 |**datetime**|N/A|`Col.DateTime(DateTime? value)`|
 |**datetime2**|N/A|`Col.DateTime2(DateTime? value, byte scale)`|

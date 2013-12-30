@@ -46,6 +46,17 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a char value
 		/// </summary>
+		/// <param name="value">The string data</param>
+		public static SqlChar Char(string value)
+		{
+			return new SqlChar(value);
+		}
+
+		/// <summary>
+		/// Creates a char value
+		/// </summary>
+		/// <param name="value">The string data</param>
+		/// <param name="maxLength">The max length of the column, as specified in the database</param>
 		public static SqlChar Char(string value, int maxLength)
 		{
 			return new SqlChar(value, maxLength);

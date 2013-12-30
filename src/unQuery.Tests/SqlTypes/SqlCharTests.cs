@@ -22,9 +22,12 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateMetaData()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlChar.GetTypeHandler().CreateMetaData(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlChar.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlChar("Test", 10);
+			ITypeHandler col = new SqlChar("Test");
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
+
+			col = new SqlChar("Test", 10);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Char, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -34,11 +37,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlChar("Test", 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Char, "Test", size: 10);
-
-			type = new SqlChar(null, 10);
-			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Char, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar("Test", 10)).GetParameter(), SqlDbType.Char, "Test", size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar(null, 10)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar("Test")).GetParameter(), SqlDbType.Char, "Test", size: 4);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar(null)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 0);
 		}
 
 		[Test]
@@ -55,6 +57,7 @@ namespace unQuery.Tests.SqlTypes
 		public void Factory()
 		{
 			Assert.IsInstanceOf<SqlChar>(Col.Char("Test", 10));
+			Assert.IsInstanceOf<SqlChar>(Col.Char("Test"));
 		}
 
 		[Test]
