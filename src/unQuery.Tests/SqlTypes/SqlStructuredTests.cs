@@ -53,6 +53,32 @@ namespace unQuery.Tests.SqlTypes
 		}
 
 		[Test]
+		public void AnonymousValues()
+		{
+			var persons = DB.GetRows("SELECT * FROM @Persons", new {
+				Persons = Col.Structured("MyPersonType", new[] {
+					new { Name = Col.NVarChar("ABC", 50), Age = (short)25, Active = (bool?)true },
+					new { Name = Col.NVarChar("XYZ", 50), Age = (short)2, Active = (bool?)false },
+					new { Name = Col.NVarChar("IJK", 50), Age = (short)17, Active = (bool?)null }
+				})
+			});
+
+			Assert.AreEqual(3, persons.Count);
+
+			Assert.AreEqual("ABC", persons[0].Name);
+			Assert.AreEqual(25, persons[0].Age);
+			Assert.AreEqual(true, persons[0].Active);
+
+			Assert.AreEqual("XYZ", persons[1].Name);
+			Assert.AreEqual(2, persons[1].Age);
+			Assert.AreEqual(false, persons[1].Active);
+
+			Assert.AreEqual("IJK", persons[2].Name);
+			Assert.AreEqual(17, persons[2].Age);
+			Assert.AreEqual(null, persons[2].Active);
+		}
+
+		[Test]
 		public void StronglyTypedValues()
 		{
 			var persons = DB.GetRows("SELECT * FROM @Persons", new {
