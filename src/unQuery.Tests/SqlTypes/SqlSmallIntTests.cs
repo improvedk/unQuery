@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Data;
+using System.Linq;
 using unQuery.SqlTypes;
 
 namespace unQuery.Tests.SqlTypes
@@ -68,6 +69,28 @@ namespace unQuery.Tests.SqlTypes
 			Assert.AreEqual(typeof(short), rows[0].A.GetType());
 			Assert.AreEqual(1, rows[0].A);
 			Assert.AreEqual(null, rows[1].A);
+		}
+
+		[Test]
+		public void StructuredDynamicYielder()
+		{
+			var result = new StructuredDynamicYielder(new[] { new {
+				A = (short)1,
+				B = (short?)2,
+				C = Col.SmallInt(3),
+				D = (short?)null,
+				E = Col.SmallInt(null)
+			}}).First();
+
+			Assert.AreEqual(5, result.FieldCount);
+			Assert.AreEqual(typeof(short), result.GetValue(0).GetType());
+			Assert.AreEqual(1, result.GetValue(0));
+			Assert.AreEqual(typeof(short), result.GetValue(1).GetType());
+			Assert.AreEqual(2, result.GetValue(1));
+			Assert.AreEqual(typeof(short), result.GetValue(2).GetType());
+			Assert.AreEqual(3, result.GetValue(2));
+			Assert.AreEqual(DBNull.Value, result.GetValue(3));
+			Assert.AreEqual(DBNull.Value, result.GetValue(4));
 		}
 
 		[Test]
