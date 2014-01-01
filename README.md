@@ -142,7 +142,7 @@ DB.Execute("SELECT @Input", new { Input = Col.VarChar("Hello world", 50) });
 
 Note that MAX types should have their length set to -1.
 
-## Table-Valued Parameter Support
+### Table-Valued Parameter Support
 
 Tabled-Valued parameters are supported natively through the *Structured* parameter type. Before using table-valued parameters, a table type must be defined in the database. As an example, you might create a "Person" type like this:
 
@@ -201,7 +201,7 @@ var persons = DB.GetRows("SELECT * FROM @Persons", new {
 });
 ```
 
-####Single-Column Table Types
+#### Single-Column Table Types
 
 If your table-type contains just one column, you can simply pass in an IEnumerable of that type. Say you wanted to pass in a list of integers, you could define the type like this:
 
