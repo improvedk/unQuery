@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,10 +8,10 @@ namespace unQuery.SqlTypes
 {
 	public class SqlStructured : ISqlType
 	{
-		private readonly IEnumerable<dynamic> values;
+		private readonly IEnumerable<object> values;
 		private readonly string typeName;
 
-		public SqlStructured(string typeName, IEnumerable<dynamic> values)
+		public SqlStructured(string typeName, IEnumerable<object> values)
 		{
 			this.typeName = typeName;
 			this.values = values;

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace unQuery.SqlTypes
 {
@@ -222,6 +224,16 @@ namespace unQuery.SqlTypes
 		public static SqlSmallMoney SmallMoney(decimal? value)
 		{
 			return new SqlSmallMoney(value);
+		}
+
+		/// <summary>
+		/// Creates a structured value for use as a table valued parameter
+		/// </summary>
+		/// <param name="typeName">The name of the SQL Server table valued type</param>
+		/// <param name="values">The values to be passed onto the type. The properties on the value must match the SQL Server type directly.</param>
+		public static SqlStructured Structured(string typeName, IEnumerable values)
+		{
+			return new SqlStructured(typeName, values.Cast<object>());
 		}
 
 		/// <summary>

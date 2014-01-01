@@ -38,7 +38,7 @@ namespace unQuery.Tests
 
 		[Test]
 		public void RawListOfUnspecifiedExplicitTypes()
-		{
+		{	
 			var values = new[] { Col.Decimal(5.27m) };
 			var yielder = new StructuredDynamicYielder(values);
 
@@ -48,46 +48,40 @@ namespace unQuery.Tests
 		[Test]
 		public void RawListOfDifferentImplicitTypes()
 		{
-			// While this is bad pracice, the first definition will win
-			var values = new object[] { 5, (short)2 };
-			var yielder = new StructuredDynamicYielder(values);
+			var yielder = new StructuredDynamicYielder(new object[] { 5, (short)2 });
+			Assert.Throws<StructuredTypeMismatchException>(() => yielder.ToList());
 
-			yielder.ToList();
-			Assert.Fail("Should throw something better here!");
+			yielder = new StructuredDynamicYielder(new object[] { (short)2, 5 });
+			Assert.Throws<StructuredTypeMismatchException>(() => yielder.ToList());
 		}
 
 		[Test]
 		public void RawListOfMixedImplicitAndSimilarExplicit()
 		{
-			// While this is bad pracice, the first definition will win
-			var values = new object[] { 5, Col.Int(2) };
-			var yielder = new StructuredDynamicYielder(values);
+			var yielder = new StructuredDynamicYielder(new object[] { 5, Col.Int(2) });
+			Assert.Throws<StructuredTypeMismatchException>(() => yielder.ToList());
 
-			yielder.ToList();
-			Assert.Fail("Should throw something better here!");
+			yielder = new StructuredDynamicYielder(new object[] { Col.Int(2), 5 });
+			Assert.Throws<StructuredTypeMismatchException>(() => yielder.ToList());
 		}
 
 		[Test]
 		public void RawListOfMixedImplicitAndDifferentExplicit()
 		{
-			// While this is bad pracice, the first definition will win
-			var values = new object[] { 5, Col.SmallInt(2) };
-			var yielder = new StructuredDynamicYielder(values);
+			var yielder = new StructuredDynamicYielder(new object[] { 5, Col.SmallInt(2) });
+			Assert.Throws<StructuredTypeMismatchException>(() => yielder.ToList());
 
-			yielder.ToList();
-			Assert.Fail("Should throw something better here!");
+			yielder = new StructuredDynamicYielder(new object[] { Col.SmallInt(2), 5 });
+			Assert.Throws<StructuredTypeMismatchException>(() => yielder.ToList());
 		}
 
 		[Test]
 		public void RawListOfDifferentExplicitTypes()
 		{
-			// While this is bad pracice, the first definition will win
 			var values = new object[] { Col.Decimal(5.27m, 5, 2), Col.SmallMoney(5.27m) };
 			var yielder = new StructuredDynamicYielder(values);
 
-			Assert.DoesNotThrow(() => yielder.ToList());
-
-			Assert.Fail("Should throw here!");
+			Assert.Throws<StructuredTypeMismatchException>(() => yielder.ToList());
 		}
 
 		[Test]

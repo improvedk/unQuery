@@ -79,6 +79,36 @@ namespace unQuery.Tests.SqlTypes
 		}
 
 		[Test]
+		public void IEnumerableOfValueTypes()
+		{
+			var persons = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfInts", new [] { 1, 2, 3 })
+			});
+
+			Assert.AreEqual(3, persons.Count);
+			Assert.AreEqual(1, persons[0].A);
+			Assert.AreEqual(2, persons[1].A);
+			Assert.AreEqual(3, persons[2].A);
+		}
+
+		[Test]
+		public void IEnumerableOfSqlTypes()
+		{
+			var persons = DB.GetRows("SELECT * FROM @Input", new {
+				Input = Col.Structured("ListOfInts", new [] {
+					Col.Int(1),
+					Col.Int(2),
+					Col.Int(3)
+				})
+			});
+
+			Assert.AreEqual(3, persons.Count);
+			Assert.AreEqual(1, persons[0].A);
+			Assert.AreEqual(2, persons[1].A);
+			Assert.AreEqual(3, persons[2].A);
+		}
+
+		[Test]
 		public void StronglyTypedValues()
 		{
 			var persons = DB.GetRows("SELECT * FROM @Persons", new {

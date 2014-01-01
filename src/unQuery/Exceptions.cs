@@ -7,7 +7,8 @@ namespace unQuery
 	/// </summary>
 	public class NoRowsException : Exception
 	{
-		public NoRowsException() : base("No rows were returned - no scalar value to return.")
+		public NoRowsException() :
+			base("No rows were returned - no scalar value to return.")
 		{ }
 	}
 
@@ -16,10 +17,12 @@ namespace unQuery
 	/// </summary>
 	public class TypeNotSupportedException : Exception
 	{
-		public TypeNotSupportedException(Type t) : base("Type '" + t + "' not supported.")
+		public TypeNotSupportedException(Type t) :
+			base("Type '" + t + "' not supported.")
 		{ }
 
-		public TypeNotSupportedException(string t) : base("Type '" + t + "' not supported.")
+		public TypeNotSupportedException(string t) :
+			base("Type '" + t + "' not supported.")
 		{ }
 	}
 
@@ -28,7 +31,8 @@ namespace unQuery
 	/// </summary>
 	public class MissingConnectionStringException : Exception
 	{
-		public MissingConnectionStringException() : base("unQueryDB did not find any connection strings in the ConnectionStrings configuration section.")
+		public MissingConnectionStringException() :
+			base("unQueryDB did not find any connection strings in the ConnectionStrings configuration section.")
 		{ }
 	}
 
@@ -37,7 +41,8 @@ namespace unQuery
 	/// </summary>
 	public class ColumnDoesNotExistException : Exception
 	{
-		public ColumnDoesNotExistException(string column) : base("Column '" + column + "' does not exist.")
+		public ColumnDoesNotExistException(string column) :
+			base("Column '" + column + "' does not exist.")
 		{ }
 	}
 
@@ -46,7 +51,8 @@ namespace unQuery
 	/// </summary>
 	public class DuplicateColumnException : Exception
 	{
-		public DuplicateColumnException(string column) : base("Two or more columns share the same name '" + column + "'.")
+		public DuplicateColumnException(string column) :
+			base("Two or more columns share the same name '" + column + "'.")
 		{ }
 	}
 
@@ -55,7 +61,8 @@ namespace unQuery
 	/// </summary>
 	public class UnnamedColumnException : Exception
 	{
-		public UnnamedColumnException(int index) : base("Column with index " + index + " has no name.")
+		public UnnamedColumnException(int index) :
+			base("Column with index " + index + " has no name.")
 		{ }
 	}
 
@@ -65,7 +72,8 @@ namespace unQuery
 	/// </summary>
 	public class DuplicateParameterException : Exception
 	{
-		public DuplicateParameterException(string name) : base("Parameter '" + name + "' has already been added.")
+		public DuplicateParameterException(string name) :
+			base("Parameter '" + name + "' has already been added.")
 		{ }
 	}
 
@@ -74,7 +82,8 @@ namespace unQuery
 	/// </summary>
 	public class ObjectHasNoPropertiesException : Exception
 	{
-		public ObjectHasNoPropertiesException(string message) : base(message)
+		public ObjectHasNoPropertiesException(string message) :
+			base(message)
 		{ }
 	}
 
@@ -83,7 +92,8 @@ namespace unQuery
 	/// </summary>
 	public class TypeCannotBeUsedAsAClrTypeException : InvalidOperationException
 	{
-		public TypeCannotBeUsedAsAClrTypeException() : base("This type can only be used explicitly and not implicitly from a native CLR type.")
+		public TypeCannotBeUsedAsAClrTypeException() :
+			base("This type can only be used explicitly and not implicitly from a native CLR type.")
 		{ }
 	}
 
@@ -92,7 +102,19 @@ namespace unQuery
 	/// </summary>
 	public class TypePropertiesMustBeSetExplicitlyException : InvalidOperationException
 	{
-		public TypePropertiesMustBeSetExplicitlyException(string properties) : base(properties + " must be set explicitly.")
+		public TypePropertiesMustBeSetExplicitlyException(string properties) :
+			base(properties + " must be set explicitly.")
+		{ }
+	}
+
+	/// <summary>
+	/// Thrown if an IEnumerable of simple values is passed to a structured parameter, with different types being
+	/// returned from the IEnumerable
+	/// </summary>
+	public class StructuredTypeMismatchException : ArgumentException
+	{
+		public StructuredTypeMismatchException(Type t)
+			: base("Type " + t + " was unexpected for this structured parameter")
 		{ }
 	}
 }

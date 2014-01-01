@@ -201,6 +201,47 @@ var persons = DB.GetRows("SELECT * FROM @Persons", new {
 });
 ```
 
+####Single-Column Table Types
+
+If your table-type contains just one column, you can simply pass in an IEnumerable of that type. Say you wanted to pass in a list of integers, you could define the type like this:
+
+```sql
+CREATE TYPE ListOfInts AS Table (ID int NOT NULL)
+```
+
+And to invoke it you just need to pass in the values directly, typically in the form of an array, a List<T> or any other IEnumerable:
+
+```csharp
+var rows = db.GetRows("SELECT * FROM @Input", new {
+	Input = Col.Structured("ListOfInts", new [] { 1, 2, 3 })
+});
+```
+
+If you need to pass in types that can't be mapped directly from a CLR type, like ints, you can also pass in an IEnumerable ISqlType values like so:
+
+```csharp
+var rows = db.GetRows("SELECT * FROM @Input", new {
+	Input = Col.Structured("ListOfSmallMoneys", new [] {
+		Col.SmallMoney(5.27m),
+		Col.SmallMoney(8.32m)
+	})
+});
+```
+
+One word of caution - if the parameter needs specifications, like a decimal value, the specs on the first value will set the specification for all of the remaining values. An example:
+
+```csharp
+var rows = db.GetRows("SELECT * FROM @Input", new {
+	Input = Col.Structured("ListOfDecimals", new [] {
+		Col.Decimal(5.27m, 3, 2),
+
+		// While this won't throw an exception, the column values will be in the form of
+		// decimal(3, 2) as the first value sets the presedence.
+		Col.Decimal(8.32m, 5, 4)
+	})
+});
+```
+
 ## Nulls
 
 Nulls are handled automatically and translated to & from DBNull.Value.
