@@ -10,7 +10,15 @@
 		<projectUrl>https://github.com/improvedk/unQuery</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>unQuery is a very minimal data access library that makes it as simple as possible to consume and interact with data in SQL Server. unQuery is still in early development, so expect frequent changes.</description>
-		<releaseNotes>Initial release of structured parameter support.</releaseNotes>
+		<releaseNotes>
+			0.1.2
+			 - Added support for all common SQL Server data types
+			 - Added support for table-valued parameters
+			 - Updated documentation
+			 - Performance improvements
+			0.1.1
+			 - Initial release
+		</releaseNotes>
 		<tags>SQL Micro-ORM DAL DB SQLServer</tags>
 	</metadata>
 </package>
