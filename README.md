@@ -142,6 +142,65 @@ DB.Execute("SELECT @Input", new { Input = Col.VarChar("Hello world", 50) });
 
 Note that MAX types should have their length set to -1.
 
+## Table-Valued Parameter Support
+
+Tabled-Valued parameters are supported natively through the *Structured* parameter type. Before using table-valued parameters, a table type must be defined in the database. As an example, you might create a "Person" type like this:
+
+```sql
+CREATE TYPE MyPersonType AS Table (
+	Name nvarchar(50) NOT NULL,
+	Age smallint NOT NULL,
+	Active bit NULL
+)
+```
+
+Once you have the type, you can start using it immediately by creating a Structured parameter:
+
+```csharp
+var persons = DB.GetRows("SELECT * FROM @Persons", new {
+	Persons = Col.Structured("MyPersonType", new [] {
+		new { Name = Col.NVarChar("ABC", 50), Age = (short)25, Active = (bool?)true },
+		new { Name = Col.NVarChar("XYZ", 50), Age = (short)2, Active = (bool?)false },
+		new { Name = Col.NVarChar("IJK", 50), Age = (short)17, Active = (bool?)null }
+	})
+});
+```
+
+There are a couple of caveats when using structured parameters:
+
+* Parameter types must always be fully specified - that is, varchars should have their max length defined, decimals should have their precision and scale defined, and so forth.
+* The declaration order of the object properties must match the order of the SQL Server table type columns, exactly. That is (Name, Age, Active) in this case. If they're declared in a different order, an error will be thrown.
+
+Due to the above caveats, I recommend you create a CLR type to match the SQL Server type, making it easier and more reliable to use. For example, the MyPersonType could be created like this:
+
+```csharp
+public class MyPersonType
+{
+	public SqlNVarChar Name { get; set; }
+	public short Age { get; set; }
+	public bool? Active { get; set; }
+
+	public MyPersonType(string name, short age, bool? active)
+	{
+		Name = Col.NVarChar(name, 50);
+		Age = age;
+		Active = active;
+	}
+}
+```
+
+And once you have the type, using it with a structured parameter becomes much simpler and more eloquent:
+
+```csharp
+var persons = DB.GetRows("SELECT * FROM @Persons", new {
+	Persons = Col.Structured("MyPersonType", new [] {
+		new MyPersonType("ABC", 25, true),
+		new MyPersonType("XYZ", 2, false),
+		new MyPersonType("IJK", 17, null)
+	})
+});
+```
+
 ## Nulls
 
 Nulls are handled automatically and translated to & from DBNull.Value.
