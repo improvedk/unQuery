@@ -142,6 +142,20 @@ DB.Execute("SELECT @Input", new { Input = Col.VarChar("Hello world", 50) });
 
 Note that MAX types should have their length set to -1.
 
+### Nulls
+
+Nulls are handled automatically and translated to & from DBNull.Value.
+
+```csharp
+DB.Execute("UPDATE Users SET Active = @Active, Age = @Age WHERE UserID = @UserID", new {
+	Active = (bool?)null,
+	Age = Col.SmallInt(null),
+	UserID = 5
+});
+
+Assert.IsNull(DB.GetScalar<int?>("SELECT SUM(Age) FROM Users WHERE 1=0"));
+```
+
 ### Table-Valued Parameter Support
 
 Tabled-Valued parameters are supported natively through the *Structured* parameter type. Before using table-valued parameters, a table type must be defined in the database. As an example, you might create a "Person" type like this:
@@ -240,20 +254,6 @@ var rows = db.GetRows("SELECT * FROM @Input", new {
 		Col.Decimal(8.32m, 5, 4)
 	})
 });
-```
-
-## Nulls
-
-Nulls are handled automatically and translated to & from DBNull.Value.
-
-```csharp
-DB.Execute("UPDATE Users SET Active = @Active, Age = @Age WHERE UserID = @UserID", new {
-	Active = (bool?)null,
-	Age = Col.SmallInt(null),
-	UserID = 5
-});
-
-Assert.IsNull(DB.GetScalar<int?>("SELECT SUM(Age) FROM Users WHERE 1=0"));
 ```
 
 ## DB vs unQueryDB
