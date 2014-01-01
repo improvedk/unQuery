@@ -1,12 +1,136 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Data;
+using System.Linq;
+using unQuery.SqlTypes;
 
 namespace unQuery.Tests
 {
 	[TestFixture]
 	public class StructuredDynamicYielderTests
 	{
+		[Test]
+		public void RawListOfImplicitTypes()
+		{
+			var values = new[] { 1, 2, (int?)null }.Cast<object>();
+			var yielder = new StructuredDynamicYielder(values);
+
+			int counter = 0;
+			foreach (var value in yielder)
+			{
+				counter++;
+
+				if (counter == 3)
+				{
+					Assert.AreEqual(SqlDbType.Int, value.GetSqlMetaData(0).SqlDbType);
+					Assert.AreEqual(DBNull.Value, value.GetValue(0));
+				}
+				else
+				{
+					Assert.AreEqual(SqlDbType.Int, value.GetSqlMetaData(0).SqlDbType);
+					Assert.AreEqual(typeof(int), value.GetValue(0).GetType());
+					Assert.AreEqual(counter, value.GetValue(0));
+				}
+			}
+
+			Assert.AreEqual(3, counter);
+		}
+
+		[Test]
+		public void RawListOfUnspecifiedExplicitTypes()
+		{
+			var values = new[] { Col.Decimal(5.27m) };
+			var yielder = new StructuredDynamicYielder(values);
+
+			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => yielder.ToList());
+		}
+
+		[Test]
+		public void RawListOfDifferentImplicitTypes()
+		{
+			// While this is bad pracice, the first definition will win
+			var values = new object[] { 5, (short)2 };
+			var yielder = new StructuredDynamicYielder(values);
+
+			yielder.ToList();
+			Assert.Fail("Should throw something better here!");
+		}
+
+		[Test]
+		public void RawListOfMixedImplicitAndSimilarExplicit()
+		{
+			// While this is bad pracice, the first definition will win
+			var values = new object[] { 5, Col.Int(2) };
+			var yielder = new StructuredDynamicYielder(values);
+
+			yielder.ToList();
+			Assert.Fail("Should throw something better here!");
+		}
+
+		[Test]
+		public void RawListOfMixedImplicitAndDifferentExplicit()
+		{
+			// While this is bad pracice, the first definition will win
+			var values = new object[] { 5, Col.SmallInt(2) };
+			var yielder = new StructuredDynamicYielder(values);
+
+			yielder.ToList();
+			Assert.Fail("Should throw something better here!");
+		}
+
+		[Test]
+		public void RawListOfDifferentExplicitTypes()
+		{
+			// While this is bad pracice, the first definition will win
+			var values = new object[] { Col.Decimal(5.27m, 5, 2), Col.SmallMoney(5.27m) };
+			var yielder = new StructuredDynamicYielder(values);
+
+			Assert.DoesNotThrow(() => yielder.ToList());
+
+			Assert.Fail("Should throw here!");
+		}
+
+		[Test]
+		public void RawListOfDifferingSpecification()
+		{
+			// While this is bad pracice, the first definition will win
+			var values = new[] { Col.Decimal(5.27m, 5, 2), Col.Decimal(5.27m, 6, 1) };
+			var yielder = new StructuredDynamicYielder(values);
+
+			Assert.DoesNotThrow(() => yielder.ToList());
+		}
+
+		[Test]
+		public void RawListOfExplicitTypes()
+		{
+			var values = new[] { Col.Decimal(5.27m, 5, 2), Col.Decimal(null) };
+			var yielder = new StructuredDynamicYielder(values);
+
+			int counter = 0;
+			foreach (var value in yielder)
+			{
+				counter++;
+
+				if (counter == 1)
+				{
+					Assert.AreEqual(SqlDbType.Decimal, value.GetSqlMetaData(0).SqlDbType);
+					Assert.AreEqual(5, value.GetSqlMetaData(0).Precision);
+					Assert.AreEqual(2, value.GetSqlMetaData(0).Scale);
+					Assert.AreEqual(typeof(decimal), value.GetValue(0).GetType());
+					Assert.AreEqual(5.27m, value.GetValue(0));
+				}
+				else
+				{
+					Assert.AreEqual(SqlDbType.Decimal, value.GetSqlMetaData(0).SqlDbType);
+					Assert.AreEqual(5, value.GetSqlMetaData(0).Precision);
+					Assert.AreEqual(2, value.GetSqlMetaData(0).Scale);
+					Assert.AreEqual(DBNull.Value, value.GetValue(0));
+				}
+			}
+
+			Assert.AreEqual(2, counter);
+		}
+
 		[Test]
 		public void Constructor_Null()
 		{

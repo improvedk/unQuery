@@ -34,7 +34,7 @@ namespace unQuery.Tests.SqlTypes
 		public void NoPropertiesObject()
 		{
 			Assert.Throws<ObjectHasNoPropertiesException>(() => DB.GetRows("SELECT * FROM @Input", new {
-				Input = Col.Structured("ListOfTinyInts", new object[] { (byte)1 })
+				Input = Col.Structured("ListOfTinyInts", new object[] { new {} })
 			}));
 		}
 
