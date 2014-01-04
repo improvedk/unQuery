@@ -50,7 +50,7 @@
     <Compile Include="SqlTypes\SqlTime.cs" />
     <Compile Include="SqlTypes\SqlText.cs" />
     <Compile Include="SqlTypes\SqlSmallMoney.cs" />
-    <Compile Include="SqlTypes\SqlSamllDateTime.cs" />
+    <Compile Include="SqlTypes\SqlSmallDateTime.cs" />
     <Compile Include="SqlTypes\ExplicitPrecisionAndScaleType.cs" />
     <Compile Include="SqlTypes\ExplicitScaleType.cs" />
     <Compile Include="SqlTypes\SqlReal.cs" />
