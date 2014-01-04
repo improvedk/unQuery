@@ -4,12 +4,12 @@ namespace unQuery.SqlTypes
 {
 	public abstract class SqlType
 	{
-		internal static object GetDBNullableValue(object value)
+		protected object GetDBNullableValue(object value)
 		{
 			return value ?? DBNull.Value;
 		}
 
-		internal static int GetAppropriateSizeFromLength(int length)
+		protected int GetAppropriateSizeFromLength(int length)
 		{
 			if (length <= 64)
 				return 64;
