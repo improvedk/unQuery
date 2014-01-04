@@ -9,7 +9,7 @@ namespace unQuery.SqlTypes
 		{ }
 
 		public SqlNText(string value) :
-			base(value, -1, SqlDbType.NText)
+			base(value, SqlDbType.NText, maxLength: -1)
 		{ }
 
 		private static readonly ITypeHandler typeHandler = new SqlNText();

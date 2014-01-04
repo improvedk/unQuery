@@ -9,7 +9,7 @@ namespace unQuery.SqlTypes
 		{ }
 
 		public SqlImage(byte[] value) :
-			base(value, -1, SqlDbType.Image)
+			base(value, SqlDbType.Image, maxLength: -1)
 		{ }
 
 		private static readonly ITypeHandler typeHandler = new SqlImage();

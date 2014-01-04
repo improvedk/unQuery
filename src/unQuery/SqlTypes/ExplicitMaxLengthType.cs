@@ -10,17 +10,19 @@ namespace unQuery.SqlTypes
 		private readonly int? maxLength;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
+		private readonly int? valueLength;
 
 		internal ExplicitMaxLengthType(SqlDbType dbType)
 		{
 			this.dbType = dbType;
 		}
 
-		internal ExplicitMaxLengthType(TValue value, int? maxLength, SqlDbType dbType)
+		internal ExplicitMaxLengthType(TValue value, SqlDbType dbType, int? maxLength = null, int? valueLength = null)
 		{
 			this.value = value;
 			this.maxLength = maxLength;
 			this.dbType = dbType;
+			this.valueLength = valueLength;
 
 			hasValue = true;
 		}
@@ -39,6 +41,8 @@ namespace unQuery.SqlTypes
 
 			if (maxLength != null)
 				param.Size = maxLength.Value;
+			else if (valueLength != null)
+				param.Size = GetAppropriateSizeFromLength(valueLength.Value);
 
 			return param;
 		}

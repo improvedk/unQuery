@@ -9,11 +9,11 @@ namespace unQuery.SqlTypes
 		{ }
 
 		public SqlChar(string value) :
-			base(value, null, SqlDbType.Char)
+			base(value, SqlDbType.Char)
 		{ }
 
 		public SqlChar(string value, int maxLength) :
-			base(value, maxLength, SqlDbType.Char)
+			base(value, SqlDbType.Char, maxLength: maxLength)
 		{ }
 
 		private static readonly ITypeHandler typeHandler = new SqlChar();

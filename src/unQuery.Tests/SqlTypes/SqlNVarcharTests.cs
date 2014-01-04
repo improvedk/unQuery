@@ -40,8 +40,9 @@ namespace unQuery.Tests.SqlTypes
 		{
 			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar("Hello рæøåсски", 20)).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 20);
 			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar(null, 10)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar("Hello рæøåсски")).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 14);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar(null)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar("Hello рæøåсски")).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 64);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar("Hello рæøåсски".PadRight(200, ' '))).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски".PadRight(200, ' '), size: 256);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlNVarChar(null)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 64);
 		}
 
 		[Test]

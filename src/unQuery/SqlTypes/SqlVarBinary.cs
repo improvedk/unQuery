@@ -9,11 +9,11 @@ namespace unQuery.SqlTypes
 		{ }
 
 		public SqlVarBinary(byte[] value) :
-			base(value, null, SqlDbType.VarBinary)
+			base(value, SqlDbType.VarBinary, valueLength: (value != null ? value.Length : 0))
 		{ }
 
 		public SqlVarBinary(byte[] value, int maxLength) :
-			base(value, maxLength, SqlDbType.VarBinary)
+			base(value, SqlDbType.VarBinary, maxLength: maxLength)
 		{ }
 
 		private static readonly ITypeHandler typeHandler = new SqlVarBinary();

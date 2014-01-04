@@ -42,8 +42,8 @@ namespace unQuery.Tests.SqlTypes
 		{
 			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(data, 10)).GetParameter(), SqlDbType.VarBinary, data, size: 10);
 			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(null, 5)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 5);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(data)).GetParameter(), SqlDbType.VarBinary, data, size: data.Length);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(null)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(data)).GetParameter(), SqlDbType.VarBinary, data, size: 64);
+			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(null)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 64);
 		}
 
 		[Test]
