@@ -9,5 +9,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("unQuery.Tests")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6b9551cc-a417-4f83-a658-f896f8ef34b9")]
-[assembly: AssemblyVersion("0.1.2")]
-[assembly: AssemblyFileVersion("0.1.2")]
+[assembly: AssemblyVersion("0.1.3")]
+[assembly: AssemblyFileVersion("0.1.3")]
