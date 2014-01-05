@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using Microsoft.SqlServer.Server;
 
 namespace unQuery.SqlTypes
 {
@@ -17,6 +18,14 @@ namespace unQuery.SqlTypes
 		internal static ITypeHandler GetTypeHandler()
 		{
 			return typeHandler;
+		}
+
+		public override void SetDataRecordValue(SqlDataRecord record, int ordinal)
+		{
+			if (Value == null)
+				record.SetDBNull(ordinal);
+			else
+				record.SetGuid(ordinal, Value.Value);
 		}
 	}
 }

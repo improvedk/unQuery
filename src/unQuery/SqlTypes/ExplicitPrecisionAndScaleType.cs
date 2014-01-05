@@ -6,7 +6,7 @@ namespace unQuery.SqlTypes
 {
 	public abstract class ExplicitPrecisionAndScaleType<TValue> : SqlType, ISqlType, ITypeHandler
 	{
-		private readonly TValue value;
+		protected readonly TValue Value;
 		private readonly byte? scale;
 		private readonly byte? precision;
 		private readonly bool hasValue;
@@ -19,7 +19,7 @@ namespace unQuery.SqlTypes
 
 		internal ExplicitPrecisionAndScaleType(TValue value, byte? precision, byte? scale, SqlDbType dbType)
 		{
-			this.value = value;
+			this.Value = value;
 			this.precision = precision;
 			this.scale = scale;
 			this.dbType = dbType;
@@ -27,16 +27,18 @@ namespace unQuery.SqlTypes
 			hasValue = true;
 		}
 
+		public abstract void SetDataRecordValue(SqlDataRecord record, int ordinal);
+
 		object ISqlType.GetRawValue()
 		{
-			return value;
+			return Value;
 		}
 
 		SqlParameter ISqlType.GetParameter()
 		{
 			var param = new SqlParameter {
 				SqlDbType = dbType,
-				Value = GetDBNullableValue(value)
+				Value = GetDBNullableValue(Value)
 			};
 
 			if (precision != null && scale != null)

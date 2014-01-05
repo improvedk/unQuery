@@ -5,23 +5,34 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using unQuery.SqlTypes;
 
 namespace unQuery
 {
-	internal class CachedType
-	{
-		internal SqlMetaData[] Schema;
-		internal PropertyInfo[] Properties;
-	}
-
 	/// <summary>
 	/// Datasource that yields SqlDataRecords for efficient streaming of table valued parameter data to SQL Server.
 	/// </summary>
 	internal class StructuredDynamicYielder : IEnumerable<SqlDataRecord>
 	{
+		private static ConcurrentDictionary<Type, TypeHandler> typeHandlers = new ConcurrentDictionary<Type, TypeHandler>();
+		private static readonly Dictionary<Type, MethodInfo> sqlDataRecordSetters = new Dictionary<Type, MethodInfo> {
+			{ typeof(int), typeof(SqlDataRecord).GetMethod("SetInt32", new[] { typeof(int), typeof(int) }) },
+			{ typeof(string), typeof(SqlDataRecord).GetMethod("SetString", new[] { typeof(int), typeof(string) }) },
+			{ typeof(bool), typeof(SqlDataRecord).GetMethod("SetBoolean", new[] { typeof(int), typeof(bool) }) },
+			{ typeof(byte), typeof(SqlDataRecord).GetMethod("SetByte", new[] { typeof(int), typeof(byte)}) },
+			{ typeof(short), typeof(SqlDataRecord).GetMethod("SetInt16", new[] { typeof(int), typeof(short)}) },
+			{ typeof(long), typeof(SqlDataRecord).GetMethod("SetInt64", new[] { typeof(int), typeof(long)}) },
+			{ typeof(Guid), typeof(SqlDataRecord).GetMethod("SetGuid", new[] { typeof(int), typeof(Guid)}) }
+		};
+
 		private readonly IEnumerable<object> values;
-		private static readonly ConcurrentDictionary<Type, CachedType> typeCache = new ConcurrentDictionary<Type, CachedType>();
+
+		private class TypeHandler
+		{
+			internal SqlMetaData[] Schema;
+			internal Action<SqlDataRecord, object> SetRecordValues;
+		}
 
 		/// <summary>
 		/// Instantiates a StructedDynamicYielder that will efficiently stream the values to SQL Server.
@@ -33,6 +44,11 @@ namespace unQuery
 				throw new ArgumentException("Values can't be null.");
 
 			this.values = values;
+		}
+
+		internal static void ResetCache()
+		{
+			typeHandlers = new ConcurrentDictionary<Type, TypeHandler>();
 		}
 
 		private IEnumerable<SqlDataRecord> processSqlTypes(object[] rows)
@@ -58,7 +74,7 @@ namespace unQuery
 		private IEnumerable<SqlDataRecord> processImplicitTypes(object[] rows, ITypeHandler implicitTypeHandler)
 		{
 			var record = new SqlDataRecord(implicitTypeHandler.CreateMetaData("UnnamedColumn"));
-			
+
 			foreach (var row in rows)
 			{
 				try
@@ -76,85 +92,129 @@ namespace unQuery
 
 		private IEnumerable<SqlDataRecord> processObjects(object[] rows)
 		{
-			SqlDataRecord record = null;
-			object[] recordValues = null;
-			CachedType cachedType = null;
+			// We know there's at least one object, so we can safely pull the type of the first one
+			Type objectType = rows[0].GetType();
+			object objectValue = rows[0];
+			TypeHandler typeHandler;
 
-			foreach (object row in values)
+			// If we haven't already seen this type before, we'll have to extract its schema and create a type reader for it
+			if (!typeHandlers.TryGetValue(objectType, out typeHandler))
 			{
-				// For the very first value, we'll first have to create the schema as an array of SqlMetaData
-				if (record == null)
+				PropertyInfo[] properties = objectType.GetProperties().OrderBy(x => x.MetadataToken).ToArray();
+
+				// If no properties are found on the provided parameter object, then there's no schema & value to read
+				if (properties.Length == 0)
+					throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
+
+				var schema = new SqlMetaData[properties.Length];
+				var dm = new DynamicMethod("SetRecordValues", typeof(void), new[] { typeof(SqlDataRecord), typeof(object) }, true);
+				var il = dm.GetILGenerator();
+
+				// First we'll want to cast the object value into the type of the actual value and store it as a local variable
+				il.DeclareLocal(objectType); // []
+				il.Emit(OpCodes.Ldarg_1); // [object]
+				il.Emit(OpCodes.Castclass, objectType); // [object]
+				il.Emit(OpCodes.Stloc_0); // []
+
+				// Loop object properties
+				int propertyIndex = 0;
+				int localIndex = 1;
+				foreach (var prop in objectType.GetProperties().OrderBy(x => x.MetadataToken))
 				{
-					var valueType = row.GetType();
-
-					// If type schema is not cached, we'll have to create it
-					if (!typeCache.TryGetValue(valueType, out cachedType))
+					try
 					{
-						// To ensure we get properties in the declaration order, we need to sort by the MetaDataToken
-						PropertyInfo[] properties = valueType.GetProperties().OrderBy(x => x.MetadataToken).ToArray();
-						SqlMetaData[] schema = new SqlMetaData[properties.Length];
+						// Add property to schema
+						if (typeof(ITypeHandler).IsAssignableFrom(prop.PropertyType))
+							schema[propertyIndex] = ((ITypeHandler)prop.GetValue(rows[0])).CreateMetaData(prop.Name);
+						else
+							schema[propertyIndex] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateMetaData(prop.Name);
 
-						// If no properties are found on the provided parameter object, then there's no schema & value to read
-						if (schema.Length == 0)
-							throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
-
-						// For each property, we'll add it as a SqlMetaData to the schema array. We'll let the ISqlType create
-						// the actual SqlMetaData value.
-						int index = 0;
-						foreach (PropertyInfo prop in properties)
+						// Is the type a nullable, reference or value type?
+						if (Nullable.GetUnderlyingType(prop.PropertyType) != null)
 						{
-							try
+							// Nullable type []
+							var valueLabel = il.DefineLabel();
+							var endLabel = il.DefineLabel();
+
+							// Load the record & ordinal onto the stack
+							il.Emit(OpCodes.Ldarg_0); // Load the SqlDataRecord parameter [record]
+							il.Emit(OpCodes.Ldc_I4, propertyIndex); // Load the ordinal index of the column [record, ordinal]
+
+							// Is the nullable type null?
+							il.Emit(OpCodes.Ldloc_0); // Load the object [record, ordinal, object]
+							il.Emit(OpCodes.Callvirt, prop.GetMethod); // Get the property value [record, ordinal, value]
+							il.DeclareLocal(prop.PropertyType); // We'll have to store the value as a variable so we can pass it by ref
+							il.Emit(OpCodes.Stloc, localIndex); // [record, ordinal]
+							il.Emit(OpCodes.Ldloca, localIndex); // Load the address of the property value [record, ordinal, &value]
+							il.Emit(OpCodes.Call, prop.PropertyType.GetMethod("get_HasValue")); // Check if nullable has value [record, ordinal, hasValue]
+							il.Emit(OpCodes.Brtrue, valueLabel); // If non-null, skip setting a null value [record, ordinal]
+
+							// Set a DBNull value
+							il.Emit(OpCodes.Callvirt, typeof(SqlDataRecord).GetMethod("SetDBNull", new[] { typeof(int) })); // Set a DBNull value []
+							il.Emit(OpCodes.Br, endLabel); // Jump past setting a value []
+
+							// Set an actual value
+							il.MarkLabel(valueLabel); // Marks the beginning where we're setting an actual value [record, ordinal]
+							il.Emit(OpCodes.Ldloca, localIndex); // Load the value [record, ordinal, &value]
+							il.Emit(OpCodes.Call, prop.PropertyType.GetMethod("get_Value")); // Get the underlying value [record, ordinal, value]
+							il.Emit(OpCodes.Callvirt, sqlDataRecordSetters[Nullable.GetUnderlyingType(prop.PropertyType)]); // Set value []
+
+							// End
+							il.MarkLabel(endLabel);
+
+							localIndex++;
+						}
+						else
+						{
+							// Reference & value types []
+							if (typeof(ISqlType).IsAssignableFrom(prop.PropertyType))
 							{
-								if (typeof(ITypeHandler).IsAssignableFrom(prop.PropertyType))
-								{
-									ITypeHandler value = (ITypeHandler)prop.GetValue(row);
-									schema[index++] = value.CreateMetaData(prop.Name);
-								}
-								else
-									schema[index++] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateMetaData(prop.Name);
+								// Type is an ISqlType and we need to extract the value
+								il.Emit(OpCodes.Ldloc_0); // Load the object [object]
+								il.Emit(OpCodes.Call, prop.GetMethod); // Load the property value [value]
+								il.Emit(OpCodes.Ldarg_0); // Load the record [value, record]
+								il.Emit(OpCodes.Ldc_I4, propertyIndex); // Load the ordinal [value, record, ordinal]
+								il.Emit(OpCodes.Callvirt, prop.PropertyType.GetMethod("SetDataRecordValue", new[] { typeof(SqlDataRecord), typeof(int) })); // Let the ISqlType set the value itself []
 							}
-							catch (KeyNotFoundException)
+							else
 							{
-								throw new TypeNotSupportedException(prop.PropertyType);
+								// Load the record & ordinal onto the stack
+								il.Emit(OpCodes.Ldarg_0); // Load the SqlDataRecord parameter [record]
+								il.Emit(OpCodes.Ldc_I4, propertyIndex); // Load the ordinal index of the column [record, ordinal]
+
+								// It's either a non-ISqlType or a value type
+								il.Emit(OpCodes.Ldloc_0); // Load the object [record, ordinal, object]
+								il.Emit(OpCodes.Callvirt, prop.GetMethod); // Load the property value [record, ordinal, value]
+								il.Emit(OpCodes.Callvirt, sqlDataRecordSetters[prop.PropertyType]); // Set value []
 							}
 						}
 
-						// Cache the new schema
-						cachedType = new CachedType
-						{
-							Properties = properties,
-							Schema = schema
-						};
-						typeCache.AddOrUpdate(valueType, cachedType, (k, v) => v);
-
-						// This is now the base SqlDataRecord that contains the schema without values. We'll be reusing this
-						// while constantly overwriting the values, for each record.
-						record = new SqlDataRecord(schema);
+						propertyIndex++;
 					}
-					else
-						record = new SqlDataRecord(cachedType.Schema);
-
-					// This is the array that'll be used to efficiently set all values on the data record at once
-					recordValues = new object[record.FieldCount];
+					catch (KeyNotFoundException)
+					{
+						throw new TypeNotSupportedException(prop.PropertyType);
+					}
 				}
 
-				// Populate values & yield
-				for (int i = 0; i < recordValues.Length; i++)
-				{
-					var prop = cachedType.Properties[i];
-					var columnValue = prop.GetValue(row);
-					var columnValueSqlType = columnValue as ISqlType;
+				// Return
+				il.Emit(OpCodes.Ret);
 
-					// If column value is an ISqlType, get the raw value rather than the ISqlType itself
-					if (columnValueSqlType != null)
-						recordValues[i] = columnValueSqlType.GetRawValue() ?? DBNull.Value;
-					else
-						recordValues[i] = columnValue ?? DBNull.Value;
-				}
+				// Cache type handler
+				typeHandler = new TypeHandler {
+					Schema = schema,
+					SetRecordValues = (Action<SqlDataRecord, object>)dm.CreateDelegate(typeof(Action<SqlDataRecord, object>))
+				};
+				typeHandlers.AddOrUpdate(objectType, typeHandler, (k, v) => v);
+			}
 
-				record.SetValues(recordValues);
-
-				// Once the values have been overwritten, we can now yield it before rewriting the values again
+			// This is now the base SqlDataRecord that contains the schema without values. We'll be reusing this
+			// while constantly overwriting the values, for each record.
+			var record = new SqlDataRecord(typeHandler.Schema);
+			
+			foreach (object row in rows)
+			{
+				typeHandler.SetRecordValues(record, row);
 				yield return record;
 			}
 		}
@@ -171,7 +231,7 @@ namespace unQuery
 			if (rows.Length == 0)
 				yield break;
 
-			// Based on the type of hte first value, we'll decide how to process the data
+			// Based on the type of the first value, we'll decide how to process the data
 			var rowType = rows[0].GetType();
 
 			// If the value is an ITypeHandler, we know it's an ISqlType and we can process it as such
@@ -179,7 +239,7 @@ namespace unQuery
 			{
 				foreach (var row in processSqlTypes(rows))
 					yield return row;
-				
+
 				yield break;
 			}
 
@@ -193,7 +253,7 @@ namespace unQuery
 				yield break;
 			}
 
-			// At this point we'll utilize reflection to pull the property values from the provided objects
+			// At this point we'll extract property values from the provided objects
 			foreach (var row in processObjects(rows))
 				yield return row;
 		}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Microsoft.SqlServer.Server;
 
 namespace unQuery.SqlTypes
 {
@@ -30,6 +31,11 @@ namespace unQuery.SqlTypes
 				TypeName = typeName,
 				Value = value
 			};
+		}
+
+		public void SetDataRecordValue(SqlDataRecord record, int ordinal)
+		{
+			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
 		}
 
 		object ISqlType.GetRawValue()

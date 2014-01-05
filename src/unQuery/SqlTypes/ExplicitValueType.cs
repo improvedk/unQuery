@@ -6,7 +6,7 @@ namespace unQuery.SqlTypes
 {
 	public abstract class ExplicitValueType<TValue> : SqlType, ISqlType, ITypeHandler
 	{
-		private readonly TValue value;
+		protected readonly TValue Value;
 		private readonly SqlDbType dbType;
 		private readonly bool hasValue;
 
@@ -17,22 +17,24 @@ namespace unQuery.SqlTypes
 
 		internal ExplicitValueType(TValue value, SqlDbType dbType)
 		{
-			this.value = value;
+			this.Value = value;
 			this.dbType = dbType;
 
 			hasValue = true;
 		}
 
+		public abstract void SetDataRecordValue(SqlDataRecord record, int ordinal);
+
 		object ISqlType.GetRawValue()
 		{
-			return value;
+			return Value;
 		}
 
 		SqlParameter ISqlType.GetParameter()
 		{
 			return new SqlParameter {
 				SqlDbType = dbType,
-				Value = GetDBNullableValue(value)
+				Value = GetDBNullableValue(Value)
 			};
 		}
 
