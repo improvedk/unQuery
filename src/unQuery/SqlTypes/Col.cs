@@ -213,7 +213,7 @@ namespace unQuery.SqlTypes
 		/// <summary>
 		/// Creates a smallint value
 		/// </summary>
-		public static SqlSmallInt SmallInt(byte? value)
+		public static SqlSmallInt SmallInt(short? value)
 		{
 			return new SqlSmallInt(value);
 		}
