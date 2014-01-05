@@ -180,6 +180,8 @@ var persons = DB.GetRows("SELECT * FROM @Persons", new {
 });
 ```
 
+unQuery will create & cache code on-the-fly, for parsing in the parameters, so that performance is on par with handwritten code.
+
 There are a couple of caveats when using structured parameters:
 
 * Parameter types must always be fully specified - that is, varchars should have their max length defined, decimals should have their precision and scale defined, and so forth.
