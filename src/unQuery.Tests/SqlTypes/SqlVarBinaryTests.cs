@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlVarBinary.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlVarBinary.GetTypeHandler());
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlVarBinary.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlVarBinary(data);
+			SqlTypeHandler col = new SqlVarBinary(data);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
 			col = new SqlVarBinary(data, 10);
@@ -40,16 +40,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(data, 10)).GetParameter(), SqlDbType.VarBinary, data, size: 10);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(null, 5)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 5);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(data)).GetParameter(), SqlDbType.VarBinary, data, size: 64);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlVarBinary(null)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 64);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(data, 10)).GetParameter(), SqlDbType.VarBinary, data, size: 10);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(null, 5)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 5);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(data)).GetParameter(), SqlDbType.VarBinary, data, size: 64);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(null)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 64);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlVarBinary(data, 10);
+			SqlType type = new SqlVarBinary(data, 10);
 			Assert.AreEqual(data, type.GetRawValue());
 
 			type = new SqlVarBinary(null, 10);
@@ -96,8 +96,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlVarBinary)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.VarBinary]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlVarBinary)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.VarBinary]);
 		}
 	}
 }

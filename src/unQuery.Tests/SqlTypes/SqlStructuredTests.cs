@@ -18,7 +18,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType col = new SqlStructured("MyType", null);
+			SqlType col = new SqlStructured("MyType", null);
 			var param = col.GetParameter();
 			TestHelper.AssertSqlParameter(param, SqlDbType.Structured, DBNull.Value);
 
@@ -137,7 +137,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void Factory()
 		{
-			ISqlType col = Col.Structured("MyType", new dynamic[] { new { A = 5, B = true } });
+			SqlType col = Col.Structured("MyType", new dynamic[] { new { A = 5, B = true } });
 			var param = col.GetParameter();
 
 			Assert.AreEqual("MyType", param.TypeName);
@@ -148,7 +148,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType col = new SqlStructured("A", null);
+			SqlType col = new SqlStructured("A", null);
 
 			Assert.Throws<InvalidOperationException>(() => col.GetRawValue());
 		}

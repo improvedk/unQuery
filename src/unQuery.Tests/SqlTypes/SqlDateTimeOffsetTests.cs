@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlDateTimeOffset.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlDateTimeOffset.GetTypeHandler());
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTimeOffset.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlDateTimeOffset(testValue);
+			SqlTypeHandler col = new SqlDateTimeOffset(testValue);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
 			col = new SqlDateTimeOffset(testValue, 5);
@@ -40,16 +40,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTimeOffset(testValue, 6)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 6);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTimeOffset(null, 4)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 4);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTimeOffset(testValue)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 0);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTimeOffset(null)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(testValue, 6)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 6);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(null, 4)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(testValue)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(null)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlDateTimeOffset(testValue, 2);
+			SqlType type = new SqlDateTimeOffset(testValue, 2);
 			Assert.AreEqual(testValue, type.GetRawValue());
 
 			type = new SqlDateTimeOffset(null, 0);
@@ -96,8 +96,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDateTimeOffset)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.DateTimeOffset]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDateTimeOffset)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.DateTimeOffset]);
 		}
 	}
 }

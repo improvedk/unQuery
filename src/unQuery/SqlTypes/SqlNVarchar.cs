@@ -17,13 +17,13 @@ namespace unQuery.SqlTypes
 			base(value, SqlDbType.NVarChar, maxLength: maxLength)
 		{ }
 
-		private static readonly ITypeHandler typeHandler = new SqlNVarChar();
-		internal static ITypeHandler GetTypeHandler()
+		private static readonly SqlTypeHandler typeHandler = new SqlNVarChar();
+		internal static SqlTypeHandler GetTypeHandler()
 		{
 			return typeHandler;
 		}
 
-		public override void SetDataRecordValue(SqlDataRecord record, int ordinal)
+		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
 			if (Value == null)
 				record.SetDBNull(ordinal);

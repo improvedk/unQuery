@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlUniqueIdentifier.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlUniqueIdentifier.GetTypeHandler());
 		}
 
 		[Test]
@@ -34,7 +34,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlUniqueIdentifier(guid);
+			SqlType type = new SqlUniqueIdentifier(guid);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, guid);
 
 			type = new SqlUniqueIdentifier(null);
@@ -44,7 +44,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlUniqueIdentifier(guid);
+			SqlType type = new SqlUniqueIdentifier(guid);
 			Assert.AreEqual(guid, type.GetRawValue());
 
 			type = new SqlUniqueIdentifier(null);
@@ -98,10 +98,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(Guid)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(Guid?)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlUniqueIdentifier)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.UniqueIdentifier]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(Guid)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(Guid?)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlUniqueIdentifier)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.UniqueIdentifier]);
 		}
 	}
 }

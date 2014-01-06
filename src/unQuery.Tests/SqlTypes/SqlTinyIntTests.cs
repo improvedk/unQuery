@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlTinyInt.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlTinyInt.GetTypeHandler());
 		}
 
 		[Test]
@@ -32,7 +32,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlTinyInt(5);
+			SqlType type = new SqlTinyInt(5);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.TinyInt, (byte)5);
 
 			type = new SqlTinyInt(null);
@@ -42,7 +42,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlTinyInt(5);
+			SqlType type = new SqlTinyInt(5);
 			Assert.AreEqual((byte)5, type.GetRawValue());
 
 			type = new SqlTinyInt(null);
@@ -96,10 +96,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(byte)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(byte?)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlTinyInt)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.TinyInt]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(byte)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(byte?)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlTinyInt)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.TinyInt]);
 		}
 	}
 }

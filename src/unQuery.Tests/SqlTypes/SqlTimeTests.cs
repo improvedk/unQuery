@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlTime.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlTime.GetTypeHandler());
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlTime.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlTime(testValue);
+			SqlTypeHandler col = new SqlTime(testValue);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
 			col = new SqlTime(testValue, 6);
@@ -40,16 +40,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(testValue, 2)).GetParameter(), SqlDbType.Time, testValue, scale: 2);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(null, 5)).GetParameter(), SqlDbType.Time, DBNull.Value, scale: 5);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(testValue)).GetParameter(), SqlDbType.Time, testValue, scale: 0);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlTime(null)).GetParameter(), SqlDbType.Time, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(testValue, 2)).GetParameter(), SqlDbType.Time, testValue, scale: 2);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(null, 5)).GetParameter(), SqlDbType.Time, DBNull.Value, scale: 5);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(testValue)).GetParameter(), SqlDbType.Time, testValue, scale: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(null)).GetParameter(), SqlDbType.Time, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlTime(testValue, 2);
+			SqlType type = new SqlTime(testValue, 2);
 			Assert.AreEqual(testValue, type.GetRawValue());
 
 			type = new SqlTime(null, 1);
@@ -96,8 +96,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlTime)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Time]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlTime)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Time]);
 		}
 	}
 }

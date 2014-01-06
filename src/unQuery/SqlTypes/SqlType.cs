@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
+using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public abstract class SqlType
+	public abstract class SqlType : SqlTypeHandler
 	{
 		protected object GetDBNullableValue(object value)
 		{
@@ -25,5 +27,9 @@ namespace unQuery.SqlTypes
 
 			return 8000;
 		}
+
+		internal abstract SqlParameter GetParameter();
+		internal abstract object GetRawValue();
+		internal abstract void SetDataRecordValue(SqlDataRecord record, int ordinal);
 	}
 }

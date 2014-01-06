@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlDateTime.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlDateTime.GetTypeHandler());
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTime.GetTypeHandler().CreateMetaData(null));
 
-			ITypeHandler col = new SqlDateTime(testDateTime);
+			SqlTypeHandler col = new SqlDateTime(testDateTime);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.DateTime, meta.SqlDbType);
 			Assert.AreEqual("Test", meta.Name);
@@ -36,7 +36,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlDateTime(testDateTime);
+			SqlType type = new SqlDateTime(testDateTime);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.DateTime, testDateTime);
 
 			type = new SqlDateTime(null);
@@ -46,7 +46,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlDateTime(testDateTime);
+			SqlType type = new SqlDateTime(testDateTime);
 			Assert.AreEqual(testDateTime, type.GetRawValue());
 
 			type = new SqlDateTime(null);
@@ -92,8 +92,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDateTime)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.DateTime]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDateTime)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.DateTime]);
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlDecimal.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlDecimal.GetTypeHandler());
 		}
 
 		[Test]
@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDecimal.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlDecimal(5.27m);
+			SqlTypeHandler col = new SqlDecimal(5.27m);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
 			col = new SqlDecimal(5.27m, 10, 5);
@@ -39,16 +39,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(5.27m, 10, 5)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(null, 10, 5)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(5.27m)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 3, scale: 2);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDecimal(null)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 0, scale: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(5.27m, 10, 5)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(null, 10, 5)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(5.27m)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 3, scale: 2);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(null)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 0, scale: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlDecimal(5.27m, 10, 5);
+			SqlType type = new SqlDecimal(5.27m, 10, 5);
 			Assert.AreEqual(5.27m, type.GetRawValue());
 
 			type = new SqlDecimal(null, 10, 5);
@@ -95,8 +95,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDecimal)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Decimal]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDecimal)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Decimal]);
 		}
 	}
 }

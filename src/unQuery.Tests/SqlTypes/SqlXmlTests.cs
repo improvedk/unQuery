@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlXml.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlXml.GetTypeHandler());
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlXml.GetTypeHandler().CreateMetaData(null));
 
-			ITypeHandler col = new SqlXml(testXml);
+			SqlTypeHandler col = new SqlXml(testXml);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Xml, meta.SqlDbType);
 			Assert.AreEqual(-1, meta.MaxLength);
@@ -37,7 +37,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlXml(testXml);
+			SqlType type = new SqlXml(testXml);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Xml, testXml);
 
 			type = new SqlXml(null);
@@ -47,7 +47,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlXml(testXml);
+			SqlType type = new SqlXml(testXml);
 			Assert.AreEqual(testXml, type.GetRawValue());
 
 			type = new SqlXml(null);
@@ -102,8 +102,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlXml)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Xml]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlXml)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Xml]);
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlChar.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlChar.GetTypeHandler());
 		}
 
 		[Test]
@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlChar.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlChar("Test");
+			SqlTypeHandler col = new SqlChar("Test");
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
 			col = new SqlChar("Test", 10);
@@ -38,16 +38,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar("Test", 10)).GetParameter(), SqlDbType.Char, "Test", size: 10);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar(null, 10)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar("Test")).GetParameter(), SqlDbType.Char, "Test", size: 4);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlChar(null)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlChar("Test", 10)).GetParameter(), SqlDbType.Char, "Test", size: 10);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlChar(null, 10)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlChar("Test")).GetParameter(), SqlDbType.Char, "Test", size: 4);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlChar(null)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlChar("Test", 10);
+			SqlType type = new SqlChar("Test", 10);
 			Assert.AreEqual("Test", type.GetRawValue());
 
 			type = new SqlChar(null, 10);
@@ -94,8 +94,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlChar)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Char]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlChar)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Char]);
 		}
 	}
 }

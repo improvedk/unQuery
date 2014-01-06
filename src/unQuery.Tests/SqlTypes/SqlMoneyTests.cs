@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlMoney.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlMoney.GetTypeHandler());
 		}
 
 		[Test]
@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlMoney.GetTypeHandler().CreateMetaData(null));
 
-			ITypeHandler col = new SqlMoney(5.27m);
+			SqlTypeHandler col = new SqlMoney(5.27m);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Money, meta.SqlDbType);
 			Assert.AreEqual("Test", meta.Name);
@@ -34,7 +34,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlMoney(5.27m);
+			SqlType type = new SqlMoney(5.27m);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Money, 5.27m);
 
 			type = new SqlMoney(null);
@@ -44,7 +44,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlMoney(5.27m);
+			SqlType type = new SqlMoney(5.27m);
 			Assert.AreEqual(5.27m, type.GetRawValue());
 
 			type = new SqlMoney(null);
@@ -90,8 +90,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlMoney)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Money]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlMoney)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Money]);
 		}
 	}
 }

@@ -14,13 +14,13 @@ namespace unQuery.SqlTypes
 			base(value, SqlDbType.DateTime)
 		{ }
 
-		private static readonly ITypeHandler typeHandler = new SqlDateTime();
-		internal static ITypeHandler GetTypeHandler()
+		private static readonly SqlTypeHandler typeHandler = new SqlDateTime();
+		internal static SqlTypeHandler GetTypeHandler()
 		{
 			return typeHandler;
 		}
 
-		public override void SetDataRecordValue(SqlDataRecord record, int ordinal)
+		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
 			if (Value == null)
 				record.SetDBNull(ordinal);

@@ -196,7 +196,7 @@ namespace unQuery
 		/// <summary>
 		/// Map between core CLR & ISqlTypes and their corresponding ITypeHandlers
 		/// </summary>
-		internal static Dictionary<Type, ITypeHandler> ClrTypeHandlers = new Dictionary<Type, ITypeHandler> {
+		internal static Dictionary<Type, SqlTypeHandler> ClrTypeHandlers = new Dictionary<Type, SqlTypeHandler> {
 			// Core CLR types
 			{ typeof(byte), SqlTinyInt.GetTypeHandler() },
 			{ typeof(byte?), SqlTinyInt.GetTypeHandler() },
@@ -244,7 +244,7 @@ namespace unQuery
 		/// <summary>
 		/// Map between SqlDbType and their corresponding ITypeHandlers
 		/// </summary>
-		internal static Dictionary<SqlDbType, ITypeHandler> SqlDbTypeHandlers = new Dictionary<SqlDbType, ITypeHandler> {	
+		internal static Dictionary<SqlDbType, SqlTypeHandler> SqlDbTypeHandlers = new Dictionary<SqlDbType, SqlTypeHandler> {
 			{ SqlDbType.BigInt, SqlBigInt.GetTypeHandler() },  
 			{ SqlDbType.Binary, SqlBinary.GetTypeHandler() },
 			{ SqlDbType.Bit, SqlBit.GetTypeHandler() },
@@ -284,7 +284,7 @@ namespace unQuery
 			{
 				SqlParameter param;
 				object propValue = prop.GetValue(parameters);
-				var sqlType = propValue as ISqlType;
+				var sqlType = propValue as SqlType;
 				
 				try
 				{

@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlNChar.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlNChar.GetTypeHandler());
 		}
 
 		[Test]
@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNChar.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlNChar("ру́сский");
+			SqlTypeHandler col = new SqlNChar("ру́сский");
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
 			col = new SqlNChar("ру́сский", 10);
@@ -38,16 +38,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar("ру́сский", 10)).GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar(null, 10)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar("рæøåсски")).GetParameter(), SqlDbType.NChar, "рæøåсски", size: 8);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlNChar(null)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar("ру́сский", 10)).GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar(null, 10)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar("рæøåсски")).GetParameter(), SqlDbType.NChar, "рæøåсски", size: 8);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar(null)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlNChar("ру́сский", 10);
+			SqlType type = new SqlNChar("ру́сский", 10);
 			Assert.AreEqual("ру́сский", type.GetRawValue());
 
 			type = new SqlNChar(null, 10);
@@ -94,8 +94,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlNChar)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.NChar]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlNChar)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.NChar]);
 		}
 	}
 }

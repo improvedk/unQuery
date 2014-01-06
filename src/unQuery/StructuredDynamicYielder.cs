@@ -53,7 +53,7 @@ namespace unQuery
 
 		private IEnumerable<SqlDataRecord> processSqlTypes(object[] rows)
 		{
-			var record = new SqlDataRecord(((ITypeHandler)rows[0]).CreateMetaData("UnnamedColumn"));
+			var record = new SqlDataRecord(((SqlTypeHandler)rows[0]).CreateMetaData("UnnamedColumn"));
 			Type rowType = null;
 
 			foreach (var row in rows)
@@ -65,13 +65,13 @@ namespace unQuery
 					else if (rowType != row.GetType())
 						throw new StructuredTypeMismatchException(row.GetType());
 
-				record.SetValue(0, ((ISqlType)row).GetRawValue() ?? DBNull.Value);
+				record.SetValue(0, ((SqlType)row).GetRawValue() ?? DBNull.Value);
 
 				yield return record;
 			}
 		}
 
-		private IEnumerable<SqlDataRecord> processImplicitTypes(object[] rows, ITypeHandler implicitTypeHandler)
+		private IEnumerable<SqlDataRecord> processImplicitTypes(object[] rows, SqlTypeHandler implicitTypeHandler)
 		{
 			var record = new SqlDataRecord(implicitTypeHandler.CreateMetaData("UnnamedColumn"));
 
@@ -124,8 +124,8 @@ namespace unQuery
 					try
 					{
 						// Add property to schema
-						if (typeof(ITypeHandler).IsAssignableFrom(prop.PropertyType))
-							schema[propertyIndex] = ((ITypeHandler)prop.GetValue(rows[0])).CreateMetaData(prop.Name);
+						if (typeof(SqlTypeHandler).IsAssignableFrom(prop.PropertyType))
+							schema[propertyIndex] = ((SqlTypeHandler)prop.GetValue(rows[0])).CreateMetaData(prop.Name);
 						else
 							schema[propertyIndex] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateMetaData(prop.Name);
 
@@ -167,14 +167,14 @@ namespace unQuery
 						else
 						{
 							// Reference & value types []
-							if (typeof(ISqlType).IsAssignableFrom(prop.PropertyType))
+							if (typeof(SqlType).IsAssignableFrom(prop.PropertyType))
 							{
 								// Type is an ISqlType and we need to extract the value
 								il.Emit(OpCodes.Ldloc_0); // Load the object [object]
 								il.Emit(OpCodes.Call, prop.GetMethod); // Load the property value [value]
 								il.Emit(OpCodes.Ldarg_0); // Load the record [value, record]
 								il.Emit(OpCodes.Ldc_I4, propertyIndex); // Load the ordinal [value, record, ordinal]
-								il.Emit(OpCodes.Callvirt, prop.PropertyType.GetMethod("SetDataRecordValue", new[] { typeof(SqlDataRecord), typeof(int) })); // Let the ISqlType set the value itself []
+								il.Emit(OpCodes.Callvirt, prop.PropertyType.GetMethod("SetDataRecordValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(SqlDataRecord), typeof(int) }, null) ); // Let the ISqlType set the value itself []
 							}
 							else
 							{
@@ -234,8 +234,8 @@ namespace unQuery
 			// Based on the type of the first value, we'll decide how to process the data
 			var rowType = rows[0].GetType();
 
-			// If the value is an ITypeHandler, we know it's an ISqlType and we can process it as such
-			if (typeof(ITypeHandler).IsAssignableFrom(rowType))
+			// If the value is a SqlTypeHandler, we know it's a SqlType and we can process it as such
+			if (typeof(SqlTypeHandler).IsAssignableFrom(rowType))
 			{
 				foreach (var row in processSqlTypes(rows))
 					yield return row;
@@ -244,7 +244,7 @@ namespace unQuery
 			}
 
 			// If the value type is supported as an implicit type, we can just send the raw values out directly
-			ITypeHandler implicitTypeHandler;
+			SqlTypeHandler implicitTypeHandler;
 			if (unQueryDB.ClrTypeHandlers.TryGetValue(rowType, out implicitTypeHandler))
 			{
 				foreach (var row in processImplicitTypes(rows, implicitTypeHandler))

@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlBigInt.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlBigInt.GetTypeHandler());
 		}
 
 		[Test]
@@ -32,7 +32,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlBigInt(5);
+			SqlType type = new SqlBigInt(5);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, (long)5);
 
 			type = new SqlBigInt(null);
@@ -42,7 +42,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlBigInt(5);
+			SqlType type = new SqlBigInt(5);
 			Assert.AreEqual((long)5, type.GetRawValue());
 
 			type = new SqlBigInt(null);
@@ -96,10 +96,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(long)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(long?)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlBigInt)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.BigInt]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(long)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(long?)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlBigInt)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.BigInt]);
 		}
 	}
 }

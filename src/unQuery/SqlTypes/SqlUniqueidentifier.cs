@@ -14,13 +14,13 @@ namespace unQuery.SqlTypes
 			base(value, SqlDbType.UniqueIdentifier)
 		{ }
 
-		private static readonly ITypeHandler typeHandler = new SqlUniqueIdentifier();
-		internal static ITypeHandler GetTypeHandler()
+		private static readonly SqlTypeHandler typeHandler = new SqlUniqueIdentifier();
+		internal static SqlTypeHandler GetTypeHandler()
 		{
 			return typeHandler;
 		}
 
-		public override void SetDataRecordValue(SqlDataRecord record, int ordinal)
+		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
 			if (Value == null)
 				record.SetDBNull(ordinal);

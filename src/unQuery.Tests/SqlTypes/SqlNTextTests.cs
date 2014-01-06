@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlNText.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlNText.GetTypeHandler());
 		}
 
 		[Test]
@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNText.GetTypeHandler().CreateMetaData(null));
 
-			ITypeHandler col = new SqlNText("ру́сский");
+			SqlTypeHandler col = new SqlNText("ру́сский");
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.NText, meta.SqlDbType);
 			Assert.AreEqual(-1, meta.MaxLength);
@@ -35,7 +35,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlNText("ру́сский");
+			SqlType type = new SqlNText("ру́сский");
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NText, "ру́сский", size: -1);
 
 			type = new SqlNText(null);
@@ -45,7 +45,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlNText("ру́сский");
+			SqlType type = new SqlNText("ру́сский");
 			Assert.AreEqual("ру́сский", type.GetRawValue());
 
 			type = new SqlNText(null);
@@ -91,8 +91,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlNText)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.NText]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlNText)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.NText]);
 		}
 	}
 }

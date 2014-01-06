@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public abstract class ImplicitValueType<TValue> : SqlType, ISqlType, ITypeHandler
+	public abstract class ImplicitValueType<TValue> : SqlType
 	{
 		protected readonly TValue Value;
 		private readonly SqlDbType dbType;
@@ -20,14 +20,12 @@ namespace unQuery.SqlTypes
 			this.dbType = dbType;
 		}
 
-		public abstract void SetDataRecordValue(SqlDataRecord record, int ordinal);
-
-		object ISqlType.GetRawValue()
+		internal override object GetRawValue()
 		{
 			return Value;
 		}
 
-		SqlParameter ISqlType.GetParameter()
+		internal override SqlParameter GetParameter()
 		{
 			return new SqlParameter {
 				SqlDbType = dbType,
@@ -35,7 +33,7 @@ namespace unQuery.SqlTypes
 			};
 		}
 
-		SqlParameter ITypeHandler.CreateParamFromValue(object value)
+		internal override SqlParameter CreateParamFromValue(object value)
 		{
 			return new SqlParameter {
 				SqlDbType = dbType,
@@ -43,7 +41,7 @@ namespace unQuery.SqlTypes
 			};
 		}
 
-		SqlMetaData ITypeHandler.CreateMetaData(string name)
+		internal override SqlMetaData CreateMetaData(string name)
 		{
 			return new SqlMetaData(name, dbType);
 		}

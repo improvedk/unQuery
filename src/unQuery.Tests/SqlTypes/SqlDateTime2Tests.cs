@@ -13,7 +13,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlDateTime2.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlDateTime2.GetTypeHandler());
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTime2.GetTypeHandler().CreateMetaData("Test"));
 
-			ITypeHandler col = new SqlDateTime2(testDateTime);
+			SqlTypeHandler col = new SqlDateTime2(testDateTime);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
 			col = new SqlDateTime2(testDateTime, 6);
@@ -40,16 +40,16 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(testDateTime, 6)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 6);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(null, 4)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 4);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(testDateTime)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 0);
-			TestHelper.AssertSqlParameter(((ISqlType)new SqlDateTime2(null)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTime2(testDateTime, 6)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 6);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTime2(null, 4)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTime2(testDateTime)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 0);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTime2(null)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlDateTime2(testDateTime, 5);
+			SqlType type = new SqlDateTime2(testDateTime, 5);
 			Assert.AreEqual(testDateTime, type.GetRawValue());
 
 			type = new SqlDateTime2(null, 3);
@@ -96,8 +96,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDateTime2)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.DateTime2]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlDateTime2)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.DateTime2]);
 		}
 	}
 }

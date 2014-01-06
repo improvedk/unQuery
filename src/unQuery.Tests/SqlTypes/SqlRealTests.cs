@@ -11,7 +11,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetTypeHandler()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(SqlReal.GetTypeHandler());
+			Assert.IsInstanceOf<SqlTypeHandler>(SqlReal.GetTypeHandler());
 		}
 
 		[Test]
@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlReal.GetTypeHandler().CreateMetaData(null));
 
-			ITypeHandler col = new SqlReal(5.27f);
+			SqlTypeHandler col = new SqlReal(5.27f);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Real, meta.SqlDbType);
 			Assert.AreEqual(24, meta.Precision);
@@ -35,7 +35,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			ISqlType type = new SqlReal(5.27f);
+			SqlType type = new SqlReal(5.27f);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Real, 5.27f);
 
 			type = new SqlReal(null);
@@ -45,7 +45,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetRawValue()
 		{
-			ISqlType type = new SqlReal(5.27f);
+			SqlType type = new SqlReal(5.27f);
 			Assert.AreEqual(5.27f, type.GetRawValue());
 
 			type = new SqlReal(null);
@@ -91,8 +91,8 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void TypeMaps()
 		{
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlReal)]);
-			Assert.IsInstanceOf<ITypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Real]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.ClrTypeHandlers[typeof(SqlReal)]);
+			Assert.IsInstanceOf<SqlTypeHandler>(unQueryDB.SqlDbTypeHandlers[SqlDbType.Real]);
 		}
 	}
 }

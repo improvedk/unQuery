@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
-	public abstract class ExplicitPrecisionAndScaleType<TValue> : SqlType, ISqlType, ITypeHandler
+	public abstract class ExplicitPrecisionAndScaleType<TValue> : SqlType
 	{
 		protected readonly TValue Value;
 		private readonly byte? scale;
@@ -27,14 +27,12 @@ namespace unQuery.SqlTypes
 			hasValue = true;
 		}
 
-		public abstract void SetDataRecordValue(SqlDataRecord record, int ordinal);
-
-		object ISqlType.GetRawValue()
+		internal override object GetRawValue()
 		{
 			return Value;
 		}
 
-		SqlParameter ISqlType.GetParameter()
+		internal override SqlParameter GetParameter()
 		{
 			var param = new SqlParameter {
 				SqlDbType = dbType,
@@ -50,12 +48,12 @@ namespace unQuery.SqlTypes
 			return param;
 		}
 
-		SqlParameter ITypeHandler.CreateParamFromValue(object value)
+		internal override SqlParameter CreateParamFromValue(object value)
 		{
 			throw new TypeCannotBeUsedAsAClrTypeException();
 		}
 
-		SqlMetaData ITypeHandler.CreateMetaData(string name)
+		internal override SqlMetaData CreateMetaData(string name)
 		{
 			if (!hasValue)
 				throw new TypeCannotBeUsedAsAClrTypeException();

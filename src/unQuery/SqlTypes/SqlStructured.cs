@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Microsoft.SqlServer.Server;
 
 namespace unQuery.SqlTypes
 {
-	public class SqlStructured : ISqlType
+	public class SqlStructured : SqlType
 	{
 		private readonly IEnumerable<object> values;
 		private readonly string typeName;
@@ -17,7 +17,7 @@ namespace unQuery.SqlTypes
 			this.values = values;
 		}
 
-		SqlParameter ISqlType.GetParameter()
+		internal override SqlParameter GetParameter()
 		{
 			object value;
 
@@ -33,12 +33,22 @@ namespace unQuery.SqlTypes
 			};
 		}
 
-		public void SetDataRecordValue(SqlDataRecord record, int ordinal)
+		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
 			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
 		}
 
-		object ISqlType.GetRawValue()
+		internal override object GetRawValue()
+		{
+			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
+		}
+
+		internal override SqlParameter CreateParamFromValue(object value)
+		{
+			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
+		}
+
+		internal override SqlMetaData CreateMetaData(string name)
 		{
 			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
 		}
