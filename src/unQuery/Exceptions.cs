@@ -70,10 +70,10 @@ namespace unQuery
 	/// Thrown if trying to add a parameter to a SqlCommand that already contains a parameter.
 	/// with the same name.
 	/// </summary>
-	public class DuplicateParameterException : Exception
+	public class SqlCommandAlreadyHasParametersException : Exception
 	{
-		public DuplicateParameterException(string name) :
-			base("Parameter '" + name + "' has already been added.")
+		public SqlCommandAlreadyHasParametersException() :
+			base("If parameters are passed to unQuery, the SqlCommand must not already have parameters added.")
 		{ }
 	}
 

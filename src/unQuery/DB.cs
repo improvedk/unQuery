@@ -20,16 +20,6 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Executes the command and returns all rows from the single result set.
-		/// </summary>
-		/// <param name="cmd">The SqlCommand to execute.</param>
-		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static IList<dynamic> GetRows(SqlCommand cmd, dynamic parameters = null)
-		{
-			return db.GetRows(cmd, parameters);
-		}
-
-		/// <summary>
 		/// Executes the batch and returns all rows from the single result set.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
@@ -37,17 +27,6 @@ namespace unQuery
 		public static IList<dynamic> GetRows(string sql, dynamic parameters = null)
 		{
 			return db.GetRows(sql, parameters);
-		}
-
-		/// <summary>
-		/// Executes the command and returns a single row of data. If more than one row is is returned from the database,
-		/// all but the first will be discarded.
-		/// </summary>
-		/// <param name="cmd">The SqlCommandstatement to execute.</param>
-		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static dynamic GetRow(SqlCommand cmd, dynamic parameters = null)
-		{
-			return db.GetRow(cmd, parameters);
 		}
 
 		/// <summary>
@@ -62,17 +41,6 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Executes the command and returns the first column of the first row of the first result set returned by the query.
-		/// </summary>
-		/// <param name="cmd">The SqlCommand to execute.</param>
-		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <exception cref="NoRowsException" />
-		public static T GetScalar<T>(SqlCommand cmd, dynamic parameters = null)
-		{
-			return db.GetScalar<T>(cmd, parameters);
-		}
-
-		/// <summary>
 		/// Executes the batch, and returns the first column of the first row of the first result set returned by the query.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
@@ -81,16 +49,6 @@ namespace unQuery
 		public static T GetScalar<T>(string sql, dynamic parameters = null)
 		{
 			return db.GetScalar<T>(sql, parameters);
-		}
-
-		/// <summary>
-		/// Executes the command and returns the number of rows affected.
-		/// </summary>
-		/// <param name="cmd">The SqlCommand to execute.</param>
-		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static int Execute(SqlCommand cmd, dynamic parameters = null)
-		{
-			return db.Execute(cmd, parameters);
 		}
 
 		/// <summary>

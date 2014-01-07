@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using unQuery.SqlTypes;
 
@@ -10,45 +8,6 @@ namespace unQuery.Tests
 {
 	public class GetRowsTests : TestFixture
 	{
-		[Test]
-		public void SqlCommand()
-		{
-			var cmd = new SqlCommand("SELECT TOP 2 * FROM Persons WHERE PersonID IN (1, 2) ORDER BY PersonID");
-			
-			var result = DB.GetRows(cmd);
-
-			Assert.AreEqual(2, result.Count);
-			Assert.AreEqual("Stefanie Alexander", result.First().Name);
-			Assert.AreEqual("Lee Buckley", result.Skip(1).Take(1).First().Name);
-		}
-
-		[Test]
-		public void SqlCommand_WithParameters()
-		{
-			var cmd = new SqlCommand("SELECT TOP 2 * FROM Persons WHERE PersonID IN (@One, @Two) ORDER BY PersonID");
-			cmd.Parameters.Add("@One", SqlDbType.Int).Value = 1;
-			cmd.Parameters.Add("@Two", SqlDbType.Int).Value = 2;
-
-			var result = DB.GetRows(cmd);
-
-			Assert.AreEqual(2, result.Count);
-			Assert.AreEqual("Stefanie Alexander", result.First().Name);
-			Assert.AreEqual("Lee Buckley", result.Skip(1).Take(1).First().Name);
-		}
-
-		[Test]
-		public void SqlCommand_WithMixedParameters()
-		{
-			var cmd = new SqlCommand("SELECT TOP 2 * FROM Persons WHERE PersonID IN (@One, @Two) ORDER BY PersonID");
-			cmd.Parameters.Add("@One", SqlDbType.Int).Value = 1;
-
-			var result = DB.GetRows(cmd, new { Two = 2 });
-
-			Assert.AreEqual(2, result.Count);
-			Assert.AreEqual("Stefanie Alexander", result.First().Name);
-			Assert.AreEqual("Lee Buckley", result.Skip(1).Take(1).First().Name);
-		}
-
 		[Test]
 		public void NoResults()
 		{

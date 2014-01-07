@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using unQuery.SqlTypes;
 

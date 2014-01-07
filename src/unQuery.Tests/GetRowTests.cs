@@ -1,40 +1,12 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using unQuery.SqlTypes;
 
 namespace unQuery.Tests
 {
 	public class GetRowTests : TestFixture
 	{
-		[Test]
-		public void SqlCommand()
-		{
-			var cmd = new SqlCommand("SELECT TOP 1 * FROM Persons WHERE PersonID = 1");
-
-			Assert.AreEqual("Stefanie Alexander", DB.GetRow(cmd).Name);
-		}
-
-		[Test]
-		public void SqlCommand_WithParameters()
-		{
-			var cmd = new SqlCommand("SELECT TOP 1 * FROM Persons WHERE PersonID = @PersonID");
-			cmd.Parameters.Add("@PersonID", SqlDbType.Int).Value = 1;
-
-			Assert.AreEqual("Stefanie Alexander", DB.GetRow(cmd).Name);
-		}
-
-		[Test]
-		public void SqlCommand_WithMixedParameters()
-		{
-			var cmd = new SqlCommand("SELECT TOP 1 * FROM Persons WHERE PersonID = @PersonID AND 2 = @One");
-			cmd.Parameters.Add("@PersonID", SqlDbType.Int).Value = 1;
-
-			Assert.IsNull(DB.GetRow(cmd, new { One = 1 }));
-		}
-
 		[Test]
 		public void GetRow_NoResults()
 		{
