@@ -268,28 +268,7 @@ namespace unQuery
 					// The name of the parameter we're about to create
 					string paramName = "@" + prop.Name;
 
-					if (Nullable.GetUnderlyingType(prop.PropertyType) != null)
-					{
-						int paramLocIndex = localIndex++;
-
-						// It's a nullable type
-						il.Emit(OpCodes.Call, ClrTypeHandlers[prop.PropertyType].GetType().GetMethod("GetTypeHandler", BindingFlags.NonPublic | BindingFlags.Static)); // Get the type handler [typeHandler]
-						il.Emit(OpCodes.Ldloc_0); // Load the object [typeHandler, object]
-						il.Emit(OpCodes.Callvirt, prop.GetMethod); // Get the property value [typeHandler, value]
-						il.Emit(OpCodes.Box, prop.PropertyType); // Box the value [typeHandler, boxedValue]
-						il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(object) }, null)); // Let the type handler create the param [param]
-						il.DeclareLocal(typeof(SqlParameter));
-						il.Emit(OpCodes.Stloc, paramLocIndex); // Store the parameter as a variable []
-						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter again [param]
-						il.Emit(OpCodes.Ldstr, paramName); // Load the parameter name [param, paramName]
-						il.Emit(OpCodes.Callvirt, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
-						il.Emit(OpCodes.Ldarg_0); // Load the command [cmd]
-						il.Emit(OpCodes.Call, typeof(SqlCommand).GetMethod("get_Parameters")); // Load the parameter collection [paramCollection]
-						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter [paramCollection, param]
-						il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
-						il.Emit(OpCodes.Pop); // Get rid of the added parameter, as returned by SqlParameterCollection.Add []
-					}
-					else if (typeof(SqlType).IsAssignableFrom(prop.PropertyType))
+					if (typeof(SqlType).IsAssignableFrom(prop.PropertyType))
 					{
 						int paramLocIndex = localIndex++;
 
@@ -310,32 +289,18 @@ namespace unQuery
 					}
 					else
 					{
-						int valueTypeLocIndex = localIndex++;
-						int typeHandlerLocIndex = localIndex++;
 						int paramLocIndex = localIndex++;
 
-						// It's a non-nullable value type
-						il.Emit(OpCodes.Ldloc_0); // Load the object [object]
-						il.Emit(OpCodes.Callvirt, prop.GetMethod); // Get the property value [value]
-						il.Emit(OpCodes.Box, prop.PropertyType); // Box the value [boxedValue]
-						il.Emit(OpCodes.Call, typeof(object).GetMethod("GetType")); // Get the type of the value [valueType]
-						il.DeclareLocal(typeof(Type));
-						il.Emit(OpCodes.Stloc, valueTypeLocIndex); // Store the type as a variable []
-						il.Emit(OpCodes.Ldsfld, typeof(unQueryDB).GetField("ClrTypeHandlers", BindingFlags.NonPublic | BindingFlags.Static)); // Load the ClrTypeHandler map [typeHandlers]
-						il.Emit(OpCodes.Ldloc, valueTypeLocIndex); // Load the value type [typeHandlers, valueType]
-						il.Emit(OpCodes.Callvirt, typeof(Dictionary<Type, SqlTypeHandler>).GetMethod("get_Item")); // Get the value type handler [typeHandler]
-						il.DeclareLocal(typeof(SqlTypeHandler));
-						il.Emit(OpCodes.Stloc, typeHandlerLocIndex); // Store the type handler as a variable []
-						il.Emit(OpCodes.Ldloc, typeHandlerLocIndex); // Load the type handler again [typeHandler]
+						il.Emit(OpCodes.Call, ClrTypeHandlers[prop.PropertyType].GetType().GetMethod("GetTypeHandler", BindingFlags.NonPublic | BindingFlags.Static)); // Get the type handler [typeHandler]
 						il.Emit(OpCodes.Ldloc_0); // Load the object [typeHandler, object]
-						il.Emit(OpCodes.Callvirt, prop.GetMethod); // Get the property value [typeHandler, value]
+						il.Emit(OpCodes.Call, prop.GetMethod); // Get the property value [typeHandler, value]
 						il.Emit(OpCodes.Box, prop.PropertyType); // Box the value [typeHandler, boxedValue]
-						il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(object) }, null)); // Let the type handler create a param based upon the value [param]
+						il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(object) }, null)); // Let the type handler create the param [param]
 						il.DeclareLocal(typeof(SqlParameter));
 						il.Emit(OpCodes.Stloc, paramLocIndex); // Store the parameter as a variable []
 						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter again [param]
 						il.Emit(OpCodes.Ldstr, paramName); // Load the parameter name [param, paramName]
-						il.Emit(OpCodes.Callvirt, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
+						il.Emit(OpCodes.Call, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
 						il.Emit(OpCodes.Ldarg_0); // Load the command [cmd]
 						il.Emit(OpCodes.Call, typeof(SqlCommand).GetMethod("get_Parameters")); // Load the parameter collection [paramCollection]
 						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter [paramCollection, param]
