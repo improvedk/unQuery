@@ -119,13 +119,13 @@ namespace unQuery
 				// Loop object properties
 				int propertyIndex = 0;
 				int localIndex = 1;
-				foreach (var prop in objectType.GetProperties().OrderBy(x => x.MetadataToken))
+				foreach (PropertyInfo prop in objectType.GetProperties().OrderBy(x => x.MetadataToken))
 				{
 					try
 					{
 						// Add property to schema
 						if (typeof(SqlTypeHandler).IsAssignableFrom(prop.PropertyType))
-							schema[propertyIndex] = ((SqlTypeHandler)prop.GetValue(rows[0])).CreateMetaData(prop.Name);
+							schema[propertyIndex] = ((SqlTypeHandler)prop.GetValue(rows[0], null)).CreateMetaData(prop.Name);
 						else
 							schema[propertyIndex] = unQueryDB.ClrTypeHandlers[prop.PropertyType].CreateMetaData(prop.Name);
 
@@ -142,7 +142,7 @@ namespace unQuery
 
 							// Is the nullable type null?
 							il.Emit(OpCodes.Ldloc_0); // Load the object [record, ordinal, object]
-							il.Emit(OpCodes.Callvirt, prop.GetMethod); // Get the property value [record, ordinal, value]
+							il.Emit(OpCodes.Callvirt, prop.GetGetMethod()); // Get the property value [record, ordinal, value]
 							il.DeclareLocal(prop.PropertyType); // We'll have to store the value as a variable so we can pass it by ref
 							il.Emit(OpCodes.Stloc, localIndex); // [record, ordinal]
 							il.Emit(OpCodes.Ldloca, localIndex); // Load the address of the property value [record, ordinal, &value]
@@ -171,7 +171,7 @@ namespace unQuery
 							{
 								// Type is an ISqlType and we need to extract the value
 								il.Emit(OpCodes.Ldloc_0); // Load the object [object]
-								il.Emit(OpCodes.Call, prop.GetMethod); // Load the property value [value]
+								il.Emit(OpCodes.Call, prop.GetGetMethod()); // Load the property value [value]
 								il.Emit(OpCodes.Ldarg_0); // Load the record [value, record]
 								il.Emit(OpCodes.Ldc_I4, propertyIndex); // Load the ordinal [value, record, ordinal]
 								il.Emit(OpCodes.Callvirt, prop.PropertyType.GetMethod("SetDataRecordValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(SqlDataRecord), typeof(int) }, null) ); // Let the ISqlType set the value itself []
@@ -184,7 +184,7 @@ namespace unQuery
 
 								// It's either a non-ISqlType or a value type
 								il.Emit(OpCodes.Ldloc_0); // Load the object [record, ordinal, object]
-								il.Emit(OpCodes.Callvirt, prop.GetMethod); // Load the property value [record, ordinal, value]
+								il.Emit(OpCodes.Callvirt, prop.GetGetMethod()); // Load the property value [record, ordinal, value]
 								il.Emit(OpCodes.Callvirt, sqlDataRecordSetters[prop.PropertyType]); // Set value []
 							}
 						}
