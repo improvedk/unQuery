@@ -38,7 +38,7 @@ namespace unQuery
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
 
-				return MapReaderRowsToObject(reader).ToList();
+				return mapReaderRowsToObject(reader).ToList();
 			}
 		}
 
@@ -58,7 +58,7 @@ namespace unQuery
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow);
 
-				return MapReaderRowsToObject(reader).SingleOrDefault();
+				return mapReaderRowsToObject(reader).SingleOrDefault();
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace unQuery
 		/// Maps any number of rows to dynamic objects. This method is optimized for returning many rows.
 		/// </summary>
 		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
-		internal static IEnumerable<dynamic> MapReaderRowsToObject(SqlDataReader reader)
+		private IEnumerable<dynamic> mapReaderRowsToObject(SqlDataReader reader)
 		{
 			int visibleFieldCount = reader.VisibleFieldCount;
 			var fieldMap = new Dictionary<string, int>(visibleFieldCount);
