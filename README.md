@@ -251,12 +251,6 @@ int mainUsers = mainDB.GetScalar<int>("SELECT COUNT(*) FROM Users");
 int secondaryUsers = secondaryDB.GetScalar<int>("SELECT COUNT(*) FROM Users");
 ```
 
-## Database Support
-
-While unQuery currently requires no specific SQL Server functionality, I've decided to just support SQL Server. Just changing the use of SqlConnection to IDbConnection, SqlCommand to IDbComman and SqlParameter to IDbParameter might be enough, but I have not tested it.
-
-I do foresee changing to a database agnostic implementation, but for now I want to keep it simple and open up if there's demand and people willing to test & support other platforms.
-
 ## Configuration
 
 If you use the unQueryDB and pass a connection string to the constructor, no further configuration is necessary.
@@ -274,6 +268,11 @@ Note that connections will inherit from your machine.config & root web.config fi
 	</connectionStrings>
 </configuration>
 ```
+
+## Requirements
+
+* .NET Framework 4.0+
+* SQL Server 2005+
 
 ## Contact
 
