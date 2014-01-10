@@ -17,7 +17,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateParamFromValue()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlReal.GetTypeHandler().CreateParamFromValue(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlReal.GetTypeHandler().CreateParamFromValue("Test", null));
 		}
 
 		[Test]

@@ -19,7 +19,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateParamFromValue()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlTime.GetTypeHandler().CreateParamFromValue(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlTime.GetTypeHandler().CreateParamFromValue("Test", null));
 		}
 
 		[Test]
@@ -40,10 +40,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(testValue, 2)).GetParameter(), SqlDbType.Time, testValue, scale: 2);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(null, 5)).GetParameter(), SqlDbType.Time, DBNull.Value, scale: 5);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(testValue)).GetParameter(), SqlDbType.Time, testValue, scale: 0);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlTime(null)).GetParameter(), SqlDbType.Time, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter((new SqlTime(testValue, 2)).GetParameter(), SqlDbType.Time, testValue, scale: 2);
+			TestHelper.AssertSqlParameter((new SqlTime(null, 5)).GetParameter(), SqlDbType.Time, DBNull.Value, scale: 5);
+			TestHelper.AssertSqlParameter((new SqlTime(testValue)).GetParameter(), SqlDbType.Time, testValue, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlTime(null)).GetParameter(), SqlDbType.Time, DBNull.Value, size: 0);
 		}
 
 		[Test]

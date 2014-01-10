@@ -33,11 +33,12 @@ namespace unQuery.SqlTypes
 			};
 		}
 
-		internal override SqlParameter CreateParamFromValue(object value)
+		internal override SqlParameter CreateParamFromValue(string name, object value)
 		{
 			return new SqlParameter {
 				SqlDbType = dbType,
-				Value = GetDBNullableValue(value)
+				Value = GetDBNullableValue(value),
+				ParameterName = "@" + name
 			};
 		}
 

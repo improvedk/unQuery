@@ -48,7 +48,7 @@ namespace unQuery.SqlTypes
 			return param;
 		}
 
-		internal override SqlParameter CreateParamFromValue(object value)
+		internal override SqlParameter CreateParamFromValue(string name, object value)
 		{
 			throw new TypeCannotBeUsedAsAClrTypeException();
 		}

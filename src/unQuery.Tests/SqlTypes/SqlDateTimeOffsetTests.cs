@@ -19,7 +19,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateParamFromValue()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTimeOffset.GetTypeHandler().CreateParamFromValue(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTimeOffset.GetTypeHandler().CreateParamFromValue("Test", null));
 		}
 
 		[Test]
@@ -40,10 +40,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(testValue, 6)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 6);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(null, 4)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 4);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(testValue)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 0);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDateTimeOffset(null)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(testValue, 6)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 6);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(null, 4)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(testValue)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(null)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 0);
 		}
 
 		[Test]

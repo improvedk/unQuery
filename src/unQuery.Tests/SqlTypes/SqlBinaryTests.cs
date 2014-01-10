@@ -19,7 +19,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateParamFromValue()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlBinary.GetTypeHandler().CreateParamFromValue(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlBinary.GetTypeHandler().CreateParamFromValue("Test", null));
 		}
 
 		[Test]
@@ -40,10 +40,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((SqlType)new SqlBinary(data, 10)).GetParameter(), SqlDbType.Binary, data, size: 10);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlBinary(null, 10)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlBinary(data)).GetParameter(), SqlDbType.Binary, data, size: data.Length);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlBinary(null)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter((new SqlBinary(data, 10)).GetParameter(), SqlDbType.Binary, data, size: 10);
+			TestHelper.AssertSqlParameter((new SqlBinary(null, 10)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter((new SqlBinary(data)).GetParameter(), SqlDbType.Binary, data, size: data.Length);
+			TestHelper.AssertSqlParameter((new SqlBinary(null)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 0);
 		}
 
 		[Test]

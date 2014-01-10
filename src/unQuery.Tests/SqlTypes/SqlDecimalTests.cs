@@ -17,7 +17,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateParamFromValue()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDecimal.GetTypeHandler().CreateParamFromValue(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDecimal.GetTypeHandler().CreateParamFromValue("Test", null));
 		}
 
 		[Test]
@@ -39,10 +39,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(5.27m, 10, 5)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(null, 10, 5)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(5.27m)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 3, scale: 2);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlDecimal(null)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 0, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDecimal(5.27m, 10, 5)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter((new SqlDecimal(null, 10, 5)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter((new SqlDecimal(5.27m)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 3, scale: 2);
+			TestHelper.AssertSqlParameter((new SqlDecimal(null)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 0, scale: 0);
 		}
 
 		[Test]

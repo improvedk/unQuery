@@ -21,7 +21,7 @@ namespace unQuery.Tests.SqlTypes
 		internal override SqlParameter GetParameter() { throw new NotImplementedException(); }
 		internal override object GetRawValue() { throw new NotImplementedException(); }
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal) { throw new NotImplementedException(); }
-		internal override SqlParameter CreateParamFromValue(object value) { throw new NotImplementedException(); }
+		internal override SqlParameter CreateParamFromValue(string name, object value) { throw new NotImplementedException(); }
 		internal override SqlMetaData CreateMetaData(string name) { throw new NotImplementedException(); }
 	}
 

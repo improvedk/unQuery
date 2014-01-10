@@ -17,7 +17,7 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void CreateParamFromValue()
 		{
-			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNChar.GetTypeHandler().CreateParamFromValue(null));
+			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNChar.GetTypeHandler().CreateParamFromValue("Test", null));
 		}
 
 		[Test]
@@ -38,10 +38,10 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar("ру́сский", 10)).GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar(null, 10)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar("рæøåсски")).GetParameter(), SqlDbType.NChar, "рæøåсски", size: 8);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlNChar(null)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter((new SqlNChar("ру́сский", 10)).GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
+			TestHelper.AssertSqlParameter((new SqlNChar(null, 10)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter((new SqlNChar("рæøåсски")).GetParameter(), SqlDbType.NChar, "рæøåсски", size: 8);
+			TestHelper.AssertSqlParameter((new SqlNChar(null)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 0);
 		}
 
 		[Test]

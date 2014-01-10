@@ -43,7 +43,7 @@ namespace unQuery.SqlTypes
 			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
 		}
 
-		internal override SqlParameter CreateParamFromValue(object value)
+		internal override SqlParameter CreateParamFromValue(string name, object value)
 		{
 			throw new InvalidOperationException("You're not meant to use nested structured parameters.");
 		}
