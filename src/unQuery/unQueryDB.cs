@@ -34,7 +34,7 @@ namespace unQuery
 			using (var cmd = new SqlCommand(sql, conn))
 			{
 				if (parameters != null)
-					AddParametersToCommand(cmd, parameters);
+					AddParametersToCommand(cmd.Parameters, parameters);
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
 
@@ -54,7 +54,7 @@ namespace unQuery
 			using (var cmd = new SqlCommand(sql, conn))
 			{
 				if (parameters != null)
-					AddParametersToCommand(cmd, parameters);
+					AddParametersToCommand(cmd.Parameters, parameters);
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow);
 
@@ -74,7 +74,7 @@ namespace unQuery
 			using (var cmd = new SqlCommand(sql, conn))
 			{
 				if (parameters != null)
-					AddParametersToCommand(cmd, parameters);
+					AddParametersToCommand(cmd.Parameters, parameters);
 
 				object result = cmd.ExecuteScalar();
 
@@ -99,7 +99,7 @@ namespace unQuery
 			using (var cmd = new SqlCommand(sql, conn))
 			{
 				if (parameters != null)
-					AddParametersToCommand(cmd, parameters);
+					AddParametersToCommand(cmd.Parameters, parameters);
 
 				return cmd.ExecuteNonQuery();
 			}
@@ -229,16 +229,16 @@ namespace unQuery
 		/// <summary>
 		/// Loops through each property on the parameters object and adds it as a parameter to the SqlCommand.
 		/// </summary>
-		private static readonly ConcurrentDictionary<Type, Action<SqlCommand, object>> parameterAdderCache = new ConcurrentDictionary<Type, Action<SqlCommand, object>>();
-		internal void AddParametersToCommand(SqlCommand cmd, object parameters)
+		private static readonly ConcurrentDictionary<Type, Action<SqlParameterCollection, object>> parameterAdderCache = new ConcurrentDictionary<Type, Action<SqlParameterCollection, object>>();
+		internal void AddParametersToCommand(SqlParameterCollection paramCollection, object parameters)
 		{
 			// We can't mix unQuery parameters with existing parameters
-			if (cmd.Parameters.Count > 0)
+			if (paramCollection.Count > 0)
 				throw new SqlCommandAlreadyHasParametersException();
 
 			// Attempt to get parameter adder from cache; otherwise create it
 			var paramType = parameters.GetType();
-			Action<SqlCommand, object> parameterAdder;
+			Action<SqlParameterCollection, object> parameterAdder;
 
 			if (!parameterAdderCache.TryGetValue(paramType, out parameterAdder))
 			{
@@ -248,7 +248,7 @@ namespace unQuery
 				if (properties.Length == 0)
 					throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
 
-				var dm = new DynamicMethod("AddParameters", typeof(void), new[] { typeof(SqlCommand), typeof(object) }, true);
+				var dm = new DynamicMethod("AddParameters", typeof(void), new[] { typeof(SqlParameterCollection), typeof(object) }, true);
 				var il = dm.GetILGenerator();
 
 				// First we'll want to cast the object value into the type of the actual value and store it as a local variable
@@ -278,16 +278,14 @@ namespace unQuery
 						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter again [param]
 						il.Emit(OpCodes.Ldstr, "@" + prop.Name); // Load the parameter name [param, name]
 						il.Emit(OpCodes.Call, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
-						il.Emit(OpCodes.Ldarg_0); // Load the command [cmd]
-						il.Emit(OpCodes.Call, typeof(SqlCommand).GetMethod("get_Parameters")); // Load the parameter collection [paramCollection]
+						il.Emit(OpCodes.Ldarg_0); // Load the param collection [paramCollection]
 						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter [paramCollection, param]
 						il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
 						il.Emit(OpCodes.Pop); // Get rid of the added parameter, as returned by SqlParameterCollection.Add []
 					}
 					else
 					{
-						il.Emit(OpCodes.Ldarg_0); // Load the command [cmd]
-						il.Emit(OpCodes.Call, typeof(SqlCommand).GetMethod("get_Parameters")); // Load the parameter collection [paramCollection]
+						il.Emit(OpCodes.Ldarg_0); // Load the parameter collection [paramCollection]
 						il.Emit(OpCodes.Call, ClrTypeHandlers[prop.PropertyType].GetType().GetMethod("GetTypeHandler", BindingFlags.NonPublic | BindingFlags.Static)); // Get the type handler [paramCollection, typeHandler]
 						il.Emit(OpCodes.Ldstr, prop.Name); // Load the parameter name [paramCollection, typeHandler, paramName]
 						il.Emit(OpCodes.Ldloc_0); // Load the object [paramCollection, typeHandler, paramName, object]
@@ -303,12 +301,12 @@ namespace unQuery
 				il.Emit(OpCodes.Ret);
 				
 				// Add it to the cache
-				parameterAdder = (Action<SqlCommand, object>)dm.CreateDelegate(typeof(Action<SqlCommand, object>));
+				parameterAdder = (Action<SqlParameterCollection, object>)dm.CreateDelegate(typeof(Action<SqlParameterCollection, object>));
 				parameterAdderCache.AddOrUpdate(paramType, parameterAdder, (k, v) => v);
 			}
 
 			// Run the cached parameter adder
-			parameterAdder(cmd, parameters);
+			parameterAdder(paramCollection, parameters);
 		}
 
 		/// <summary>

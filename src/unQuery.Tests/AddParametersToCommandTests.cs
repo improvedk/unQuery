@@ -18,8 +18,8 @@ namespace unQuery.Tests
 			cmd.Parameters.Add("@A", SqlDbType.Int).Value = 52;
 			cmd.Parameters.Add("B", SqlDbType.Int).Value = 52;
 
-			Assert.Throws<SqlCommandAlreadyHasParametersException>(() => db.AddParametersToCommand(cmd, new { A = 25 }));
-			Assert.Throws<SqlCommandAlreadyHasParametersException>(() => db.AddParametersToCommand(cmd, new { B = 25 }));
+			Assert.Throws<SqlCommandAlreadyHasParametersException>(() => db.AddParametersToCommand(cmd.Parameters, new { A = 25 }));
+			Assert.Throws<SqlCommandAlreadyHasParametersException>(() => db.AddParametersToCommand(cmd.Parameters, new { B = 25 }));
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace unQuery.Tests
 		{
 			var cmd = new SqlCommand();
 
-			db.AddParametersToCommand(cmd, new {
+			db.AddParametersToCommand(cmd.Parameters, new {
 				A = Col.Int(25),
 				B = Col.Bit(true),
 				C = Col.Bit(null),
@@ -92,7 +92,7 @@ namespace unQuery.Tests
 			var guid = Guid.NewGuid();
 			var cmd = new SqlCommand();
 
-			db.AddParametersToCommand(cmd, new {
+			db.AddParametersToCommand(cmd.Parameters, new {
 				A = (byte)1,
 				B = (short)2,
 				C = (int)3,
@@ -155,7 +155,7 @@ namespace unQuery.Tests
 		{
 			var cmd = new SqlCommand();
 
-			db.AddParametersToCommand(cmd, new {
+			db.AddParametersToCommand(cmd.Parameters, new {
 				A = true,
 				B = Col.Bit(false),
 				C = new SqlSmallInt(null),
@@ -175,7 +175,7 @@ namespace unQuery.Tests
 		[Test]
 		public void NonSupportedTypes()
 		{
-			Assert.Throws<TypeNotSupportedException>(() => db.AddParametersToCommand(new SqlCommand(), new {
+			Assert.Throws<TypeNotSupportedException>(() => db.AddParametersToCommand(new SqlCommand().Parameters, new {
 				Test = "Hello"
 			}));
 		}
