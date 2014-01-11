@@ -45,6 +45,7 @@
     <Compile Include="DB.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublicSqlCommandSet.cs" />
     <Compile Include="SqlTypes\Col.cs" />
     <Compile Include="SqlTypes\SqlTypeHandler.cs" />
     <Compile Include="SqlTypes\SqlXml.cs" />
