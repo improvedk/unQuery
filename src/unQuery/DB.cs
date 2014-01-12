@@ -24,7 +24,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static IList<dynamic> GetRows(string sql, dynamic parameters = null)
+		public static IList<dynamic> GetRows(string sql, object parameters = null)
 		{
 			return db.GetRows(sql, parameters);
 		}
@@ -35,7 +35,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static dynamic GetRow(string sql, dynamic parameters = null)
+		public static dynamic GetRow(string sql, object parameters = null)
 		{
 			return db.GetRow(sql, parameters);
 		}
@@ -46,7 +46,7 @@ namespace unQuery
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		/// <exception cref="NoRowsException" />
-		public static T GetScalar<T>(string sql, dynamic parameters = null)
+		public static T GetScalar<T>(string sql, object parameters = null)
 		{
 			return db.GetScalar<T>(sql, parameters);
 		}
@@ -56,7 +56,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static int Execute(string sql, dynamic parameters = null)
+		public static int Execute(string sql, object parameters = null)
 		{
 			return db.Execute(sql, parameters);
 		}
@@ -67,7 +67,7 @@ namespace unQuery
 		/// <param name="sql">The SQL statement to execute for each parameter object value.</param>
 		/// <param name="parameters">A list of parameter objects. The batch is executed once per value.</param>
 		/// <returns>The total number of rows modified across all executions.</returns>
-		public static int ExecuteMany(string sql, IEnumerable<dynamic> parameters)
+		public static int ExecuteMany(string sql, IEnumerable<object> parameters)
 		{
 			return db.ExecuteMany(sql, parameters);
 		}

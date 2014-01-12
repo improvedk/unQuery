@@ -28,7 +28,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public IList<dynamic> GetRows(string sql, dynamic parameters = null)
+		public IList<dynamic> GetRows(string sql, object parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -48,7 +48,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public dynamic GetRow(string sql, dynamic parameters = null)
+		public dynamic GetRow(string sql, object parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -68,7 +68,7 @@ namespace unQuery
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
 		/// <exception cref="NoRowsException" />
-		public T GetScalar<T>(string sql, dynamic parameters = null)
+		public T GetScalar<T>(string sql, object parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -93,7 +93,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public int Execute(string sql, dynamic parameters = null)
+		public int Execute(string sql, object parameters = null)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -111,7 +111,7 @@ namespace unQuery
 		/// <param name="sql">The SQL statement to execute for each parameter object value.</param>
 		/// <param name="parameters">A list of parameter objects. The batch is executed once per value.</param>
 		/// <returns>The total number of rows modified across all executions.</returns>
-		public int ExecuteMany(string sql, IEnumerable<dynamic> parameters)
+		public int ExecuteMany(string sql, IEnumerable<object> parameters)
 		{
 			if (parameters == null)
 				throw new ArgumentNullException("parameters");
