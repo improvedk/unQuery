@@ -106,6 +106,37 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// Executes the batch once for each parameter object value.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute for each parameter object value.</param>
+		/// <param name="parameters">A list of parameter objects. The batch is executed once per value.</param>
+		/// <returns>The total number of rows modified across all executions.</returns>
+		public int ExecuteMany(string sql, IEnumerable<dynamic> parameters)
+		{
+			if (parameters == null)
+				throw new ArgumentNullException("parameters");
+
+			int result = 0;
+
+			using (var conn = getConnection())
+			using (var set = new PublicSqlCommandSet(conn))
+			{
+				foreach (var obj in parameters)
+				{
+					var cmd = new SqlCommand(sql);
+					AddParametersToCommand(cmd.Parameters, obj);
+
+					set.Append(cmd);
+				}
+
+				if (set.CommandCount > 0)
+					result = set.ExecuteNonQuery();
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Maps any number of rows to dynamic objects. This method is optimized for returning many rows.
 		/// </summary>
 		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
@@ -246,67 +277,70 @@ namespace unQuery
 
 				// If no properties are found on the provided parameter object, then there's no schema & value to read
 				if (properties.Length == 0)
-					throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
-
-				var dm = new DynamicMethod("AddParameters", typeof(void), new[] { typeof(SqlParameterCollection), typeof(object) }, true);
-				var il = dm.GetILGenerator();
-
-				// First we'll want to cast the object value into the type of the actual value and store it as a local variable
-				il.DeclareLocal(paramType); // []
-				il.Emit(OpCodes.Ldarg_1); // [object]
-				il.Emit(OpCodes.Castclass, paramType); // [object]
-				il.Emit(OpCodes.Stloc_0); // []
-
-				// Loop object properties
-				int localIndex = 1;
-				foreach (var prop in properties)
+					parameterAdderCache.AddOrUpdate(paramType, (Action<SqlParameterCollection, object>)null, (k, v) => v);
+				else
 				{
-					// Is this property type supported?
-					if (!ClrTypeHandlers.ContainsKey(prop.PropertyType) && prop.PropertyType != typeof(SqlStructured))
-						throw new TypeNotSupportedException(prop.PropertyType);
+					var dm = new DynamicMethod("AddParameters", typeof(void), new[] {typeof(SqlParameterCollection), typeof(object)}, true);
+					var il = dm.GetILGenerator();
 
-					if (typeof(SqlType).IsAssignableFrom(prop.PropertyType))
-					{
-						int paramLocIndex = localIndex++;
+					// First we'll want to cast the object value into the type of the actual value and store it as a local variable
+					il.DeclareLocal(paramType); // []
+					il.Emit(OpCodes.Ldarg_1); // [object]
+					il.Emit(OpCodes.Castclass, paramType); // [object]
+					il.Emit(OpCodes.Stloc_0); // []
 
-						// It's a SqlType
-						il.Emit(OpCodes.Ldloc_0); // Load the object [object]
-						il.Emit(OpCodes.Callvirt, prop.GetGetMethod()); // Get the property value [value]
-						il.Emit(OpCodes.Callvirt, prop.PropertyType.GetMethod("GetParameter", BindingFlags.NonPublic | BindingFlags.Instance)); // Get the parameter from the SqlType value [param]
-						il.DeclareLocal(typeof(SqlParameter));
-						il.Emit(OpCodes.Stloc, paramLocIndex); // Store the parameter as a var []
-						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter again [param]
-						il.Emit(OpCodes.Ldstr, "@" + prop.Name); // Load the parameter name [param, name]
-						il.Emit(OpCodes.Call, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
-						il.Emit(OpCodes.Ldarg_0); // Load the param collection [paramCollection]
-						il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter [paramCollection, param]
-						il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
-						il.Emit(OpCodes.Pop); // Get rid of the added parameter, as returned by SqlParameterCollection.Add []
-					}
-					else
+					// Loop object properties
+					int localIndex = 1;
+					foreach (var prop in properties)
 					{
-						il.Emit(OpCodes.Ldarg_0); // Load the parameter collection [paramCollection]
-						il.Emit(OpCodes.Call, ClrTypeHandlers[prop.PropertyType].GetType().GetMethod("GetTypeHandler", BindingFlags.NonPublic | BindingFlags.Static)); // Get the type handler [paramCollection, typeHandler]
-						il.Emit(OpCodes.Ldstr, prop.Name); // Load the parameter name [paramCollection, typeHandler, paramName]
-						il.Emit(OpCodes.Ldloc_0); // Load the object [paramCollection, typeHandler, paramName, object]
-						il.Emit(OpCodes.Call, prop.GetGetMethod()); // Get the property value [paramCollection, typeHandler, paramName, value]
-						il.Emit(OpCodes.Box, prop.PropertyType); // Box the value [paramCollection, typeHandler, paramName, boxedValue]
-						il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(string), typeof(object) }, null)); // Let the type handler create the param [paramCollection, param]
-						il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
-						il.Emit(OpCodes.Pop); // Get rid of the param as we don't need it anymore []*/
+						// Is this property type supported?
+						if (!ClrTypeHandlers.ContainsKey(prop.PropertyType) && prop.PropertyType != typeof(SqlStructured))
+							throw new TypeNotSupportedException(prop.PropertyType);
+
+						if (typeof(SqlType).IsAssignableFrom(prop.PropertyType))
+						{
+							int paramLocIndex = localIndex++;
+
+							// It's a SqlType
+							il.Emit(OpCodes.Ldloc_0); // Load the object [object]
+							il.Emit(OpCodes.Callvirt, prop.GetGetMethod()); // Get the property value [value]
+							il.Emit(OpCodes.Callvirt, prop.PropertyType.GetMethod("GetParameter", BindingFlags.NonPublic | BindingFlags.Instance)); // Get the parameter from the SqlType value [param]
+							il.DeclareLocal(typeof(SqlParameter));
+							il.Emit(OpCodes.Stloc, paramLocIndex); // Store the parameter as a var []
+							il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter again [param]
+							il.Emit(OpCodes.Ldstr, "@" + prop.Name); // Load the parameter name [param, name]
+							il.Emit(OpCodes.Call, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
+							il.Emit(OpCodes.Ldarg_0); // Load the param collection [paramCollection]
+							il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter [paramCollection, param]
+							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] {typeof(SqlParameter)})); // Add the parameter to the collection [param]
+							il.Emit(OpCodes.Pop); // Get rid of the added parameter, as returned by SqlParameterCollection.Add []
+						}
+						else
+						{
+							il.Emit(OpCodes.Ldarg_0); // Load the parameter collection [paramCollection]
+							il.Emit(OpCodes.Call, ClrTypeHandlers[prop.PropertyType].GetType().GetMethod("GetTypeHandler", BindingFlags.NonPublic | BindingFlags.Static)); // Get the type handler [paramCollection, typeHandler]
+							il.Emit(OpCodes.Ldstr, prop.Name); // Load the parameter name [paramCollection, typeHandler, paramName]
+							il.Emit(OpCodes.Ldloc_0); // Load the object [paramCollection, typeHandler, paramName, object]
+							il.Emit(OpCodes.Call, prop.GetGetMethod()); // Get the property value [paramCollection, typeHandler, paramName, value]
+							il.Emit(OpCodes.Box, prop.PropertyType); // Box the value [paramCollection, typeHandler, paramName, boxedValue]
+							il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] {typeof(string), typeof(object)}, null)); // Let the type handler create the param [paramCollection, param]
+							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] {typeof(SqlParameter)})); // Add the parameter to the collection [param]
+							il.Emit(OpCodes.Pop); // Get rid of the param as we don't need it anymore []*/
+						}
 					}
+
+					// Return
+					il.Emit(OpCodes.Ret);
+
+					// Add it to the cache
+					parameterAdder = (Action<SqlParameterCollection, object>) dm.CreateDelegate(typeof(Action<SqlParameterCollection, object>));
+					parameterAdderCache.AddOrUpdate(paramType, parameterAdder, (k, v) => v);
 				}
-
-				// Return
-				il.Emit(OpCodes.Ret);
-				
-				// Add it to the cache
-				parameterAdder = (Action<SqlParameterCollection, object>)dm.CreateDelegate(typeof(Action<SqlParameterCollection, object>));
-				parameterAdderCache.AddOrUpdate(paramType, parameterAdder, (k, v) => v);
 			}
 
 			// Run the cached parameter adder
-			parameterAdder(paramCollection, parameters);
+			if (parameterAdder != null)
+				parameterAdder(paramCollection, parameters);
 		}
 
 		/// <summary>

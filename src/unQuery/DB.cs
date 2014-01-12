@@ -62,6 +62,17 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// Executes the batch once for each parameter object value.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute for each parameter object value.</param>
+		/// <param name="parameters">A list of parameter objects. The batch is executed once per value.</param>
+		/// <returns>The total number of rows modified across all executions.</returns>
+		public static int ExecuteMany(string sql, IEnumerable<dynamic> parameters)
+		{
+			return db.ExecuteMany(sql, parameters);
+		}
+
+		/// <summary>
 		/// Returns a raw and open SqlConnection for manual use.
 		/// </summary>
 		public static SqlConnection GetOpenConnection()

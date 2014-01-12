@@ -8,15 +8,7 @@ unQuery aims to ease the simpler use cases where strongly typed results are not 
 
 ## Access Methods
 
-unQuery presents four different options for interacting with the database.
-
-### Execute
-
-Execute is used when you want to execute a batch but don't care about the results, other than the number of rows modified.
-
-```csharp
-int deletedUsers = DB.Execute("DELETE FROM Users WHERE Inactive = 1");
-```
+unQuery presents five different options for interacting with the database.
 
 ### GetScalar
 
@@ -47,6 +39,41 @@ var users = DB.GetRows("SELECT * FROM Users");
 
 foreach (var user in users)
 	Console.WriteLine(user.Name + " (" + user.Age + " years old)");
+```
+
+### Execute
+
+Execute is used when you want to execute a batch but don't care about the results, other than the number of rows modified.
+
+```csharp
+int deletedUsers = DB.Execute("DELETE FROM Users WHERE Inactive = 1");
+```
+
+### ExecuteMany
+
+If you have statement you want executed multiple times, though with different parameter types, and do not want the overhead of creating a table-valued type, ExecuteMany is a great option.
+
+Say you want the numbers 1-100 inserted in a table, you could do the following:
+
+```csharp
+var rows = Enumerable.Range(1, 100).Select(x => new {
+	Number = x,
+	Even = x % 2
+});
+db.ExecuteMany("INSERT INTO Numbers (Number, Even) VALUES (@Number, @Even)", rows);
+```
+
+Rather than executing 100 individual SqlCommands, ExecuteMany will use the batch RPC API to efficiently send all 100 executions in one operation. Note that these will still run individually so you need to wrap the ExecuteMany call in a transaction to guarantee atomicity and to gain the full performance benefit:
+
+```csharp
+using (var ts = new TransactionScope())
+{
+	var rows = Enumerable.Range(1, 100).Select(x => new {
+		Number = x,
+		Even = x % 2
+	});
+	db.ExecuteMany("INSERT INTO Numbers (Number, Even) VALUES (@Number, @Even)", rows);
+}
 ```
 
 ## Parameterization
