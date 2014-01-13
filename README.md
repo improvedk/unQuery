@@ -299,7 +299,7 @@ Note that connections will inherit from your machine.config & root web.config fi
 ## Requirements
 
 * .NET Framework 4.0+
-* SQL Server 2005+
+* SQL Server 2008+
 
 ## Contact
 
