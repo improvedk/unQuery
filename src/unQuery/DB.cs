@@ -20,6 +20,14 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// Returns a BatchExecutioner that can be used to efficiently batch up several execution commands in one go.
+		/// </summary>
+		public static BatchExecutor Batch()
+		{
+			return db.Batch();
+		}
+
+		/// <summary>
 		/// Executes the batch and returns all rows from the single result set.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
@@ -59,17 +67,6 @@ namespace unQuery
 		public static int Execute(string sql, object parameters = null)
 		{
 			return db.Execute(sql, parameters);
-		}
-
-		/// <summary>
-		/// Executes the batch once for each parameter object value.
-		/// </summary>
-		/// <param name="sql">The SQL statement to execute for each parameter object value.</param>
-		/// <param name="parameters">A list of parameter objects. The batch is executed once per value.</param>
-		/// <returns>The total number of rows modified across all executions.</returns>
-		public static int ExecuteMany(string sql, IEnumerable<object> parameters)
-		{
-			return db.ExecuteMany(sql, parameters);
 		}
 
 		/// <summary>

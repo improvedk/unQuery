@@ -13,6 +13,7 @@ namespace unQuery
 	public class unQueryDB
 	{
 		private readonly string connectionString;
+		private List<SqlCommand> batchCommands;
 
 		/// <summary>
 		/// Instantiates an unQuery instance that connects using the provided connection string.
@@ -106,36 +107,13 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Executes the batch once for each parameter object value.
+		/// Returns a BatchExecutioner that can be used to efficiently batch up several execution commands in one go.
 		/// </summary>
-		/// <param name="sql">The SQL statement to execute for each parameter object value.</param>
-		/// <param name="parameters">A list of parameter objects. The batch is executed once per value.</param>
-		/// <returns>The total number of rows modified across all executions.</returns>
-		public int ExecuteMany(string sql, IEnumerable<object> parameters)
+		public BatchExecutor Batch()
 		{
-			if (parameters == null)
-				throw new ArgumentNullException("parameters");
-
-			int result = 0;
-
-			using (var conn = getConnection())
-			using (var set = new PublicSqlCommandSet(conn))
-			{
-				foreach (var obj in parameters)
-				{
-					var cmd = new SqlCommand(sql);
-					AddParametersToCommand(cmd.Parameters, obj);
-
-					set.Append(cmd);
-				}
-
-				if (set.CommandCount > 0)
-					result = set.ExecuteNonQuery();
-			}
-
-			return result;
+			return new BatchExecutor(this);
 		}
-
+		
 		/// <summary>
 		/// Maps any number of rows to dynamic objects. This method is optimized for returning many rows.
 		/// </summary>
@@ -370,6 +348,11 @@ namespace unQuery
 			}
 
 			return conn;
+		}
+
+		public void Dispose()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -8,7 +8,7 @@ unQuery aims to ease the simpler use cases where strongly typed results are not 
 
 ## Access Methods
 
-unQuery presents five different options for interacting with the database.
+unQuery presents four different options for interacting with the database.
 
 ### GetScalar
 
@@ -47,33 +47,6 @@ Execute is used when you want to execute a batch but don't care about the result
 
 ```csharp
 int deletedUsers = DB.Execute("DELETE FROM Users WHERE Inactive = 1");
-```
-
-### ExecuteMany
-
-If you have statement you want executed multiple times, though with different parameter types, and do not want the overhead of creating a table-valued type, ExecuteMany is a great option.
-
-Say you want the numbers 1-100 inserted in a table, you could do the following:
-
-```csharp
-var rows = Enumerable.Range(1, 100).Select(x => new {
-	Number = x,
-	Even = x % 2
-});
-db.ExecuteMany("INSERT INTO Numbers (Number, Even) VALUES (@Number, @Even)", rows);
-```
-
-Rather than executing 100 individual SqlCommands, ExecuteMany will use the batch RPC API to efficiently send all 100 executions in one operation. Note that these will still run individually so you need to wrap the ExecuteMany call in a transaction to guarantee atomicity and to gain the full performance benefit:
-
-```csharp
-using (var ts = new TransactionScope())
-{
-	var rows = Enumerable.Range(1, 100).Select(x => new {
-		Number = x,
-		Even = x % 2
-	});
-	db.ExecuteMany("INSERT INTO Numbers (Number, Even) VALUES (@Number, @Even)", rows);
-}
 ```
 
 ## Parameterization
@@ -263,6 +236,69 @@ var rows = db.GetRows("SELECT * FROM @Input", new {
 	})
 });
 ```
+
+## Batch Execution
+
+If you have a single statement you want executed many times, with different parameter values, or if you have a series of distinct statements with unique parameters for each, unQuery allows you to execute batches efficiently.
+
+```csharp
+var persons = new[] {
+	new { Name = "Mark", Age = 28, Human = true },
+	new { Name = "Roger", Age = 35, Human = false }
+};
+
+using (var batch = DB.Batch())
+{
+	foreach (var person in persons)
+		batch.Add("INSERT INTO Persons VALUES (@Name, @Age, @Human)", person);
+
+	int numberOfRowsAffected = batch.Execute();
+}
+```
+
+You can also execute completely distinct statements:
+
+```csharp
+using (var batch = DB.Batch())
+{
+	batch.Add("CREATE TABLE Test (ID int)");
+	batch.Add("CREATE CLUSTERED INDEX CX_Test ON Test (ID ASC)");
+
+	for (int i=0; i<100; i++)
+		batch.Add("INSERT INTO Test VALUES (@I)", new { I = i });
+
+	batch.Execute();
+}
+```
+
+If you have a large number of rows to insert, with the same parameters, then table-valued parameters will be more efficient. But for those situations where you do not have a table-valued type available, Batch() can have a significant impact on performance.
+
+If Execute() is not called, the batch will simply be disposed without touching the database.
+
+### Atomicity & Performance
+
+If any of the statements fail, Execute() will throw the corresponding SqlException. However, execution does not stop even if one statement fails. As such you could add statements A, B, C, D and E to the batch. If statements B and D fail, A, C and E will still be performed.
+
+Even though using Batch() ensure that all of the statements are sent to SQL Server in a very efficient manner, each of the statements are still executed invidiually, as mentioned above. This also means that each statement will be committed by itself and thus result in an implicit transaction commit, causing SQL Server to write to the log. For optimum performance, and to ensure atomicity, you should wrap the Batch execution in a TransactionScope:
+
+```csharp
+using (var batch = DB.Batch())
+{
+	batch.Add("CREATE TABLE Test (ID int)");
+	batch.Add("CREATE CLUSTERED INDEX CX_Test ON Test (ID ASC)");
+
+	for (int i=0; i<100; i++)
+		batch.Add("INSERT INTO Test VALUES (@I)", new { I = i });
+
+	using (var ts = new TransactionScope())
+	{
+		batch.Execute();
+		ts.Complete();
+	}
+}
+```
+
+Creating an ambient transaction through TransactionScope ensures that either all statements will succeed, or none will succeed. It also ensures that only one transaction commit is performed, meaning only one write is done to the log, by SQL Server.
 
 ## DB vs unQueryDB
 

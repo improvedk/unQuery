@@ -49,7 +49,7 @@
   <ItemGroup>
     <Compile Include="AddParametersToCommandTests.cs" />
     <Compile Include="DynamicRowTests.cs" />
-    <Compile Include="ExecuteManyTests.cs" />
+    <Compile Include="BatchExecutionerTests.cs" />
     <Compile Include="MapReaderRowsToObjectTests.cs" />
     <Compile Include="GetOpenConnectionTests.cs" />
     <Compile Include="GetRowsTests.cs" />
@@ -97,7 +97,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
