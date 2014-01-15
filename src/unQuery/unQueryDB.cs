@@ -13,7 +13,6 @@ namespace unQuery
 	public class unQueryDB
 	{
 		private readonly string connectionString;
-		private List<SqlCommand> batchCommands;
 
 		/// <summary>
 		/// Instantiates an unQuery instance that connects using the provided connection string.
