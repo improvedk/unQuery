@@ -49,6 +49,36 @@ Execute is used when you want to execute a batch but don't care about the result
 int deletedUsers = DB.Execute("DELETE FROM Users WHERE Inactive = 1");
 ```
 
+## Type Mapping
+
+Both GetRow and GetRows support mapping the results into strong types. All you need to do is to provide the class as a generic parameter.
+
+```csharp
+public class Person
+{
+	public int PersonID { get; set; }
+	public string Name { get; set; }
+	public byte Age { get; set; }
+	public string Sex { get; set; }
+	public DateTime? SignedUp { get; set; }
+}
+
+// Gets a single Person
+var lastSignup = DB.GetRow<Person>("SELECT TOP 1 * FROM Persons ORDER BY SignedUp DESC");
+
+// Gets all females between 35 and 45
+var femalesBetween35And45 = DB.GetRows<Person>("SELECT * FROM Persons WHERE Sex = @Sex AND Age BETWEEN @AgeFrom AND @AgeTo", new {
+	Sex = "F",
+	AgeFrom = 35,
+	AgeTo = 45
+});
+```
+
+### Notes
+* Columns without a matching type property will be ignored.
+* If property type does not match the column type, a TypeMismatchException will be thrown.
+* If multiple columns share the same name, a DuplicateColumnException will be thrown.
+
 ## Parameterization
 
 All access methods support supplying an anonymous objects with parameters.

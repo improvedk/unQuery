@@ -38,6 +38,17 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// Executes the batch and returns all rows from the single result set.
+		/// The rows will be mapped to the properties of the generic type.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		public static IList<T> GetRows<T>(string sql, object parameters = null) where T : new()
+		{
+			return db.GetRows<T>(sql, parameters);
+		}
+
+		/// <summary>
 		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
 		/// all but the first will be discarded.
 		/// </summary>
@@ -46,6 +57,17 @@ namespace unQuery
 		public static dynamic GetRow(string sql, object parameters = null)
 		{
 			return db.GetRow(sql, parameters);
+		}
+
+		/// <summary>
+		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
+		/// all but the first will be discarded. The row will be mapped to the properties of the generic type.
+		/// </summary>
+		/// <param name="sql">The SQL statement to execute.</param>
+		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		public static T GetRow<T>(string sql, object parameters = null) where T : new()
+		{
+			return db.GetRow<T>(sql, parameters);
 		}
 
 		/// <summary>

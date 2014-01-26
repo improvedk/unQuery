@@ -117,4 +117,13 @@ namespace unQuery
 			: base("Type " + t + " was unexpected for this structured parameter")
 		{ }
 	}
+
+	/// <summary>
+	/// Thrown if two types do not match
+	/// </summary>
+	public class TypeMismatchException : Exception
+	{
+		public TypeMismatchException(string msg) : base(msg)
+		{ }
+	}
 }

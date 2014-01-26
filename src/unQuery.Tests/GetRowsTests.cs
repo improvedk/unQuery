@@ -8,6 +8,34 @@ namespace unQuery.Tests
 {
 	public class GetRowsTests : TestFixture
 	{
+		private class Typed_Person
+		{
+			public int PersonID { get; set; }
+			public string Name { get; set; }
+			public byte Age { get; set; }
+			public string Sex { get; set; }
+			public DateTime? SignedUp { get; set; }
+		}
+
+		public void Typed_Persons()
+		{
+			var persons = DB.GetRows<Typed_Person>("SELECT * FROM Persons WHERE PersonID IN (2, 5) ORDER BY PersonID ASC");
+
+			var lee = persons[0];
+			Assert.AreEqual(2, lee.PersonID);
+			Assert.AreEqual("Lee Buckley", lee.Name);
+			Assert.AreEqual(37, lee.Age);
+			Assert.AreEqual("M", lee.Sex);
+			Assert.AreEqual(null, lee.SignedUp);
+			
+			var annie = persons[1];
+			Assert.AreEqual(5, annie.PersonID);
+			Assert.AreEqual("Annie Brennan", annie.Name);
+			Assert.AreEqual(23, annie.Age);
+			Assert.AreEqual("M", annie.Sex);
+			Assert.AreEqual(new DateTime(1984, 01, 07, 13, 24, 42, 110), annie.SignedUp);
+		}
+
 		[Test]
 		public void NoResults()
 		{
