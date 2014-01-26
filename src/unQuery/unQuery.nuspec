@@ -11,6 +11,8 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>unQuery is a minimal data access library that makes it as simple as possible to consume and interact with data in SQL Server.</description>
 		<releaseNotes>
+			0.1.5
+			 - Now supports mapping results into strong types
 			0.1.4
 			 - Massive performance improvements in parameter parsing
 			 - Added Batch() functionality
