@@ -1,10 +1,8 @@
 # unQuery
 
-unQuery is a very minimal data access class that makes it as simple as possible to consume data and interact with SQL Server.
+unQuery is a very minimal data access library that makes it as simple as possible to consume data and interact with SQL Server.
 
 It is neither an OR/M nor an object mapper, and it does not intend to be either.
-
-unQuery aims to ease the simpler use cases where strongly typed results are not necessary. I prefer SQL over query constructor abstractions, thus promoting the use of raw SQL.
 
 ## Access Methods
 
