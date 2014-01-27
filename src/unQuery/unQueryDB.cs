@@ -530,10 +530,5 @@ namespace unQuery
 
 			return conn;
 		}
-
-		public void Dispose()
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
