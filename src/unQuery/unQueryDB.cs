@@ -10,10 +10,15 @@ using unQuery.SqlTypes;
 
 namespace unQuery
 {
+	[Serializable]
 	public class unQueryDB
 	{
+		[NonSerialized]
 		private static ConcurrentDictionary<Type, Action<SqlParameterCollection, object>> parameterAdderCache = new ConcurrentDictionary<Type, Action<SqlParameterCollection, object>>();
+
+		[NonSerialized]
 		private static ConcurrentDictionary<string, Action<object, object[]>> typeWriterCache = new ConcurrentDictionary<string, Action<object, object[]>>();
+
 		private readonly string connectionString;
 
 		/// <summary>
