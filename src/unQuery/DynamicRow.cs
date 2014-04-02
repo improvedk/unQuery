@@ -1,6 +1,8 @@
-﻿using System;
+﻿using LINQPad;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -10,7 +12,7 @@ namespace unQuery
 	/// Custom dynamic implementation that stores a single row, with a reference to a common field map so multiple rows don't have
 	/// to store the same schema.
 	/// </summary>
-	internal class DynamicRow : IDynamicMetaObjectProvider
+	internal class DynamicRow : IDynamicMetaObjectProvider, ICustomMemberProvider
 	{
 		// This stores the raw column values by ordinal index
 		private readonly object[] values;
@@ -63,6 +65,21 @@ namespace unQuery
 		DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
 		{
 			return new DynamicFieldMapRowMetaObject(parameter, this);
+		}
+
+		public IEnumerable<string> GetNames()
+		{
+			return fieldMap.Keys;
+		}
+
+		public IEnumerable<Type> GetTypes()
+		{
+			return values.Select(x => x.GetType());
+		}
+
+		public IEnumerable<object> GetValues()
+		{
+			return values;
 		}
 	}
 
