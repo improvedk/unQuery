@@ -139,7 +139,14 @@ namespace unQuery
 				if (result is DBNull)
 					return default(T);
 
-				return (T)result;
+				try
+				{
+					return (T)result;
+				}
+				catch (InvalidCastException)
+				{
+					throw new InvalidCastException("Can't cast return type '" + result.GetType() + "' into '" + typeof(T) + "'");
+				}
 			}
 		}
 
