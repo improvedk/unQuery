@@ -50,6 +50,7 @@
     <Compile Include="AddParametersToCommandTests.cs" />
     <Compile Include="DynamicRowTests.cs" />
     <Compile Include="BatchExecutionerTests.cs" />
+    <Compile Include="ExceptionsTest.cs" />
     <Compile Include="MapReaderRowsToObjectTests.cs" />
     <Compile Include="GetOpenConnectionTests.cs" />
     <Compile Include="GetRowsTests.cs" />

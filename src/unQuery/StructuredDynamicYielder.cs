@@ -197,7 +197,7 @@ namespace unQuery
 					}
 					catch (KeyNotFoundException)
 					{
-						throw new TypeNotSupportedException(prop.PropertyType);
+						throw new ParameterTypeNotSupportedException(prop.Name, prop.PropertyType);
 					}
 				}
 

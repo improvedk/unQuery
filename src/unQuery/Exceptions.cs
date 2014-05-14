@@ -15,15 +15,23 @@ namespace unQuery
 	/// <summary>
 	/// Thrown when a parameter type is not supported.
 	/// </summary>
-	public class TypeNotSupportedException : Exception
+	public class ParameterTypeNotSupportedException : Exception
 	{
-		public TypeNotSupportedException(Type t) :
-			base("Type '" + t + "' not supported.")
+		public ParameterTypeNotSupportedException(string propertyName, Type t) :
+			base("Property '" + propertyName + "' of type '" + t + "' is not supported as a parameter." + getTypeRecommendation(t))
 		{ }
 
-		public TypeNotSupportedException(string t) :
-			base("Type '" + t + "' not supported.")
-		{ }
+		private static string getTypeRecommendation(Type t)
+		{
+			switch (t.ToString())
+			{
+				case "System.String":
+					return " Consider using Col.VarChar or Col.NVarChar instead.";
+					
+				default:
+					return null;
+			}
+		}
 	}
 
 	/// <summary>

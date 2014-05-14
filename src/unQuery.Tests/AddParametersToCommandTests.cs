@@ -175,7 +175,7 @@ namespace unQuery.Tests
 		[Test]
 		public void NonSupportedTypes()
 		{
-			Assert.Throws<TypeNotSupportedException>(() => db.AddParametersToCommand(new SqlCommand().Parameters, new {
+			Assert.Throws<ParameterTypeNotSupportedException>(() => db.AddParametersToCommand(new SqlCommand().Parameters, new {
 				Test = "Hello"
 			}));
 		}

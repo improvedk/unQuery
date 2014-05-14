@@ -461,7 +461,7 @@ namespace unQuery
 					{
 						// Is this property type supported?
 						if (!ClrTypeHandlers.ContainsKey(prop.PropertyType) && prop.PropertyType != typeof(SqlStructured))
-							throw new TypeNotSupportedException(prop.PropertyType);
+							throw new ParameterTypeNotSupportedException(prop.Name, prop.PropertyType);
 
 						if (typeof(SqlType).IsAssignableFrom(prop.PropertyType))
 						{
