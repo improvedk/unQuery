@@ -104,7 +104,11 @@ namespace unQuery
 
 				// If no properties are found on the provided parameter object, then there's no schema & value to read
 				if (properties.Length == 0)
-					throw new ObjectHasNoPropertiesException("For an object to be used as a value for a Structured parameter, its properties need to match the SQL Server type. The provided object has no properties.");
+				{
+					throw new ObjectHasNoPropertiesException(
+						"For an object to be used as a value for a Structured parameter, its properties need to " +
+						"match the SQL Server type. The provided object has no public properties at all.");
+				}
 
 				var schema = new SqlMetaData[properties.Length];
 				var dm = new DynamicMethod("SetRecordValues", typeof(void), new[] { typeof(SqlDataRecord), typeof(object) }, true);
