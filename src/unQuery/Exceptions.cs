@@ -42,7 +42,7 @@ namespace unQuery
 	public class ColumnDoesNotExistException : Exception
 	{
 		public ColumnDoesNotExistException(string column) :
-			base("Column '" + column + "' does not exist.")
+			base("Column '" + column + "' does not exist. Typically this is caused when you try to access a column that was not part of the SELECT statement.")
 		{ }
 	}
 
