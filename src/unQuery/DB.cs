@@ -43,11 +43,11 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static IList<T> GetRows<T>(string sql, object parameters = null) where T : new()
+		public static IList<T> GetRows<T>(string sql, object parameters = null)
 		{
 			return db.GetRows<T>(sql, parameters);
 		}
-
+		
 		/// <summary>
 		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
 		/// all but the first will be discarded.

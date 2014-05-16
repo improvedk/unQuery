@@ -60,7 +60,7 @@ namespace unQuery
 		/// Executes the batch and returns all rows from the single result set. Each row is mapped into a new instance of T, mapping the columns
 		/// to properties based on name matching.
 		/// </summary>
-		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters) where T : new()
+		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
@@ -70,8 +70,41 @@ namespace unQuery
 
 				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior);
 
-				return mapReaderRowsToType<T>(reader).ToList();
+				if (typeof(T).IsValueType || typeof(T) == typeof(string))
+					return mapReaderRowsToList<T>(reader);
+				else
+					return mapReaderRowsToType(reader, Activator.CreateInstance<T>).ToList();
 			}
+		}
+
+		/// <summary>
+		/// Takes each row of a datareader and returns a list of the values in the first column.
+		/// </summary>
+		private IList<T> mapReaderRowsToList<T>(SqlDataReader reader)
+		{
+			var list = new List<T>();
+			bool first = true;
+
+			while (reader.Read())
+			{
+				// Verify result set on first iteration
+				if (first)
+				{
+					if (reader.VisibleFieldCount > 1)
+						throw new MoreThanOneColumnException();
+
+					first = false;
+				}
+
+				object value = reader.GetValue(0);
+
+				if (value == DBNull.Value)
+					list.Add(default(T));
+				else
+					list.Add((T)value);
+			}
+
+			return list;
 		}
 
 		/// <summary>
@@ -90,7 +123,7 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public IList<T> GetRows<T>(string sql, object parameters = null) where T : new()
+		public IList<T> GetRows<T>(string sql, object parameters = null)
 		{
 			return getRows<T>(sql, CommandBehavior.Default, parameters);
 		}
@@ -178,7 +211,7 @@ namespace unQuery
 		/// <summary>
 		/// Maps each row into a new instance of T, mapping columns to properties based on the name.
 		/// </summary>
-		private IEnumerable<T> mapReaderRowsToType<T>(SqlDataReader reader) where T : new()
+		private IEnumerable<T> mapReaderRowsToType<T>(SqlDataReader reader, Func<T> typeCreator)
 		{
 			int visibleFieldCount = reader.VisibleFieldCount;
 			
@@ -296,7 +329,7 @@ namespace unQuery
 				var values = new object[visibleFieldCount];
 				reader.GetValues(values);
 
-				var row = new T();
+				var row = typeCreator();
 				typeWriter(row, values);
 
 				yield return row;

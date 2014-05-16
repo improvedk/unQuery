@@ -134,4 +134,15 @@ namespace unQuery
 		public TypeMismatchException(string msg) : base(msg)
 		{ }
 	}
+
+	/// <summary>
+	/// Thrown when a result set is being mapped into a list of a simple type, e.g. int/string, and more than one column
+	/// is part of the result set. To avoid masking errors, an exception is thrown.
+	/// </summary>
+	public class MoreThanOneColumnException : Exception
+	{
+		public MoreThanOneColumnException()
+			: base("Result set contains more than one column. To map this to a list of a simple type, only one column should be returned.")
+		{ }
+	}
 }

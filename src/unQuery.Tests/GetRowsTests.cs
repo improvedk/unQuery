@@ -92,5 +92,92 @@ namespace unQuery.Tests
 			Assert.AreEqual(Convert.ToDateTime("1997-11-15 21:03:54.000"), row.SignedUp);
 			Assert.AreEqual(5, ((Dictionary<string, object>)row).Count);
 		}
+
+		[Test]
+		public void SimpleList_Int()
+		{
+			var rows = DB.GetRows<int>(@"
+				SELECT 2 AS A UNION ALL
+				SELECT 7 AS A UNION ALL
+				SELECT 5 AS A");
+
+			Assert.AreEqual(3, rows.Count);
+			Assert.AreEqual(2, rows[0]);
+			Assert.AreEqual(7, rows[1]);
+			Assert.AreEqual(5, rows[2]);
+		}
+
+		[Test]
+		public void SimpleList_MultipleColumns()
+		{
+			Assert.Throws<MoreThanOneColumnException>(() => DB.GetRows<int>("SELECT 2 AS A, 3 AS B"));
+		}
+
+		[Test]
+		public void SimpleList_NoRows()
+		{
+			var rows = DB.GetRows<int>("DECLARE @A int");
+
+			Assert.AreEqual(0, rows.Count);
+		}
+
+		[Test]
+		public void SimpleList_UnnamedInt()
+		{
+			var rows = DB.GetRows<int>("SELECT 5");
+
+			Assert.AreEqual(1, rows.Count);
+			Assert.AreEqual(5, rows[0]);
+		}
+
+		[Test]
+		public void SimpleList_Empty()
+		{
+			var rows = DB.GetRows<int>("SELECT NULL WHERE 0=1");
+
+			Assert.AreEqual(0, rows.Count);
+		}
+
+		[Test]
+		public void SimpleList_NullableGuid()
+		{
+			var rows = DB.GetRows<Guid?>(@"
+				SELECT CAST('9162D161-50C9-4DF2-A0DF-464A14CE9012' AS uniqueidentifier) AS A UNION ALL
+				SELECT CAST('1180322C-7794-400D-9141-FCD1F2D16A14' AS uniqueidentifier) AS A UNION ALL
+				SELECT CAST(NULL AS uniqueidentifier) AS A");
+
+			Assert.AreEqual(3, rows.Count);
+			Assert.AreEqual(new Guid("9162D161-50C9-4DF2-A0DF-464A14CE9012"), rows[0]);
+			Assert.AreEqual(new Guid("1180322C-7794-400D-9141-FCD1F2D16A14"), rows[1]);
+			Assert.AreEqual(null, rows[2]);
+		}
+		
+		[Test]
+		public void SimpleList_String()
+		{
+			var rows = DB.GetRows<string>(@"
+				SELECT 'asd' AS A UNION ALL
+				SELECT 'xyz' AS A UNION ALL
+				SELECT 'Foo Bar' AS A");
+
+			Assert.AreEqual(3, rows.Count);
+			Assert.AreEqual("asd", rows[0]);
+			Assert.AreEqual("xyz", rows[1]);
+			Assert.AreEqual("Foo Bar", rows[2]);
+		}
+		
+		[Test]
+		public void SimpleList_NullableByte()
+		{
+			var rows = DB.GetRows<byte?>(@"
+				SELECT CAST(NULL AS tinyint) AS A UNION ALL
+				SELECT CAST(7 AS tinyint) AS A UNION ALL
+				SELECT CAST(5 AS tinyint) AS A");
+
+			Assert.AreEqual(3, rows.Count);
+			Assert.AreEqual(null, rows[0]);
+			Assert.AreEqual(7, rows[1]);
+			Assert.AreEqual(5, rows[2]);
+		}
 	}
 }
