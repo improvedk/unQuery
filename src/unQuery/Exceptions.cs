@@ -5,6 +5,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown when rows are expected, but none were present.
 	/// </summary>
+	[Serializable]
 	public class NoRowsException : Exception
 	{
 		public NoRowsException() :
@@ -15,6 +16,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown when a parameter type is not supported.
 	/// </summary>
+	[Serializable]
 	public class ParameterTypeNotSupportedException : Exception
 	{
 		public ParameterTypeNotSupportedException(string propertyName, Type t) :
@@ -37,6 +39,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if no connection strings are defined.
 	/// </summary>
+	[Serializable]
 	public class MissingConnectionStringException : Exception
 	{
 		public MissingConnectionStringException() :
@@ -47,6 +50,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if trying to access a non-existing column.
 	/// </summary>
+	[Serializable]
 	public class ColumnDoesNotExistException : Exception
 	{
 		public ColumnDoesNotExistException(string column) :
@@ -57,6 +61,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if a result row contains two columns with the same name.
 	/// </summary>
+	[Serializable]
 	public class DuplicateColumnException : Exception
 	{
 		public DuplicateColumnException(string column) :
@@ -67,6 +72,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if a result contains an unnamed column.
 	/// </summary>
+	[Serializable]
 	public class UnnamedColumnException : Exception
 	{
 		public UnnamedColumnException(int index) :
@@ -78,6 +84,7 @@ namespace unQuery
 	/// Thrown if trying to add a parameter to a SqlCommand that already contains a parameter.
 	/// with the same name.
 	/// </summary>
+	[Serializable]
 	public class SqlCommandAlreadyHasParametersException : Exception
 	{
 		public SqlCommandAlreadyHasParametersException() :
@@ -88,6 +95,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if properties are expected on an object, but none are present.
 	/// </summary>
+	[Serializable]
 	public class ObjectHasNoPropertiesException : Exception
 	{
 		public ObjectHasNoPropertiesException(string message) :
@@ -98,6 +106,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if a SqlType is used as if it could be auto converted from the native CLR type. E.g. valid for ints but not for strings.
 	/// </summary>
+	[Serializable]
 	public class TypeCannotBeUsedAsAClrTypeException : InvalidOperationException
 	{
 		public TypeCannotBeUsedAsAClrTypeException() :
@@ -108,6 +117,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if a type is used in situations that requires types to be specified explicitly (like for structured use)
 	/// </summary>
+	[Serializable]
 	public class TypePropertiesMustBeSetExplicitlyException : InvalidOperationException
 	{
 		public TypePropertiesMustBeSetExplicitlyException(string properties) :
@@ -119,6 +129,7 @@ namespace unQuery
 	/// Thrown if an IEnumerable of simple values is passed to a structured parameter, with different types being
 	/// returned from the IEnumerable
 	/// </summary>
+	[Serializable]
 	public class StructuredTypeMismatchException : ArgumentException
 	{
 		public StructuredTypeMismatchException(Type t)
@@ -129,6 +140,7 @@ namespace unQuery
 	/// <summary>
 	/// Thrown if two types do not match
 	/// </summary>
+	[Serializable]
 	public class TypeMismatchException : Exception
 	{
 		public TypeMismatchException(string msg) : base(msg)
@@ -139,6 +151,7 @@ namespace unQuery
 	/// Thrown when a result set is being mapped into a list of a simple type, e.g. int/string, and more than one column
 	/// is part of the result set. To avoid masking errors, an exception is thrown.
 	/// </summary>
+	[Serializable]
 	public class MoreThanOneColumnException : Exception
 	{
 		public MoreThanOneColumnException()
