@@ -1,18 +1,25 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Threading;
+using System.Linq;
 
 namespace unQuery.PerformanceTests
 {
 	[TestFixture]
 	public abstract class TestFixture
 	{
-		private int testIterations = 5 * 5000;
-
+		private int testIterations = 10000;
 		private string connectionString = ConfigurationManager.ConnectionStrings["TestDB"].ConnectionString;
+
+		[TestFixtureSetUp]
+		public void Init()
+		{
+			// Increase process priority since this is time sensitive code
+			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+		}
 
 		protected SqlConnection GetOpenConnection()
 		{
@@ -24,38 +31,51 @@ namespace unQuery.PerformanceTests
 
 		protected void RunTest(double maxDiff, Action handCoded, Action unQuery)
 		{
-			// Ensure test runner has top priority to reduce fluctuation
-			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
+			var sw = new Stopwatch();
+			var handCodedRuntimes = new List<long>(testIterations);
+			var unQueryRuntimes = new List<long>(testIterations);
 
-			var swHandCoded = new Stopwatch();
-			var swUnQuery = new Stopwatch();
-
-			// Reset & warmup
-			for (int i = 0; i < testIterations / 5000; i++)
+			handCoded();
+			unQuery();
+		
+			for (int i = 0; i < testIterations  * 2; i++)
 			{
-				// Run handcoded
-				for (int k = 0; k < 100; k++)
+				if (i%2 == 0)
+				{
+					sw.Restart();
 					handCoded();
-				swHandCoded.Start();
-				for (int j = 0; j < 5000; j++)
-					handCoded();
-				swHandCoded.Stop();
-
-				// Run unQuery
-				for (int k = 0; k < 100; k++)
+					sw.Stop();
+					handCodedRuntimes.Add(sw.ElapsedTicks);
+				}
+				else
+				{
+					sw.Restart();
 					unQuery();
-				swUnQuery.Start();
-				for (int j = 0; j < 5000; j++)
-					unQuery();
-				swUnQuery.Stop();
+					sw.Stop();
+					unQueryRuntimes.Add(sw.ElapsedTicks);
+				}
 			}
 			
-			Console.WriteLine("Hand coded: " + swHandCoded.ElapsedMilliseconds + "ms");
-			Console.WriteLine("unQuery: " + swUnQuery.ElapsedMilliseconds + "ms");
+			// Extract the 95th percentile results to reduce variance
+			int percentileCount = Convert.ToInt32(testIterations * 0.95);
 
-			double diff = swUnQuery.ElapsedMilliseconds - swHandCoded.ElapsedMilliseconds;
-			var diffPercentage = diff / swHandCoded.ElapsedMilliseconds * 100;
+			var avgHandCodedRuntime = handCodedRuntimes
+				.OrderBy(x => x)
+				.Skip(testIterations - percentileCount)
+				.Take(percentileCount)
+				.Average();
 
+			var avgUnQueryRuntime = unQueryRuntimes
+				.OrderBy(x => x)
+				.Skip(testIterations - percentileCount)
+				.Take(percentileCount)
+				.Average();
+
+			var diff = avgUnQueryRuntime - avgHandCodedRuntime;
+			var diffPercentage = diff / avgHandCodedRuntime * 100;
+
+			Console.WriteLine("Hand coded: " + avgHandCodedRuntime + " ticks");
+			Console.WriteLine("unQuery: " + avgUnQueryRuntime + " ticks");
 			Console.WriteLine("unQuery diff: " + diffPercentage.ToString("N") + "% (Max: " + maxDiff.ToString("N") + "%)");
 
 			Assert.Less(diffPercentage, maxDiff, "unQuery difference should be below " + maxDiff.ToString("N") + "%");
