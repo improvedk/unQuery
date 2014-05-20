@@ -50,9 +50,8 @@ namespace unQuery
 				if (parameters != null)
 					AddParametersToCommand(cmd.Parameters, parameters);
 
-				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior);
-
-				return mapReaderRowsToObject(reader).ToList();
+				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
+					return mapReaderRowsToObject(reader).ToList();
 			}
 		}
 
@@ -68,12 +67,13 @@ namespace unQuery
 				if (parameters != null)
 					AddParametersToCommand(cmd.Parameters, parameters);
 
-				var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior);
-
-				if (typeof(T).IsValueType || typeof(T) == typeof(string))
-					return mapReaderRowsToList<T>(reader);
-				else
-					return mapReaderRowsToType(reader, Activator.CreateInstance<T>).ToList();
+				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
+				{
+					if (typeof(T).IsValueType || typeof(T) == typeof(string))
+						return mapReaderRowsToList<T>(reader);
+					else
+						return mapReaderRowsToType(reader, Activator.CreateInstance<T>).ToList();
+				}
 			}
 		}
 
