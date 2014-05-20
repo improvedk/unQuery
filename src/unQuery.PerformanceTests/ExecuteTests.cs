@@ -11,7 +11,7 @@ namespace unQuery.PerformanceTests
 		[Test]
 		public void Execute_NoParameters()
 		{
-			RunTest(3,
+			RunTest(1,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -25,7 +25,7 @@ namespace unQuery.PerformanceTests
 		[Test]
 		public void Execute_OneParameter()
 		{
-			RunTest(3,
+			RunTest(1.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -42,7 +42,7 @@ namespace unQuery.PerformanceTests
 		[Test]
 		public void Execute_FiveParameters()
 		{
-			RunTest(3,
+			RunTest(2.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())

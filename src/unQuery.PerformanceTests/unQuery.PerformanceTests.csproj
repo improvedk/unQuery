@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetScalarTests.cs" />
+    <Compile Include="GetRowsTests.cs" />
     <Compile Include="GetRowTests.cs" />
     <Compile Include="ExecuteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

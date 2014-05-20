@@ -5,13 +5,15 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace unQuery.PerformanceTests
 {
 	[TestFixture]
 	public abstract class TestFixture
 	{
-		private int testIterations = 10000;
+		private TimeSpan testDuration = TimeSpan.FromMilliseconds(10000);
+		private double testPercentile = 0.90d;
 		private string connectionString = ConfigurationManager.ConnectionStrings["TestDB"].ConnectionString;
 
 		[TestFixtureSetUp]
@@ -32,50 +34,69 @@ namespace unQuery.PerformanceTests
 		protected void RunTest(double maxDiff, Action handCoded, Action unQuery)
 		{
 			var sw = new Stopwatch();
-			var handCodedRuntimes = new List<long>(testIterations);
-			var unQueryRuntimes = new List<long>(testIterations);
+			var handCodedRuntimes = new List<long>();
+			var unQueryRuntimes = new List<long>();
+			bool runTest = true;
 
+			// Warmup
 			handCoded();
 			unQuery();
 		
-			for (int i = 0; i < testIterations  * 2; i++)
+			// Testrunner thread
+			var testThread = new Thread(() =>
 			{
-				if (i%2 == 0)
+				int cnt = 0;
+				while (runTest || cnt % 2 == 1)
 				{
-					sw.Restart();
-					handCoded();
-					sw.Stop();
-					handCodedRuntimes.Add(sw.ElapsedTicks);
+					if (cnt % 2 == 0)
+					{
+						sw.Restart();
+						handCoded();
+						sw.Stop();
+						handCodedRuntimes.Add(sw.ElapsedTicks);
+					}
+					else
+					{
+						sw.Restart();
+						unQuery();
+						sw.Stop();
+						unQueryRuntimes.Add(sw.ElapsedTicks);
+					}
+
+					cnt++;
 				}
-				else
-				{
-					sw.Restart();
-					unQuery();
-					sw.Stop();
-					unQueryRuntimes.Add(sw.ElapsedTicks);
-				}
-			}
-			
-			// Extract the 95th percentile results to reduce variance
-			int percentileCount = Convert.ToInt32(testIterations * 0.95);
+
+			});
+			testThread.Start();
+			testThread.Join(testDuration);
+			runTest = false;
+			testThread.Join();
+
+			// Sanity check that both code path were run an equal number of times
+			Assert.AreEqual(handCodedRuntimes.Count, unQueryRuntimes.Count);
+
+			// Extract the Nth percentile results to reduce variance
+			int testIterations = handCodedRuntimes.Count;
+			int percentileCount = Convert.ToInt32(testIterations * testPercentile);
 
 			var avgHandCodedRuntime = handCodedRuntimes
 				.OrderBy(x => x)
-				.Skip(testIterations - percentileCount)
+				.Skip((testIterations - percentileCount) / 2)
 				.Take(percentileCount)
 				.Average();
 
 			var avgUnQueryRuntime = unQueryRuntimes
 				.OrderBy(x => x)
-				.Skip(testIterations - percentileCount)
+				.Skip((testIterations - percentileCount) / 2)
 				.Take(percentileCount)
 				.Average();
 
 			var diff = avgUnQueryRuntime - avgHandCodedRuntime;
 			var diffPercentage = diff / avgHandCodedRuntime * 100;
 
-			Console.WriteLine("Hand coded: " + avgHandCodedRuntime + " ticks");
-			Console.WriteLine("unQuery: " + avgUnQueryRuntime + " ticks");
+			Console.WriteLine("Iterations: " + testIterations);
+			Console.WriteLine("Hand coded: " + avgHandCodedRuntime.ToString("N") + " ticks");
+			Console.WriteLine("unQuery: " + avgUnQueryRuntime.ToString("N") + " ticks");
 			Console.WriteLine("unQuery diff: " + diffPercentage.ToString("N") + "% (Max: " + maxDiff.ToString("N") + "%)");
 
 			Assert.Less(diffPercentage, maxDiff, "unQuery difference should be below " + maxDiff.ToString("N") + "%");
