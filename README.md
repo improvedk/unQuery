@@ -77,6 +77,16 @@ var femalesBetween35And45 = DB.GetRows<Person>("SELECT * FROM Persons WHERE Sex 
 * If property type does not match the column type, a TypeMismatchException will be thrown.
 * If multiple columns share the same name, a DuplicateColumnException will be thrown.
 
+### Simple Types
+Besides mapping intotypes with properties, if all you're doing is selecting a list of a single column, you can map that directly into a list of that type.
+
+```csharp
+var userNames = DB.GetRows<string>("SELECT Name FROM Persons");
+var lastLoginDates = DB.GetRows<DateTime?>("SELECT LastLoginDate FROM Persons");
+```
+
+If you happen to select more than one column, an exception will be thrown. This is to enforce you to only select the data you need, and to ensure you didn't intend to retrieve the other columns.
+
 ## Parameterization
 
 All access methods support supplying an anonymous objects with parameters.
@@ -363,7 +373,7 @@ Note that connections will inherit from your machine.config & root web.config fi
 ## Requirements
 
 * .NET Framework 4.0+
-* SQL Server 2008+
+* SQL Server 2008+ if you want to use table-valued parameters, otherwise SQL Server 2000+
 
 ## Contact
 
