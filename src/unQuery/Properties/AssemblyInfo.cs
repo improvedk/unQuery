@@ -10,5 +10,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("LINQPadQuery")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6b9551cc-a417-4f83-a658-f896f8ef34b9")]
-[assembly: AssemblyVersion("0.1.6")]
-[assembly: AssemblyFileVersion("0.1.6")]
+[assembly: AssemblyVersion("0.1.7")]
+[assembly: AssemblyFileVersion("0.1.7")]
