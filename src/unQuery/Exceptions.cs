@@ -30,6 +30,9 @@ namespace unQuery
 				case "System.String":
 					return " Consider using Col.VarChar or Col.NVarChar instead.";
 					
+				case "System.DateTime":
+					return " Consider using Col.DateTime, Col.DateTim2, Col.Date or Col.DateTimeOffset instead.";
+
 				default:
 					return null;
 			}
