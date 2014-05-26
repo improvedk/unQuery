@@ -14,7 +14,7 @@ namespace unQuery.Tests
 		[Test]
 		public void RawListOfImplicitTypes()
 		{
-			var values = new[] { 1, 2, (int?)null }.Cast<object>();
+			var values = new object[] { 1, 2, (int?)null };
 			var yielder = new StructuredDynamicYielder(values);
 
 			int counter = 0;

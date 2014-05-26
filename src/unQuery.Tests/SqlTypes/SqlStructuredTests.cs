@@ -109,6 +109,24 @@ namespace unQuery.Tests.SqlTypes
 		}
 
 		[Test]
+		public void NoInputRows()
+		{
+			int personCount = DB.GetScalar<int>("SELECT COUNT(*) FROM @Persons", new {
+				Persons = Col.Structured("MyPersonType", new MyPersonType[0])
+			});
+
+			Assert.AreEqual(0, personCount);
+		}
+
+		[Test]
+		public void NullInput()
+		{
+			Assert.Throws<NotSupportedException>(() => DB.GetScalar<int>("SELECT COUNT(*) FROM @Persons", new {
+				Persons = Col.Structured("MyPersonType", null)
+			}));
+		}
+
+		[Test]
 		public void StronglyTypedValues()
 		{
 			var persons = DB.GetRows("SELECT * FROM @Persons", new {

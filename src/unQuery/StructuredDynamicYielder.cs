@@ -26,7 +26,7 @@ namespace unQuery
 			{ typeof(Guid), typeof(SqlDataRecord).GetMethod("SetGuid", new[] { typeof(int), typeof(Guid)}) }
 		};
 
-		private readonly IEnumerable<object> values;
+		private readonly IList<object> values;
 
 		private class TypeHandler
 		{
@@ -37,8 +37,11 @@ namespace unQuery
 		/// <summary>
 		/// Instantiates a StructedDynamicYielder that will efficiently stream the values to SQL Server.
 		/// </summary>
-		/// <param name="values">The values to be streamed. Each object must be of the same type and must match the table type in SQL Server by ordinal position.</param>
-		internal StructuredDynamicYielder(IEnumerable<object> values)
+		/// <param name="values">
+		///		The values to be streamed. Each object must be of the same type and must match the table type in SQL Server by ordinal position.
+		///		Values must not be an empty list.
+		/// </param>
+		internal StructuredDynamicYielder(IList<object> values)
 		{
 			if (values == null)
 				throw new ArgumentException("Values can't be null.");
@@ -51,7 +54,7 @@ namespace unQuery
 			typeHandlers = new ConcurrentDictionary<Type, TypeHandler>();
 		}
 
-		private IEnumerable<SqlDataRecord> processSqlTypes(object[] rows)
+		private IEnumerable<SqlDataRecord> processSqlTypes(IList<object> rows)
 		{
 			var record = new SqlDataRecord(((SqlTypeHandler)rows[0]).CreateMetaData("UnnamedColumn"));
 			Type rowType = null;
@@ -60,10 +63,12 @@ namespace unQuery
 			{
 				// We have to detect potential type mismatches in case there are different ISqlTypes among the rows
 				if (row != null)
+				{
 					if (rowType == null)
 						rowType = row.GetType();
 					else if (rowType != row.GetType())
 						throw new StructuredTypeMismatchException(row.GetType());
+				}
 
 				record.SetValue(0, ((SqlType)row).GetRawValue() ?? DBNull.Value);
 
@@ -71,7 +76,7 @@ namespace unQuery
 			}
 		}
 
-		private IEnumerable<SqlDataRecord> processImplicitTypes(object[] rows, SqlTypeHandler implicitTypeHandler)
+		private IEnumerable<SqlDataRecord> processImplicitTypes(IList<object> rows, SqlTypeHandler implicitTypeHandler)
 		{
 			var record = new SqlDataRecord(implicitTypeHandler.CreateMetaData("UnnamedColumn"));
 
@@ -90,11 +95,10 @@ namespace unQuery
 			}
 		}
 
-		private IEnumerable<SqlDataRecord> processObjects(object[] rows)
+		private IEnumerable<SqlDataRecord> processObjects(IList<object> rows)
 		{
 			// We know there's at least one object, so we can safely pull the type of the first one
 			Type objectType = rows[0].GetType();
-			object objectValue = rows[0];
 			TypeHandler typeHandler;
 
 			// If we haven't already seen this type before, we'll have to extract its schema and create a type reader for it
@@ -229,19 +233,13 @@ namespace unQuery
 		/// </summary>
 		public IEnumerator<SqlDataRecord> GetEnumerator()
 		{
-			// Cache rows aggressively to avoid the database waiting on us
-			var rows = values.ToArray();
-
-			if (rows.Length == 0)
-				yield break;
-
 			// Based on the type of the first value, we'll decide how to process the data
-			var rowType = rows[0].GetType();
+			var rowType = values[0].GetType();
 
 			// If the value is a SqlTypeHandler, we know it's a SqlType and we can process it as such
 			if (typeof(SqlTypeHandler).IsAssignableFrom(rowType))
 			{
-				foreach (var row in processSqlTypes(rows))
+				foreach (var row in processSqlTypes(values))
 					yield return row;
 
 				yield break;
@@ -251,14 +249,14 @@ namespace unQuery
 			SqlTypeHandler implicitTypeHandler;
 			if (unQueryDB.ClrTypeHandlers.TryGetValue(rowType, out implicitTypeHandler))
 			{
-				foreach (var row in processImplicitTypes(rows, implicitTypeHandler))
+				foreach (var row in processImplicitTypes(values, implicitTypeHandler))
 					yield return row;
 
 				yield break;
 			}
 
 			// At this point we'll extract property values from the provided objects
-			foreach (var row in processObjects(rows))
+			foreach (var row in processObjects(values))
 				yield return row;
 		}
 

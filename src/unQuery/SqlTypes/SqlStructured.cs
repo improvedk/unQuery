@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace unQuery.SqlTypes
 {
@@ -19,10 +20,17 @@ namespace unQuery.SqlTypes
 
 		internal override SqlParameter GetParameter()
 		{
-			object value;
+			object value = null;
 
 			if (values != null)
-				value = new StructuredDynamicYielder(values);
+			{
+				// If there are no values, but it's not null per se, the value should simply not be set.
+				// Otherwise SQL Server chokes on a non-null but empty TVP. A TVP is empty by default, if
+				// the value is not set.
+				var valuesList = values.ToList();
+				if (valuesList.Count > 0)
+					value = new StructuredDynamicYielder(valuesList);
+			}
 			else
 				value = DBNull.Value;
 
