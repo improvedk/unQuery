@@ -9,8 +9,8 @@ namespace unQuery
 	/// </summary>
 	public class BatchExecutor : IDisposable
 	{
-		private unQueryDB db;
-		private List<SqlCommand> commands;
+		private readonly unQueryDB db;
+		private readonly List<SqlCommand> commands;
 
 		internal BatchExecutor(unQueryDB db)
 		{
