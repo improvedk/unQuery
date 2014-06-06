@@ -343,7 +343,7 @@ namespace unQuery
 		private IEnumerable<dynamic> mapReaderRowsToObject(SqlDataReader reader)
 		{
 			int visibleFieldCount = reader.VisibleFieldCount;
-			var fieldMap = new Dictionary<string, int>(visibleFieldCount);
+			var fieldMap = new Dictionary<string, int>(visibleFieldCount, StringComparer.OrdinalIgnoreCase);
 
 			// First loop through each column and create map between the field name and storage array index
 			for (int i = 0; i < visibleFieldCount; i++)

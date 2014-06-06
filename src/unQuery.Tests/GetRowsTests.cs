@@ -45,15 +45,13 @@ namespace unQuery.Tests
 		}
 
 		[Test]
-		public void CaseSensitive()
+		public void CaseInsensitive()
 		{
 			var result = DB.GetRows("SELECT Age FROM Persons WHERE Name = @Name", new { Name = Col.NVarChar("Stefanie Alexander", 128) }).First();
 
 			Assert.AreEqual(55, result.Age);
-
-			object dummy;
-			Assert.Throws<ColumnDoesNotExistException>(() => dummy = result.age);
-			Assert.Throws<ColumnDoesNotExistException>(() => dummy = result.AGE);
+			Assert.AreEqual(55, result.age);
+			Assert.AreEqual(55, result.AGE);
 		}
 
 		[Test]
