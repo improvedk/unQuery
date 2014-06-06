@@ -31,85 +31,6 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Resets the type caches. This should only be used for testing purposes.
-		/// </summary>
-		internal static void ResetCache()
-		{
-			typeWriterCache = new ConcurrentDictionary<string, Action<object, object[]>>();
-			parameterAdderCache = new ConcurrentDictionary<Type, Action<SqlParameterCollection, object>>();
-		}
-
-		/// <summary>
-		/// Executes the batch and returns all rows from the single result set.
-		/// </summary>
-		private IList<dynamic> getRows(string sql, CommandBehavior behavior, object parameters, CommandType commandType)
-		{
-			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-			{
-				cmd.CommandType = commandType;
-
-				if (parameters != null)
-					AddParametersToCommand(cmd.Parameters, parameters);
-
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
-					return mapReaderRowsToObject(reader).ToList();
-			}
-		}
-
-		/// <summary>
-		/// Executes the batch and returns all rows from the single result set. Each row is mapped into a new instance of T, mapping the columns
-		/// to properties based on name matching.
-		/// </summary>
-		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters)
-		{
-			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-			{
-				if (parameters != null)
-					AddParametersToCommand(cmd.Parameters, parameters);
-
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
-				{
-					if (typeof(T).IsValueType || typeof(T) == typeof(string))
-						return mapReaderRowsToList<T>(reader);
-					else
-						return mapReaderRowsToType(reader, Activator.CreateInstance<T>).ToList();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Takes each row of a datareader and returns a list of the values in the first column.
-		/// </summary>
-		private IList<T> mapReaderRowsToList<T>(SqlDataReader reader)
-		{
-			var list = new List<T>();
-			bool first = true;
-
-			while (reader.Read())
-			{
-				// Verify result set on first iteration
-				if (first)
-				{
-					if (reader.VisibleFieldCount > 1)
-						throw new MoreThanOneColumnException();
-
-					first = false;
-				}
-
-				object value = reader.GetValue(0);
-
-				if (value == DBNull.Value)
-					list.Add(default(T));
-				else
-					list.Add((T)value);
-			}
-
-			return list;
-		}
-
-		/// <summary>
 		/// Executes the batch and returns all rows from the single result set.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
@@ -219,171 +140,20 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Maps each row into a new instance of T, mapping columns to properties based on the name.
+		/// Returns a raw and open SqlConnection for manual use.
 		/// </summary>
-		private IEnumerable<T> mapReaderRowsToType<T>(SqlDataReader reader, Func<T> typeCreator)
+		public SqlConnection GetOpenConnection()
 		{
-			int visibleFieldCount = reader.VisibleFieldCount;
-			
-			string schemaIdentifier = "";
-			for (int i = 0; i < visibleFieldCount; i++)
-				schemaIdentifier += reader.GetName(i) + ",";
-
-			string typeWriterIdentifier = typeof(T) + ";" + schemaIdentifier;
-
-			Action<object, object[]> typeWriter;
-			if (!typeWriterCache.TryGetValue(typeWriterIdentifier, out typeWriter))
-			{
-				var type = typeof(T);
-				PropertyInfo[] properties = type.GetProperties();
-
-				var schema = reader.GetSchemaTable().AsEnumerable().Select(x => new {
-					Name = x.Field<string>("ColumnName"),
-					Ordinal = x.Field<int>("ColumnOrdinal")
-				});
-				 
-				// If there are no properties on the type, it doesn't make sense to use it here
-				if (properties.Length == 0)
-					throw new ObjectHasNoPropertiesException("Can't use a type with no properties.");
-		
-				var dm = new DynamicMethod("SetProperties", typeof(void), new[] { typeof(object), typeof(object[]) }, true);
-				var il = dm.GetILGenerator();
-
-				// First we'll want to cast the object value into the type of the actual value and store it as a local variable
-				il.DeclareLocal(type); // []
-				il.Emit(OpCodes.Ldarg_0); // [object]
-				il.Emit(OpCodes.Castclass, type); // [object]
-				il.Emit(OpCodes.Stloc_0); // []
-				
-				foreach (var prop in properties)
-				{
-					var endLabel = il.DefineLabel();
-					var propColumns = schema.Where(x => string.Equals(prop.Name, x.Name, StringComparison.InvariantCultureIgnoreCase)).ToList();
-
-					// If property doesn't have a matching column, skip it
-					if (propColumns.Count == 0)
-						continue;
-
-					// If more than one column shares the same property name, we have to throw
-					if (propColumns.Count > 1)
-						throw new DuplicateColumnException(prop.Name);
-
-					// Get the single column
-					var propColumn = propColumns.Single();
-
-					// Load the values
-					il.Emit(OpCodes.Ldarg_1); // [values[]]
-
-					// Load the column ordinal
-					il.Emit(OpCodes.Ldc_I4, propColumn.Ordinal); // [values[], ordinal]
-
-					// Load a reference to the value element
-					il.Emit(OpCodes.Ldelem_Ref); // [value_ref]
-
-					// Load DBNull.Value
-					il.Emit(OpCodes.Ldsfld, typeof(DBNull).GetField("Value")); // [values_ref, DBNull.Value]
-
-					// Compare the values - resulting in 0 or 1 being pushed onto the stack
-					il.Emit(OpCodes.Ceq); // [0/1]
-
-					// If it's null , skip setting the value
-					il.Emit(OpCodes.Brtrue, endLabel); // []
-
-					// Begin a try {} block
-					il.BeginExceptionBlock();
-
-					// Load the type object
-					il.Emit(OpCodes.Ldloc_0); // [object]
-
-					// Load the element reference
-					il.Emit(OpCodes.Ldarg_1); // [object, values[]]
-					il.Emit(OpCodes.Ldc_I4, propColumn.Ordinal); // [object, values[], ordinal]
-					il.Emit(OpCodes.Ldelem_Ref); // [object, value_ref]
-
-					// Unbox the value & set the value
-					il.Emit(OpCodes.Unbox_Any, prop.PropertyType); // [object, value]
-					il.Emit(OpCodes.Callvirt, prop.GetSetMethod(true)); // []
-
-					// If we succeeded in setting the value, skip to the end of the method
-					il.Emit(OpCodes.Leave, endLabel);
-					
-					// Catch an InvalidCastException
-					il.BeginCatchBlock(typeof(InvalidCastException)); // [ex]
-					
-					// Pop the actual exception
-					il.Emit(OpCodes.Pop); // []
-
-					// Throw TypeMismatchException with details
-					string errorMessage = "Property '" + prop.Name + "' with type '" + prop.PropertyType + "' does not match column with the same name.";
-					il.Emit(OpCodes.Ldstr, errorMessage); // [errorMessage]
-					il.Emit(OpCodes.Newobj, typeof(TypeMismatchException).GetConstructor(new[] { typeof(string) })); // [ex]
-					il.Emit(OpCodes.Throw); // []
-
-					// Exit the catch block and fall through to the end of the method
-					il.EndExceptionBlock();
-
-					// Marks the end of this property's value setting
-					il.MarkLabel(endLabel);
-				}
-				
-				// Return
-				il.Emit(OpCodes.Ret);
-
-				// Add it to the cache
-				typeWriter = (Action<object, object[]>)dm.CreateDelegate(typeof(Action<object, object[]>));
-				typeWriterCache.AddOrUpdate(typeWriterIdentifier, typeWriter, (k, v) => v);
-			}
-
-			while (reader.Read())
-			{
-				var values = new object[visibleFieldCount];
-				reader.GetValues(values);
-
-				var row = typeCreator();
-				typeWriter(row, values);
-
-				yield return row;
-			}
+			return getConnection();
 		}
 
 		/// <summary>
-		/// Maps any number of rows to dynamic objects
+		/// Resets the type caches. This should only be used for testing purposes.
 		/// </summary>
-		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
-		private IEnumerable<dynamic> mapReaderRowsToObject(SqlDataReader reader)
+		internal static void ResetCache()
 		{
-			int visibleFieldCount = reader.VisibleFieldCount;
-			var fieldMap = new Dictionary<string, int>(visibleFieldCount, StringComparer.OrdinalIgnoreCase);
-
-			// First loop through each column and create map between the field name and storage array index
-			for (int i = 0; i < visibleFieldCount; i++)
-			{
-				string fieldName = reader.GetName(i);
-				
-				if (string.IsNullOrWhiteSpace(fieldName))
-					throw new UnnamedColumnException(i);
-
-				try
-				{
-					fieldMap.Add(reader.GetName(i), i);
-				}
-				catch (ArgumentException)
-				{
-					throw new DuplicateColumnException(fieldName);
-				}
-			}
-
-			while (reader.Read())
-			{
-				var obj = new object[visibleFieldCount];
-				reader.GetValues(obj);
-
-				for (int i = 0; i < visibleFieldCount; i++)
-					if (obj[i] is DBNull)
-						obj[i] = null;
-				
-				yield return new DynamicRow(obj, fieldMap);
-			}
+			typeWriterCache = new ConcurrentDictionary<string, Action<object, object[]>>();
+			parameterAdderCache = new ConcurrentDictionary<Type, Action<SqlParameterCollection, object>>();
 		}
 
 		/// <summary>
@@ -521,7 +291,7 @@ namespace unQuery
 							il.Emit(OpCodes.Call, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
 							il.Emit(OpCodes.Ldarg_0); // Load the param collection [paramCollection]
 							il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter [paramCollection, param]
-							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] {typeof(SqlParameter)})); // Add the parameter to the collection [param]
+							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
 							il.Emit(OpCodes.Pop); // Get rid of the added parameter, as returned by SqlParameterCollection.Add []
 						}
 						else
@@ -532,8 +302,8 @@ namespace unQuery
 							il.Emit(OpCodes.Ldloc_0); // Load the object [paramCollection, typeHandler, paramName, object]
 							il.Emit(OpCodes.Call, prop.GetGetMethod()); // Get the property value [paramCollection, typeHandler, paramName, value]
 							il.Emit(OpCodes.Box, prop.PropertyType); // Box the value [paramCollection, typeHandler, paramName, boxedValue]
-							il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] {typeof(string), typeof(object)}, null)); // Let the type handler create the param [paramCollection, param]
-							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] {typeof(SqlParameter)})); // Add the parameter to the collection [param]
+							il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(string), typeof(object) }, null)); // Let the type handler create the param [paramCollection, param]
+							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
 							il.Emit(OpCodes.Pop); // Get rid of the param as we don't need it anymore []*/
 						}
 					}
@@ -542,7 +312,7 @@ namespace unQuery
 					il.Emit(OpCodes.Ret);
 
 					// Add it to the cache
-					parameterAdder = (Action<SqlParameterCollection, object>) dm.CreateDelegate(typeof(Action<SqlParameterCollection, object>));
+					parameterAdder = (Action<SqlParameterCollection, object>)dm.CreateDelegate(typeof(Action<SqlParameterCollection, object>));
 					parameterAdderCache.AddOrUpdate(paramType, parameterAdder, (k, v) => v);
 				}
 			}
@@ -553,11 +323,242 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Returns a raw and open SqlConnection for manual use.
+		/// Executes the batch and returns all rows from the single result set.
 		/// </summary>
-		public SqlConnection GetOpenConnection()
+		private IList<dynamic> getRows(string sql, CommandBehavior behavior, object parameters, CommandType commandType)
 		{
-			return getConnection();
+			using (var conn = getConnection())
+			using (var cmd = new SqlCommand(sql, conn))
+			{
+				cmd.CommandType = commandType;
+
+				if (parameters != null)
+					AddParametersToCommand(cmd.Parameters, parameters);
+
+				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
+					return mapReaderRowsToObject(reader).ToList();
+			}
+		}
+
+		/// <summary>
+		/// Executes the batch and returns all rows from the single result set. Each row is mapped into a new instance of T, mapping the columns
+		/// to properties based on name matching.
+		/// </summary>
+		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters)
+		{
+			using (var conn = getConnection())
+			using (var cmd = new SqlCommand(sql, conn))
+			{
+				if (parameters != null)
+					AddParametersToCommand(cmd.Parameters, parameters);
+
+				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
+				{
+					if (typeof(T).IsValueType || typeof(T) == typeof(string))
+						return mapReaderRowsToList<T>(reader);
+					else
+						return mapReaderRowsToType(reader, Activator.CreateInstance<T>).ToList();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Takes each row of a datareader and returns a list of the values in the first column.
+		/// </summary>
+		private IList<T> mapReaderRowsToList<T>(SqlDataReader reader)
+		{
+			var list = new List<T>();
+			bool first = true;
+
+			while (reader.Read())
+			{
+				// Verify result set on first iteration
+				if (first)
+				{
+					if (reader.VisibleFieldCount > 1)
+						throw new MoreThanOneColumnException();
+
+					first = false;
+				}
+
+				object value = reader.GetValue(0);
+
+				if (value == DBNull.Value)
+					list.Add(default(T));
+				else
+					list.Add((T)value);
+			}
+
+			return list;
+		}
+
+		/// <summary>
+		/// Maps each row into a new instance of T, mapping columns to properties based on the name.
+		/// </summary>
+		private IEnumerable<T> mapReaderRowsToType<T>(SqlDataReader reader, Func<T> typeCreator)
+		{
+			int visibleFieldCount = reader.VisibleFieldCount;
+
+			string schemaIdentifier = "";
+			for (int i = 0; i < visibleFieldCount; i++)
+				schemaIdentifier += reader.GetName(i) + ",";
+
+			string typeWriterIdentifier = typeof(T) + ";" + schemaIdentifier;
+
+			Action<object, object[]> typeWriter;
+			if (!typeWriterCache.TryGetValue(typeWriterIdentifier, out typeWriter))
+			{
+				var type = typeof(T);
+				PropertyInfo[] properties = type.GetProperties();
+
+				var schema = reader.GetSchemaTable().AsEnumerable().Select(x => new
+				{
+					Name = x.Field<string>("ColumnName"),
+					Ordinal = x.Field<int>("ColumnOrdinal")
+				});
+
+				// If there are no properties on the type, it doesn't make sense to use it here
+				if (properties.Length == 0)
+					throw new ObjectHasNoPropertiesException("Can't use a type with no properties.");
+
+				var dm = new DynamicMethod("SetProperties", typeof(void), new[] { typeof(object), typeof(object[]) }, true);
+				var il = dm.GetILGenerator();
+
+				// First we'll want to cast the object value into the type of the actual value and store it as a local variable
+				il.DeclareLocal(type); // []
+				il.Emit(OpCodes.Ldarg_0); // [object]
+				il.Emit(OpCodes.Castclass, type); // [object]
+				il.Emit(OpCodes.Stloc_0); // []
+
+				foreach (var prop in properties)
+				{
+					var endLabel = il.DefineLabel();
+					var propColumns = schema.Where(x => string.Equals(prop.Name, x.Name, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+					// If property doesn't have a matching column, skip it
+					if (propColumns.Count == 0)
+						continue;
+
+					// If more than one column shares the same property name, we have to throw
+					if (propColumns.Count > 1)
+						throw new DuplicateColumnException(prop.Name);
+
+					// Get the single column
+					var propColumn = propColumns.Single();
+
+					// Load the values
+					il.Emit(OpCodes.Ldarg_1); // [values[]]
+
+					// Load the column ordinal
+					il.Emit(OpCodes.Ldc_I4, propColumn.Ordinal); // [values[], ordinal]
+
+					// Load a reference to the value element
+					il.Emit(OpCodes.Ldelem_Ref); // [value_ref]
+
+					// Load DBNull.Value
+					il.Emit(OpCodes.Ldsfld, typeof(DBNull).GetField("Value")); // [values_ref, DBNull.Value]
+
+					// Compare the values - resulting in 0 or 1 being pushed onto the stack
+					il.Emit(OpCodes.Ceq); // [0/1]
+
+					// If it's null , skip setting the value
+					il.Emit(OpCodes.Brtrue, endLabel); // []
+
+					// Begin a try {} block
+					il.BeginExceptionBlock();
+
+					// Load the type object
+					il.Emit(OpCodes.Ldloc_0); // [object]
+
+					// Load the element reference
+					il.Emit(OpCodes.Ldarg_1); // [object, values[]]
+					il.Emit(OpCodes.Ldc_I4, propColumn.Ordinal); // [object, values[], ordinal]
+					il.Emit(OpCodes.Ldelem_Ref); // [object, value_ref]
+
+					// Unbox the value & set the value
+					il.Emit(OpCodes.Unbox_Any, prop.PropertyType); // [object, value]
+					il.Emit(OpCodes.Callvirt, prop.GetSetMethod(true)); // []
+
+					// If we succeeded in setting the value, skip to the end of the method
+					il.Emit(OpCodes.Leave, endLabel);
+
+					// Catch an InvalidCastException
+					il.BeginCatchBlock(typeof(InvalidCastException)); // [ex]
+
+					// Pop the actual exception
+					il.Emit(OpCodes.Pop); // []
+
+					// Throw TypeMismatchException with details
+					string errorMessage = "Property '" + prop.Name + "' with type '" + prop.PropertyType + "' does not match column with the same name.";
+					il.Emit(OpCodes.Ldstr, errorMessage); // [errorMessage]
+					il.Emit(OpCodes.Newobj, typeof(TypeMismatchException).GetConstructor(new[] { typeof(string) })); // [ex]
+					il.Emit(OpCodes.Throw); // []
+
+					// Exit the catch block and fall through to the end of the method
+					il.EndExceptionBlock();
+
+					// Marks the end of this property's value setting
+					il.MarkLabel(endLabel);
+				}
+
+				// Return
+				il.Emit(OpCodes.Ret);
+
+				// Add it to the cache
+				typeWriter = (Action<object, object[]>)dm.CreateDelegate(typeof(Action<object, object[]>));
+				typeWriterCache.AddOrUpdate(typeWriterIdentifier, typeWriter, (k, v) => v);
+			}
+
+			while (reader.Read())
+			{
+				var values = new object[visibleFieldCount];
+				reader.GetValues(values);
+
+				var row = typeCreator();
+				typeWriter(row, values);
+
+				yield return row;
+			}
+		}
+
+		/// <summary>
+		/// Maps any number of rows to dynamic objects
+		/// </summary>
+		/// <param name="reader">The SqlDataReader from which the schema & values should be read.</param>
+		private IEnumerable<dynamic> mapReaderRowsToObject(SqlDataReader reader)
+		{
+			int visibleFieldCount = reader.VisibleFieldCount;
+			var fieldMap = new Dictionary<string, int>(visibleFieldCount, StringComparer.OrdinalIgnoreCase);
+
+			// First loop through each column and create map between the field name and storage array index
+			for (int i = 0; i < visibleFieldCount; i++)
+			{
+				string fieldName = reader.GetName(i);
+
+				if (string.IsNullOrWhiteSpace(fieldName))
+					throw new UnnamedColumnException(i);
+
+				try
+				{
+					fieldMap.Add(reader.GetName(i), i);
+				}
+				catch (ArgumentException)
+				{
+					throw new DuplicateColumnException(fieldName);
+				}
+			}
+
+			while (reader.Read())
+			{
+				var obj = new object[visibleFieldCount];
+				reader.GetValues(obj);
+
+				for (int i = 0; i < visibleFieldCount; i++)
+					if (obj[i] is DBNull)
+						obj[i] = null;
+
+				yield return new DynamicRow(obj, fieldMap);
+			}
 		}
 
 		/// <summary>
