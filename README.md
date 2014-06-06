@@ -16,6 +16,8 @@ GetScalar is used when you want to return the value of the first column in the f
 int numberOfUsers = DB.GetScalar<int>("SELECT COUNT(*) FROM Users");
 ```
 
+If no matching row is found, a ```NoRowsException``` is thrown.
+
 ### GetRow
 
 GetRow is used when you want to return a single row of data. The result is a dynamic object with all the columns available as properties.
@@ -25,6 +27,8 @@ var user = DB.GetRow("SELECT TOP 1 Name, Age FROM Users");
 
 Console.WriteLine(user.Name + " (" + user.Age + " years old)");
 ```
+
+If no matching row is found, ```null``` is returned.
 
 ### GetRows
 
