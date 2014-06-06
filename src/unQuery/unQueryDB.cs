@@ -47,9 +47,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public IList<T> GetRows<T>(string sql, object parameters = null)
+		/// <param name="commandType">The type of command to execute</param>
+		public IList<T> GetRows<T>(string sql, object parameters = null, CommandType commandType = CommandType.Text)
 		{
-			return getRows<T>(sql, CommandBehavior.Default, parameters);
+			return getRows<T>(sql, CommandBehavior.Default, parameters, commandType);
 		}
 
 		/// <summary>
@@ -70,9 +71,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public T GetRow<T>(string sql, object parameters = null) where T : new()
+		/// <param name="commandType">The type of command to execute</param>
+		public T GetRow<T>(string sql, object parameters = null, CommandType commandType = CommandType.Text) where T : new()
 		{
-			return getRows<T>(sql, CommandBehavior.SingleResult | CommandBehavior.SingleRow, parameters).FirstOrDefault();
+			return getRows<T>(sql, CommandBehavior.SingleResult | CommandBehavior.SingleRow, parameters, commandType).FirstOrDefault();
 		}
 
 		/// <summary>
@@ -344,11 +346,13 @@ namespace unQuery
 		/// Executes the batch and returns all rows from the single result set. Each row is mapped into a new instance of T, mapping the columns
 		/// to properties based on name matching.
 		/// </summary>
-		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters)
+		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters, CommandType commandType)
 		{
 			using (var conn = getConnection())
 			using (var cmd = new SqlCommand(sql, conn))
 			{
+				cmd.CommandType = commandType;
+
 				if (parameters != null)
 					AddParametersToCommand(cmd.Parameters, parameters);
 
