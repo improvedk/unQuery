@@ -1,11 +1,24 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery.Tests
 {
 	public class GetScalarTests : TestFixture
 	{
+		[Test]
+		public void StoredProcedure()
+		{
+			DB.Execute("CREATE PROCEDURE usp_Test @A int AS SELECT @A AS A");
+
+			var result = DB.GetScalar<int>("usp_Test", new {
+				A = 26
+			}, commandType: CommandType.StoredProcedure);
+
+			Assert.AreEqual(26, result);
+		}
+
 		[Test]
 		public void ValueWithParameter()
 		{

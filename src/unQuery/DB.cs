@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery
@@ -32,9 +33,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static IList<dynamic> GetRows(string sql, object parameters = null)
+		/// <param name="commandType">The type of command to execute</param>
+		public static IList<dynamic> GetRows(string sql, object parameters = null, CommandType commandType = CommandType.Text)
 		{
-			return db.GetRows(sql, parameters);
+			return db.GetRows(sql, parameters, commandType: commandType);
 		}
 
 		/// <summary>
@@ -47,16 +49,17 @@ namespace unQuery
 		{
 			return db.GetRows<T>(sql, parameters);
 		}
-		
+
 		/// <summary>
 		/// Executes the batch and returns a single row of data. If more than one row is is returned from the database,
 		/// all but the first will be discarded.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static dynamic GetRow(string sql, object parameters = null)
+		/// <param name="commandType">The type of command to execute</param>
+		public static dynamic GetRow(string sql, object parameters = null, CommandType commandType = CommandType.Text)
 		{
-			return db.GetRow(sql, parameters);
+			return db.GetRow(sql, parameters, commandType: commandType);
 		}
 
 		/// <summary>
@@ -75,10 +78,11 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
+		/// <param name="commandType">The type of command to execute</param>
 		/// <exception cref="NoRowsException" />
-		public static T GetScalar<T>(string sql, object parameters = null)
+		public static T GetScalar<T>(string sql, object parameters = null, CommandType commandType = CommandType.Text)
 		{
-			return db.GetScalar<T>(sql, parameters);
+			return db.GetScalar<T>(sql, parameters, commandType: commandType);
 		}
 
 		/// <summary>
@@ -86,9 +90,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static int Execute(string sql, object parameters = null)
+		/// <param name="commandType">The type of command to execute</param>
+		public static int Execute(string sql, object parameters = null, CommandType commandType = CommandType.Text)
 		{
-			return db.Execute(sql, parameters);
+			return db.Execute(sql, parameters, commandType: commandType);
 		}
 
 		/// <summary>

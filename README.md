@@ -279,6 +279,29 @@ var rows = db.GetRows("SELECT * FROM @Input", new {
 });
 ```
 
+## Stored Procedures
+
+All access methods support invoking stored procedures with input parameters. Output, InputOutput and ReturnValue parameters are not yet supported.
+
+```
+// Execute
+DB.Execute("sp_rename", new {
+	objname = "CurrentTableName",
+	newname = "NewTableName"
+}, commandType: CommandType.StoredProcedure);
+
+// GetScalar
+var value = DB.GetScalar<int>("uspGetCustomerCount", commandType: CommandType.StoredProcedure);
+
+// GetRow
+var row = DB.GetRow("uspGetCustomerById", new {
+	CustomerID = 123
+}, commandType: CommandType.StoredProcedure);
+
+// GetRows
+var rows = DB.GetRows("uspGetAllCustomers", commandType: CommandType.StoredProcedure);
+```
+
 ## Batch Execution
 
 If you have a single statement you want executed many times, with different parameter values, or if you have a series of distinct statements with unique parameters for each, unQuery allows you to execute batches efficiently.

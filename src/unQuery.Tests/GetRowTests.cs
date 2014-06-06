@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using unQuery.SqlTypes;
 
@@ -142,6 +143,18 @@ namespace unQuery.Tests
 		public class Types_PrivateSetter
 		{
 			public int A { get; private set; }
+		}
+
+		[Test]
+		public void StoredProcedure()
+		{
+			DB.Execute("CREATE PROCEDURE usp_Test @A varchar(10) AS SELECT @A AS A");
+
+			var row = DB.GetRow("usp_Test", new {
+				A = Col.VarChar("A", 10)
+			}, commandType: CommandType.StoredProcedure);
+
+			Assert.AreEqual("A", row.A);
 		}
 
 		[Test]

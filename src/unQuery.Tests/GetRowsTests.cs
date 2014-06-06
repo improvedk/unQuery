@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using unQuery.SqlTypes;
 
@@ -17,6 +18,21 @@ namespace unQuery.Tests
 			public DateTime? SignedUp { get; set; }
 		}
 
+		[Test]
+		public void StoredProcedure()
+		{
+			DB.Execute("CREATE PROCEDURE usp_Test @A int AS SELECT @A AS A UNION ALL SELECT 37 AS A");
+
+			var rows = DB.GetRows("usp_Test", new {
+				A = 25
+			}, commandType: CommandType.StoredProcedure);
+
+			Assert.AreEqual(2, rows.Count);
+			Assert.AreEqual(25, rows[0].A);
+			Assert.AreEqual(37, rows[1].A);
+		}
+
+		[Test]
 		public void Typed_Persons()
 		{
 			var persons = DB.GetRows<Typed_Person>("SELECT * FROM Persons WHERE PersonID IN (2, 5) ORDER BY PersonID ASC");

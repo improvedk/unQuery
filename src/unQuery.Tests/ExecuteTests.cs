@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Data;
+using NUnit.Framework;
 using System;
 using System.Data.SqlClient;
 using unQuery.SqlTypes;
@@ -8,13 +9,25 @@ namespace unQuery.Tests
 	public class ExecuteTests : TestFixture
 	{
 		[Test]
+		public void StoredProcedure()
+		{
+			DB.Execute("CREATE TABLE XYZ (A int)");
+
+			DB.Execute("sp_rename", new {
+				objname = Col.NVarChar("XYZ"),
+				newname = Col.NVarChar("ABC")
+			}, commandType: CommandType.StoredProcedure);
+
+			DB.Execute("DROP TABLE ABC");
+		}
+		
+		[Test]
 		public void EmptySql()
 		{
 			Assert.Throws<InvalidOperationException>(() => DB.Execute(""));
 
 			string x = null;
 			Assert.Throws<InvalidOperationException>(() => DB.Execute(x));
-
 		}
 
 		[Test]
