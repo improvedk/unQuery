@@ -119,7 +119,7 @@ unQuery supports almost all of the built-in types in SQL Server. Types that can 
 The table below shows which native .NET types can be automatically mapped to the equivalent SQL Server types, as well as how to use the Col factory class, for types that do not support auto-mapping.
 
 |SQL Server Type|Implicit .NET Type (C#)|Col Syntax|
-|---------------|:---------------------:|:---------|
+|:--------------|:---------------------:|:---------|
 |**bigint**|`long` / `long?`|`Col.BigInt(long? value)`|
 |**binary**|N/A|`Col.Binary(byte[] value)`<br/>`Col.Binary(byte[] value, int maxLength)`|
 |**bit**|`bool` / `bool?`|`Col.Bit(bool? value)`|
@@ -278,6 +278,27 @@ var rows = db.GetRows("SELECT * FROM @Input", new {
 	})
 });
 ```
+
+## Query Options
+
+Sometimes you may need to tweak the way a query is run. All access methods take an optional parameter named `options` that allows you to set a number of options that modify the query.
+
+```
+// For example, if you need to set a command timeout
+DB.Execute("DELETE FROM MyTable", options: new QueryOptions { CommandTimeout = 5 });
+
+// And you can of course combine options with parameters
+DB.Execute("DELETE FROM MyTable WHERE ID = @ID", new { ID = 25}, new QueryOptions {
+	CommandTimeout = 5
+});
+```
+
+For a full list of options, see the table below.
+
+|Option|Type|Description|
+|:-----|:--:|:----------|
+|CommandTimeout|`int`|*Sets the query execution timeout in seconds.*|
+|CommandType|`System.Data.CommandType`|*Sets the type of command to execute.*|
 
 ## Stored Procedures
 

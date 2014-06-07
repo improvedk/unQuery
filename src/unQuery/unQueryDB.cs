@@ -554,6 +554,9 @@ namespace unQuery
 			
 			if (options.CommandType != null)
 				cmd.CommandType = options.CommandType.Value;
+
+			if (options.CommandTimeout != null)
+				cmd.CommandTimeout = options.CommandTimeout.Value;
 			
 			return cmd;
 		}
