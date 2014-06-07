@@ -302,7 +302,7 @@ For a full list of options, see the table below.
 
 ## Stored Procedures
 
-All access methods support invoking stored procedures with input parameters. Output, InputOutput and ReturnValue parameters are not yet supported. All you need to do is to pass in a QueryOptions object with the ```CommandType``` property set to ```CommandType.StoredProcedure```.
+All access methods support invoking stored procedures with input parameters. Output, InputOutput and ReturnValue parameters are not yet supported. All you need to do is to pass in a QueryOptions object with the `CommandType` property set to `CommandType.StoredProcedure`.
 
 ```
 // Execute
@@ -312,7 +312,7 @@ DB.Execute("sp_rename", new {
 }, new QueryOptions { CommandType: CommandType.StoredProcedure });
 
 // GetScalar
-var value = DB.GetScalar<int>("uspGetCustomerCount", new QueryOptions {
+var value = DB.GetScalar<int>("uspGetCustomerCount", options: new QueryOptions {
 	CommandType: CommandType.StoredProcedure
 });
 
@@ -322,7 +322,7 @@ var row = DB.GetRow("uspGetCustomerById", new {
 }, new QueryOptions { CommandType: CommandType.StoredProcedure });
 
 // GetRows
-var rows = DB.GetRows("uspGetAllCustomers", new QueryOptions {
+var rows = DB.GetRows("uspGetAllCustomers", options: new QueryOptions {
 	CommandType: CommandType.StoredProcedure
 });
 ```
