@@ -14,5 +14,17 @@ namespace unQuery.Tests
 				CommandTimeout = 1
 			}));
 		}
+
+		[Test]
+		public void CommandType()
+		{
+			int rowCount = DB.GetRows("sp_server_info", new { Attribute_ID = 1 }).Count;
+			Assert.Greater(rowCount, 0);
+
+			rowCount = DB.GetRows("sp_server_info", new { Attribute_ID = 1 }, new QueryOptions {
+				CommandType = System.Data.CommandType.StoredProcedure
+			}).Count;
+			Assert.AreEqual(1, rowCount);
+		}
 	}
 }
