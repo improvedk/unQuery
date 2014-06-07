@@ -1,6 +1,6 @@
-﻿using System.Data;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using unQuery.SqlTypes;
 
@@ -16,8 +16,10 @@ namespace unQuery.Tests
 			DB.Execute("sp_rename", new {
 				objname = Col.NVarChar("XYZ"),
 				newname = Col.NVarChar("ABC")
-			}, commandType: CommandType.StoredProcedure);
-
+			}, new QueryOptions {
+				CommandType = CommandType.StoredProcedure
+			});
+			
 			DB.Execute("DROP TABLE ABC");
 		}
 		

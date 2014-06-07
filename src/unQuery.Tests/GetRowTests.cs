@@ -152,7 +152,9 @@ namespace unQuery.Tests
 
 			var row = DB.GetRow("usp_Test", new {
 				A = Col.VarChar("A", 10)
-			}, commandType: CommandType.StoredProcedure);
+			}, new QueryOptions {
+				CommandType = CommandType.StoredProcedure
+			});
 
 			Assert.AreEqual("A", row.A);
 		}

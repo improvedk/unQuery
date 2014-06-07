@@ -14,7 +14,9 @@ namespace unQuery.Tests
 
 			var result = DB.GetScalar<int>("usp_Test", new {
 				A = 26
-			}, commandType: CommandType.StoredProcedure);
+			}, new QueryOptions {
+				CommandType = CommandType.StoredProcedure
+			});
 
 			Assert.AreEqual(26, result);
 		}

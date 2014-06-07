@@ -281,25 +281,29 @@ var rows = db.GetRows("SELECT * FROM @Input", new {
 
 ## Stored Procedures
 
-All access methods support invoking stored procedures with input parameters. Output, InputOutput and ReturnValue parameters are not yet supported.
+All access methods support invoking stored procedures with input parameters. Output, InputOutput and ReturnValue parameters are not yet supported. All you need to do is to pass in a QueryOptions object with the ```CommandType``` property set to ```CommandType.StoredProcedure```.
 
 ```
 // Execute
 DB.Execute("sp_rename", new {
 	objname = "CurrentTableName",
 	newname = "NewTableName"
-}, commandType: CommandType.StoredProcedure);
+}, new QueryOptions { CommandType: CommandType.StoredProcedure });
 
 // GetScalar
-var value = DB.GetScalar<int>("uspGetCustomerCount", commandType: CommandType.StoredProcedure);
+var value = DB.GetScalar<int>("uspGetCustomerCount", new QueryOptions {
+	CommandType: CommandType.StoredProcedure
+});
 
 // GetRow
 var row = DB.GetRow("uspGetCustomerById", new {
 	CustomerID = 123
-}, commandType: CommandType.StoredProcedure);
+}, new QueryOptions { CommandType: CommandType.StoredProcedure });
 
 // GetRows
-var rows = DB.GetRows("uspGetAllCustomers", commandType: CommandType.StoredProcedure);
+var rows = DB.GetRows("uspGetAllCustomers", new QueryOptions {
+	CommandType: CommandType.StoredProcedure
+});
 ```
 
 ## Batch Execution

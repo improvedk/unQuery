@@ -35,10 +35,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
-		public IList<dynamic> GetRows(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		/// <param name="options">An optional set of query options</param>
+		public IList<dynamic> GetRows(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return getRows(sql, CommandBehavior.Default, parameters, commandType);
+			return getRows(sql, CommandBehavior.Default, parameters, options);
 		}
 
 		/// <summary>
@@ -47,10 +47,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
-		public IList<T> GetRows<T>(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		/// <param name="options">An optional set of query options</param>
+		public IList<T> GetRows<T>(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return getRows<T>(sql, CommandBehavior.Default, parameters, commandType);
+			return getRows<T>(sql, CommandBehavior.Default, parameters, options);
 		}
 
 		/// <summary>
@@ -59,10 +59,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
-		public dynamic GetRow(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		/// <param name="options">An optional set of query options</param>
+		public dynamic GetRow(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return getRows(sql, CommandBehavior.SingleRow, parameters, commandType).FirstOrDefault();
+			return getRows(sql, CommandBehavior.SingleRow, parameters, options).FirstOrDefault();
 		}
 
 		/// <summary>
@@ -71,10 +71,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
-		public T GetRow<T>(string sql, object parameters = null, CommandType commandType = CommandType.Text) where T : new()
+		/// <param name="options">An optional set of query options</param>
+		public T GetRow<T>(string sql, object parameters = null, QueryOptions options = null) where T : new()
 		{
-			return getRows<T>(sql, CommandBehavior.SingleResult | CommandBehavior.SingleRow, parameters, commandType).FirstOrDefault();
+			return getRows<T>(sql, CommandBehavior.SingleResult | CommandBehavior.SingleRow, parameters, options).FirstOrDefault();
 		}
 
 		/// <summary>
@@ -82,18 +82,13 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
+		/// <param name="options">An optional set of query options</param>
 		/// <exception cref="NoRowsException" />
-		public T GetScalar<T>(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		public T GetScalar<T>(string sql, object parameters = null, QueryOptions options = null)
 		{
 			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
+			using (var cmd = getCommand(sql, parameters, conn, options))
 			{
-				cmd.CommandType = commandType;
-
-				if (parameters != null)
-					AddParametersToCommand(cmd.Parameters, parameters);
-
 				object result = cmd.ExecuteScalar();
 
 				if (result == null)
@@ -118,19 +113,12 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute.</param>
-		public int Execute(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		/// <param name="options">An optional set of query options</param>
+		public int Execute(string sql, object parameters = null, QueryOptions options = null)
 		{
 			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-			{
-				cmd.CommandType = commandType;
-
-				if (parameters != null)
-					AddParametersToCommand(cmd.Parameters, parameters);
-
+			using (var cmd = getCommand(sql, parameters, conn, options))
 				return cmd.ExecuteNonQuery();
-			}
 		}
 
 		/// <summary>
@@ -327,42 +315,28 @@ namespace unQuery
 		/// <summary>
 		/// Executes the batch and returns all rows from the single result set.
 		/// </summary>
-		private IList<dynamic> getRows(string sql, CommandBehavior behavior, object parameters, CommandType commandType)
+		private IList<dynamic> getRows(string sql, CommandBehavior behavior, object parameters, QueryOptions options)
 		{
 			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
-			{
-				cmd.CommandType = commandType;
-
-				if (parameters != null)
-					AddParametersToCommand(cmd.Parameters, parameters);
-
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
-					return mapReaderRowsToObject(reader).ToList();
-			}
+			using (var cmd = getCommand(sql, parameters, conn, options))
+			using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
+				return mapReaderRowsToObject(reader).ToList();
 		}
 
 		/// <summary>
 		/// Executes the batch and returns all rows from the single result set. Each row is mapped into a new instance of T, mapping the columns
 		/// to properties based on name matching.
 		/// </summary>
-		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters, CommandType commandType)
+		private IList<T> getRows<T>(string sql, CommandBehavior behavior, object parameters, QueryOptions options)
 		{
 			using (var conn = getConnection())
-			using (var cmd = new SqlCommand(sql, conn))
+			using (var cmd = getCommand(sql, parameters, conn, options))
+			using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
 			{
-				cmd.CommandType = commandType;
-
-				if (parameters != null)
-					AddParametersToCommand(cmd.Parameters, parameters);
-
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SingleResult | behavior))
-				{
-					if (typeof(T).IsValueType || typeof(T) == typeof(string))
-						return mapReaderRowsToList<T>(reader);
-					else
-						return mapReaderRowsToType(reader, Activator.CreateInstance<T>).ToList();
-				}
+				if (typeof(T).IsValueType || typeof(T) == typeof(string))
+					return mapReaderRowsToList<T>(reader);
+				
+				return mapReaderRowsToType(reader, Activator.CreateInstance<T>).ToList();
 			}
 		}
 
@@ -563,6 +537,25 @@ namespace unQuery
 
 				yield return new DynamicRow(obj, fieldMap);
 			}
+		}
+
+		/// <summary>
+		/// Creates and returns a SqlCommand adhering to the provided options
+		/// </summary>
+		private SqlCommand getCommand(string sql, object parameters, SqlConnection conn, QueryOptions options)
+		{
+			var cmd = new SqlCommand(sql, conn);
+
+			if (parameters != null)
+				AddParametersToCommand(cmd.Parameters, parameters);
+
+			if (options == null)
+				return cmd;
+			
+			if (options.CommandType != null)
+				cmd.CommandType = options.CommandType.Value;
+			
+			return cmd;
 		}
 
 		/// <summary>

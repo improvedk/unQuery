@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace unQuery
@@ -33,10 +32,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
-		public static IList<dynamic> GetRows(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		/// <param name="options">An optional set of query options</param>
+		public static IList<dynamic> GetRows(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return db.GetRows(sql, parameters, commandType: commandType);
+			return db.GetRows(sql, parameters, options);
 		}
 
 		/// <summary>
@@ -45,9 +44,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static IList<T> GetRows<T>(string sql, object parameters = null)
+		/// <param name="options">An optional set of query options</param>
+		public static IList<T> GetRows<T>(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return db.GetRows<T>(sql, parameters);
+			return db.GetRows<T>(sql, parameters, options);
 		}
 
 		/// <summary>
@@ -56,10 +56,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
-		public static dynamic GetRow(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		/// <param name="options">An optional set of query options</param>
+		public static dynamic GetRow(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return db.GetRow(sql, parameters, commandType: commandType);
+			return db.GetRow(sql, parameters, options);
 		}
 
 		/// <summary>
@@ -68,9 +68,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		public static T GetRow<T>(string sql, object parameters = null) where T : new()
+		/// <param name="options">An optional set of query options</param>
+		public static T GetRow<T>(string sql, object parameters = null, QueryOptions options = null) where T : new()
 		{
-			return db.GetRow<T>(sql, parameters);
+			return db.GetRow<T>(sql, parameters, options);
 		}
 
 		/// <summary>
@@ -78,11 +79,11 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
+		/// <param name="options">An optional set of query options</param>
 		/// <exception cref="NoRowsException" />
-		public static T GetScalar<T>(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		public static T GetScalar<T>(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return db.GetScalar<T>(sql, parameters, commandType: commandType);
+			return db.GetScalar<T>(sql, parameters, options);
 		}
 
 		/// <summary>
@@ -90,10 +91,10 @@ namespace unQuery
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
 		/// <param name="parameters">Anonymous object providing parameters for the query.</param>
-		/// <param name="commandType">The type of command to execute</param>
-		public static int Execute(string sql, object parameters = null, CommandType commandType = CommandType.Text)
+		/// <param name="options">An optional set of query options</param>
+		public static int Execute(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return db.Execute(sql, parameters, commandType: commandType);
+			return db.Execute(sql, parameters, options);
 		}
 
 		/// <summary>

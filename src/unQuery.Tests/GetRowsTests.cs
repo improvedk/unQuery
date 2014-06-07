@@ -25,7 +25,9 @@ namespace unQuery.Tests
 
 			var rows = DB.GetRows("usp_Test", new {
 				A = 25
-			}, commandType: CommandType.StoredProcedure);
+			}, new QueryOptions {
+				CommandType = CommandType.StoredProcedure
+			});
 
 			Assert.AreEqual(2, rows.Count);
 			Assert.AreEqual(25, rows[0].A);
