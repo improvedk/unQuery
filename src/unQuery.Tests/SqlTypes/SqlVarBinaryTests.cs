@@ -27,10 +27,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlVarBinary.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlVarBinary(data);
+			SqlTypeHandler col = new SqlVarBinary(data, null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlVarBinary(data, 10);
+			col = new SqlVarBinary(data, 10, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.VarBinary, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -40,19 +40,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(data, 10)).GetParameter(), SqlDbType.VarBinary, data, size: 10);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(null, 5)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 5);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(data)).GetParameter(), SqlDbType.VarBinary, data, size: 64);
-			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(null)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 64);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(data, 10, ParameterDirection.Input)).GetParameter(), SqlDbType.VarBinary, data, size: 10);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(null, 5, ParameterDirection.Input)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 5);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(data, null, ParameterDirection.Input)).GetParameter(), SqlDbType.VarBinary, data, size: 64);
+			TestHelper.AssertSqlParameter(((SqlType)new SqlVarBinary(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.VarBinary, DBNull.Value, size: 64);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlVarBinary(data, 10);
+			SqlType type = new SqlVarBinary(data, 10, ParameterDirection.Input);
 			Assert.AreEqual(data, type.GetRawValue());
 
-			type = new SqlVarBinary(null, 10);
+			type = new SqlVarBinary(null, 10, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

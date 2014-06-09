@@ -32,20 +32,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlInt(5);
+			SqlType type = new SqlInt(5, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Int, 5);
 
-			type = new SqlInt(null);
+			type = new SqlInt(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Int, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlInt(5);
+			SqlType type = new SqlInt(5, ParameterDirection.Input);
 			Assert.AreEqual(5, type.GetRawValue());
 
-			type = new SqlInt(null);
+			type = new SqlInt(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

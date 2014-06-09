@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.SmallMoney)
 		{ }
 
-		public SqlSmallMoney(decimal? value) :
-			base(value, SqlDbType.SmallMoney)
+		internal SqlSmallMoney(decimal? value, ParameterDirection direction) :
+			base(value, SqlDbType.SmallMoney, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlSmallMoney();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetDecimal(ordinal, Value.Value);
+				record.SetDecimal(ordinal, InputValue.Value);
 		}
 	}
 }

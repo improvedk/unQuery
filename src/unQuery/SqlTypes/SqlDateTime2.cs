@@ -10,12 +10,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.DateTime2)
 		{ }
 
-		public SqlDateTime2(DateTime? value) :
-			base(value, null, SqlDbType.DateTime2)
-		{ }
-
-		public SqlDateTime2(DateTime? value, byte scale) :
-			base(value, scale, SqlDbType.DateTime2)
+		internal SqlDateTime2(DateTime? value, byte? scale, ParameterDirection direction) :
+			base(value, scale, SqlDbType.DateTime2, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlDateTime2();
@@ -26,10 +22,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetDateTime(ordinal, Value.Value);
+				record.SetDateTime(ordinal, InputValue.Value);
 		}
 	}
 }

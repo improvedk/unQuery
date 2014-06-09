@@ -25,10 +25,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNVarChar.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlNVarChar("Test");
+			SqlTypeHandler col = new SqlNVarChar("Test", null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlNVarChar("Test", 10);
+			col = new SqlNVarChar("Test", 10, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.NVarChar, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -38,20 +38,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlNVarChar("Hello рæøåсски", 20)).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 20);
-			TestHelper.AssertSqlParameter((new SqlNVarChar(null, 10)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter((new SqlNVarChar("Hello рæøåсски")).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 64);
-			TestHelper.AssertSqlParameter((new SqlNVarChar("Hello рæøåсски".PadRight(200, ' '))).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски".PadRight(200, ' '), size: 256);
-			TestHelper.AssertSqlParameter((new SqlNVarChar(null)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 64);
+			TestHelper.AssertSqlParameter((new SqlNVarChar("Hello рæøåсски", 20, ParameterDirection.Input)).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 20);
+			TestHelper.AssertSqlParameter((new SqlNVarChar(null, 10, ParameterDirection.Input)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter((new SqlNVarChar("Hello рæøåсски", null, ParameterDirection.Input)).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски", size: 64);
+			TestHelper.AssertSqlParameter((new SqlNVarChar("Hello рæøåсски".PadRight(200, ' '), null, ParameterDirection.Input)).GetParameter(), SqlDbType.NVarChar, "Hello рæøåсски".PadRight(200, ' '), size: 256);
+			TestHelper.AssertSqlParameter((new SqlNVarChar(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.NVarChar, DBNull.Value, size: 64);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlNVarChar("Hello ру́сский", 15);
+			SqlType type = new SqlNVarChar("Hello ру́сский", 15, ParameterDirection.Input);
 			Assert.AreEqual("Hello ру́сский", type.GetRawValue());
 
-			type = new SqlNVarChar(null, 15);
+			type = new SqlNVarChar(null, 15, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

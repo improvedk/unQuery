@@ -6,6 +6,8 @@ namespace unQuery.SqlTypes
 {
 	public abstract class SqlType : SqlTypeHandler
 	{
+		protected SqlParameter Parameter;
+
 		protected object GetDBNullableValue(object value)
 		{
 			return value ?? DBNull.Value;

@@ -34,20 +34,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlUniqueIdentifier(guid);
+			SqlType type = new SqlUniqueIdentifier(guid, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, guid);
 
-			type = new SqlUniqueIdentifier(null);
+			type = new SqlUniqueIdentifier(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.UniqueIdentifier, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlUniqueIdentifier(guid);
+			SqlType type = new SqlUniqueIdentifier(guid, ParameterDirection.Input);
 			Assert.AreEqual(guid, type.GetRawValue());
 
-			type = new SqlUniqueIdentifier(null);
+			type = new SqlUniqueIdentifier(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

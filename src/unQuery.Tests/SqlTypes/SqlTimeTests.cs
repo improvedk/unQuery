@@ -27,10 +27,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlTime.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlTime(testValue);
+			SqlTypeHandler col = new SqlTime(testValue, null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlTime(testValue, 6);
+			col = new SqlTime(testValue, 6, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Time, meta.SqlDbType);
 			Assert.AreEqual(6, meta.Scale);
@@ -40,19 +40,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlTime(testValue, 2)).GetParameter(), SqlDbType.Time, testValue, scale: 2);
-			TestHelper.AssertSqlParameter((new SqlTime(null, 5)).GetParameter(), SqlDbType.Time, DBNull.Value, scale: 5);
-			TestHelper.AssertSqlParameter((new SqlTime(testValue)).GetParameter(), SqlDbType.Time, testValue, scale: 0);
-			TestHelper.AssertSqlParameter((new SqlTime(null)).GetParameter(), SqlDbType.Time, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter((new SqlTime(testValue, 2, ParameterDirection.Input)).GetParameter(), SqlDbType.Time, testValue, scale: 2);
+			TestHelper.AssertSqlParameter((new SqlTime(null, 5, ParameterDirection.Input)).GetParameter(), SqlDbType.Time, DBNull.Value, scale: 5);
+			TestHelper.AssertSqlParameter((new SqlTime(testValue, null, ParameterDirection.Input)).GetParameter(), SqlDbType.Time, testValue, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlTime(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.Time, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlTime(testValue, 2);
+			SqlType type = new SqlTime(testValue, 2, ParameterDirection.Input);
 			Assert.AreEqual(testValue, type.GetRawValue());
 
-			type = new SqlTime(null, 1);
+			type = new SqlTime(null, 1, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

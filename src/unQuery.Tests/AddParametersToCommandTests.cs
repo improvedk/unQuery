@@ -158,8 +158,8 @@ namespace unQuery.Tests
 			db.AddParametersToCommand(cmd.Parameters, new {
 				A = true,
 				B = Col.Bit(false),
-				C = new SqlSmallInt(null),
-				D = new SqlInt(5),
+				C = new SqlSmallInt(null, ParameterDirection.Input),
+				D = new SqlInt(5, ParameterDirection.Input),
 				E = Col.VarChar("Test", 10),
 				F = (bool?)null,
 				G = 5L,

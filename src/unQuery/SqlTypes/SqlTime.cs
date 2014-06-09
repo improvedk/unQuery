@@ -10,12 +10,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Time)
 		{ }
 
-		public SqlTime(TimeSpan? value) :
-			base(value, null, SqlDbType.Time)
-		{ }
-
-		public SqlTime(TimeSpan? value, byte scale) :
-			base(value, scale, SqlDbType.Time)
+		internal SqlTime(TimeSpan? value, byte? scale, ParameterDirection direction) :
+			base(value, scale, SqlDbType.Time, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlTime();
@@ -26,10 +22,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetTimeSpan(ordinal, Value.Value);
+				record.SetTimeSpan(ordinal, InputValue.Value);
 		}
 	}
 }

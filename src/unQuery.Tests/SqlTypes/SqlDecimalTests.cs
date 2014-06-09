@@ -25,10 +25,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDecimal.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlDecimal(5.27m);
+			SqlTypeHandler col = new SqlDecimal(5.27m, null, null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlDecimal(5.27m, 10, 5);
+			col = new SqlDecimal(5.27m, 10, 5, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Decimal, meta.SqlDbType);
 			Assert.AreEqual(10, meta.Precision);
@@ -39,19 +39,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlDecimal(5.27m, 10, 5)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
-			TestHelper.AssertSqlParameter((new SqlDecimal(null, 10, 5)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
-			TestHelper.AssertSqlParameter((new SqlDecimal(5.27m)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 3, scale: 2);
-			TestHelper.AssertSqlParameter((new SqlDecimal(null)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 0, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDecimal(5.27m, 10, 5, ParameterDirection.Input)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter((new SqlDecimal(null, 10, 5, ParameterDirection.Input)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 10, scale: 5);
+			TestHelper.AssertSqlParameter((new SqlDecimal(5.27m, null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.Decimal, 5.27m, precision: 3, scale: 2);
+			TestHelper.AssertSqlParameter((new SqlDecimal(null, null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.Decimal, DBNull.Value, precision: 0, scale: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlDecimal(5.27m, 10, 5);
+			SqlType type = new SqlDecimal(5.27m, 10, 5, ParameterDirection.Input);
 			Assert.AreEqual(5.27m, type.GetRawValue());
 
-			type = new SqlDecimal(null, 10, 5);
+			type = new SqlDecimal(null, 10, 5, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

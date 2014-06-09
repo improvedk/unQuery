@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Bit)
 		{ }
 
-		public SqlBit(bool? value) :
-			base(value, SqlDbType.Bit)
+		internal SqlBit(bool? value, ParameterDirection direction) :
+			base(value, SqlDbType.Bit, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlBit();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetBoolean(ordinal, Value.Value);
+				record.SetBoolean(ordinal, InputValue.Value);
 		}
 	}
 }

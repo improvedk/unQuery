@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Microsoft.SqlServer.Server;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 
 namespace unQuery.SqlTypes
 {
@@ -9,12 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Binary)
 		{ }
 
-		public SqlBinary(byte[] value) :
-			base(value, SqlDbType.Binary)
-		{ }
-
-		public SqlBinary(byte[] value, int maxLength) :
-			base(value, SqlDbType.Binary, maxLength: maxLength)
+		internal SqlBinary(byte[] value, int? maxLength, ParameterDirection direction) :
+			base(value, SqlDbType.Binary, direction, maxLength: maxLength)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlBinary();
@@ -25,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetBytes(ordinal, 0, Value, 0, Value.Length);
+				record.SetBytes(ordinal, 0, InputValue, 0, InputValue.Length);
 		}
 	}
 }

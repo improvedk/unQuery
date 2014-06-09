@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Microsoft.SqlServer.Server;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 
 namespace unQuery.SqlTypes
 {
@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Image)
 		{ }
 
-		public SqlImage(byte[] value) :
-			base(value, SqlDbType.Image, maxLength: -1)
+		internal SqlImage(byte[] value, ParameterDirection direction) :
+			base(value, SqlDbType.Image, direction, maxLength: -1)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlImage();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetBytes(ordinal, 0, Value, 0, Value.Length);
+				record.SetBytes(ordinal, 0, InputValue, 0, InputValue.Length);
 		}
 	}
 }

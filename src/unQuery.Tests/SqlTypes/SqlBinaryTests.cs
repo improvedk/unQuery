@@ -27,10 +27,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlBinary.GetTypeHandler().CreateMetaData(null));
 
-			SqlTypeHandler col = new SqlBinary(data);
+			SqlTypeHandler col = new SqlBinary(data, null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlBinary(data, 10);
+			col = new SqlBinary(data, 10, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Binary, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -40,19 +40,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlBinary(data, 10)).GetParameter(), SqlDbType.Binary, data, size: 10);
-			TestHelper.AssertSqlParameter((new SqlBinary(null, 10)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter((new SqlBinary(data)).GetParameter(), SqlDbType.Binary, data, size: data.Length);
-			TestHelper.AssertSqlParameter((new SqlBinary(null)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter((new SqlBinary(data, 10, ParameterDirection.Input)).GetParameter(), SqlDbType.Binary, data, size: 10);
+			TestHelper.AssertSqlParameter((new SqlBinary(null, 10, ParameterDirection.Input)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter((new SqlBinary(data, null, ParameterDirection.Input)).GetParameter(), SqlDbType.Binary, data, size: data.Length);
+			TestHelper.AssertSqlParameter((new SqlBinary(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.Binary, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlBinary(data, 10);
+			SqlType type = new SqlBinary(data, 10, ParameterDirection.Input);
 			Assert.AreEqual(data, type.GetRawValue());
 
-			type = new SqlBinary(null, 10);
+			type = new SqlBinary(null, 10, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

@@ -25,10 +25,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlChar.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlChar("Test");
+			SqlTypeHandler col = new SqlChar("Test", null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlChar("Test", 10);
+			col = new SqlChar("Test", 10, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Char, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -38,19 +38,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlChar("Test", 10)).GetParameter(), SqlDbType.Char, "Test", size: 10);
-			TestHelper.AssertSqlParameter((new SqlChar(null, 10)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter((new SqlChar("Test")).GetParameter(), SqlDbType.Char, "Test", size: 4);
-			TestHelper.AssertSqlParameter((new SqlChar(null)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter((new SqlChar("Test", 10, ParameterDirection.Input)).GetParameter(), SqlDbType.Char, "Test", size: 10);
+			TestHelper.AssertSqlParameter((new SqlChar(null, 10, ParameterDirection.Input)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter((new SqlChar("Test", null, ParameterDirection.Input)).GetParameter(), SqlDbType.Char, "Test", size: 4);
+			TestHelper.AssertSqlParameter((new SqlChar(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.Char, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlChar("Test", 10);
+			SqlType type = new SqlChar("Test", 10, ParameterDirection.Input);
 			Assert.AreEqual("Test", type.GetRawValue());
 
-			type = new SqlChar(null, 10);
+			type = new SqlChar(null, 10, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

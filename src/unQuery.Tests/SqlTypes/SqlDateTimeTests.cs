@@ -9,7 +9,7 @@ namespace unQuery.Tests.SqlTypes
 	public class SqlDateTimeTests : TestFixture
 	{
 		private readonly DateTime testDateTime = new DateTime(2013, 05, 12, 11, 22, 33, 3);
-
+		
 		[Test]
 		public void GetTypeHandler()
 		{
@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTime.GetTypeHandler().CreateMetaData(null));
 
-			SqlTypeHandler col = new SqlDateTime(testDateTime);
+			SqlTypeHandler col = new SqlDateTime(testDateTime, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.DateTime, meta.SqlDbType);
 			Assert.AreEqual("Test", meta.Name);
@@ -36,20 +36,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlDateTime(testDateTime);
+			SqlType type = new SqlDateTime(testDateTime, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.DateTime, testDateTime);
 
-			type = new SqlDateTime(null);
+			type = new SqlDateTime(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.DateTime, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlDateTime(testDateTime);
+			SqlType type = new SqlDateTime(testDateTime, ParameterDirection.Input);
 			Assert.AreEqual(testDateTime, type.GetRawValue());
 
-			type = new SqlDateTime(null);
+			type = new SqlDateTime(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

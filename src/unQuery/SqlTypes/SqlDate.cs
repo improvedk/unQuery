@@ -10,8 +10,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Date)
 		{ }
 
-		public SqlDate(DateTime? value) :
-			base(value, SqlDbType.Date)
+		internal SqlDate(DateTime? value, ParameterDirection direction) :
+			base(value, SqlDbType.Date, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlDate();
@@ -22,10 +22,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetDateTime(ordinal, Value.Value);
+				record.SetDateTime(ordinal, InputValue.Value);
 		}
 	}
 }

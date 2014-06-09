@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Data;
-using Microsoft.SqlServer.Server;
 
 namespace unQuery.SqlTypes
 {
@@ -10,8 +10,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.UniqueIdentifier)
 		{ }
 
-		public SqlUniqueIdentifier(Guid? value) :
-			base(value, SqlDbType.UniqueIdentifier)
+		internal SqlUniqueIdentifier(Guid? value, ParameterDirection direction) :
+			base(value, SqlDbType.UniqueIdentifier, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlUniqueIdentifier();
@@ -22,10 +22,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetGuid(ordinal, Value.Value);
+				record.SetGuid(ordinal, InputValue.Value);
 		}
 	}
 }

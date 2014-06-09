@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.BigInt)
 		{ }
 
-		public SqlBigInt(long? value) :
-			base(value, SqlDbType.BigInt)
+		internal SqlBigInt(long? value, ParameterDirection direction) :
+			base(value, SqlDbType.BigInt, direction)
 		{ }
 
 		private static readonly SqlType typeHandler = new SqlBigInt();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetInt64(ordinal, Value.Value);
+				record.SetInt64(ordinal, InputValue.Value);
 		}
 	}
 }

@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlFloat.GetTypeHandler().CreateMetaData(null));
 
-			SqlTypeHandler col = new SqlFloat(5.27d);
+			SqlTypeHandler col = new SqlFloat(5.27d, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Float, meta.SqlDbType);
 			Assert.AreEqual(53, meta.Precision);
@@ -35,20 +35,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlFloat(5.27d);
+			SqlType type = new SqlFloat(5.27d, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Float, 5.27d);
 
-			type = new SqlFloat(null);
+			type = new SqlFloat(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Float, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlFloat(5.27d);
+			SqlType type = new SqlFloat(5.27d, ParameterDirection.Input);
 			Assert.AreEqual(5.27d, type.GetRawValue());
 
-			type = new SqlFloat(null);
+			type = new SqlFloat(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

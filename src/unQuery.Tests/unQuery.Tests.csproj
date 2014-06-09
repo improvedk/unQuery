@@ -58,6 +58,11 @@
     <Compile Include="ExecuteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryOptionsTests.cs" />
+    <Compile Include="SqlTypes\ExplicitValueTypeTests.cs" />
+    <Compile Include="SqlTypes\ExplicitScaleTypeTests.cs" />
+    <Compile Include="SqlTypes\ExplicitPrecisionAndScaleType.cs" />
+    <Compile Include="SqlTypes\ExplicitMaxLengthTypeTests.cs" />
+    <Compile Include="SqlTypes\ImplicitValueTypeTests.cs" />
     <Compile Include="SqlTypes\SqlXmlTests.cs" />
     <Compile Include="SqlTypes\SqlVarBinaryTests.cs" />
     <Compile Include="SqlTypes\SqlTimeTests.cs" />
@@ -88,6 +93,7 @@
     <Compile Include="SqlTypes\SqlNVarCharTests.cs" />
     <Compile Include="GetScalarTests.cs" />
     <Compile Include="SqlTypes\SqlTypeTests.cs" />
+    <Compile Include="StoredProcedureTests.cs" />
     <Compile Include="StructuredDynamicYielderTests.cs" />
     <Compile Include="TestFixture.cs" />
     <Compile Include="TestHelper.cs" />

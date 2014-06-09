@@ -209,7 +209,7 @@ namespace unQuery.Tests
 				CAST('787FA919-EFA0-49E5-9EA9-1C354B94AF3E' AS uniqueidentifier) AS Value,
 				CAST(NULL AS uniqueidentifier) AS Nullable,
 				CAST('6E21F2D7-21EE-4CF8-BA1E-082E60F04DC4' AS uniqueidentifier) AS NullableWithValue");
-
+			
 			Assert.AreEqual(new Guid("787FA919-EFA0-49E5-9EA9-1C354B94AF3E"), result.Value);
 			Assert.AreEqual(null, result.Nullable);
 			Assert.AreEqual(new Guid("6E21F2D7-21EE-4CF8-BA1E-082E60F04DC4"), result.NullableWithValue);
@@ -327,7 +327,7 @@ namespace unQuery.Tests
 				CAST(5.237 AS float) AS Value,
 				CAST(NULL AS float) AS Nullable,
 				CAST(102.2 AS float) AS NullableWithValue");
-
+			
 			Assert.AreEqual(5.237d, result.Value);
 			Assert.AreEqual(null, result.Nullable);
 			Assert.AreEqual(102.2d, result.NullableWithValue);

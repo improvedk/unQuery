@@ -10,12 +10,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.DateTimeOffset)
 		{ }
 
-		public SqlDateTimeOffset(DateTimeOffset? value) :
-			base(value, null, SqlDbType.DateTimeOffset)
-		{ }
-
-		public SqlDateTimeOffset(DateTimeOffset? value, byte scale) :
-			base(value, scale, SqlDbType.DateTimeOffset)
+		internal SqlDateTimeOffset(DateTimeOffset? value, byte? scale, ParameterDirection direction) :
+			base(value, scale, SqlDbType.DateTimeOffset, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlDateTimeOffset();
@@ -26,10 +22,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetDateTimeOffset(ordinal, Value.Value);
+				record.SetDateTimeOffset(ordinal, InputValue.Value);
 		}
 	}
 }

@@ -10,8 +10,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.SmallDateTime)
 		{ }
 
-		public SqlSmallDateTime(DateTime? value) :
-			base(value, SqlDbType.SmallDateTime)
+		internal SqlSmallDateTime(DateTime? value, ParameterDirection direction) :
+			base(value, SqlDbType.SmallDateTime, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlSmallDateTime();
@@ -22,10 +22,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetDateTime(ordinal, Value.Value);
+				record.SetDateTime(ordinal, InputValue.Value);
 		}
 	}
 }

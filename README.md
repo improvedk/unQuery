@@ -302,7 +302,7 @@ For a full list of options, see the table below.
 
 ## Stored Procedures
 
-All access methods support invoking stored procedures with input parameters. Output, InputOutput and ReturnValue parameters are not yet supported. All you need to do is to pass in a QueryOptions object with the `CommandType` property set to `CommandType.StoredProcedure`.
+All access methods support invoking stored procedures with parameters. All you need to do is to pass in a QueryOptions object with the `CommandType` property set to `CommandType.StoredProcedure`. For input parameters, all you need to do is to pass in a parameters object as usual.
 
 ```
 // Execute
@@ -325,6 +325,62 @@ var row = DB.GetRow("uspGetCustomerById", new {
 var rows = DB.GetRows("uspGetAllCustomers", options: new QueryOptions {
 	CommandType: CommandType.StoredProcedure
 });
+```
+
+If you need to return data from stored procedures, besides what you select (and access through `GetScalar`, `GetRow` or `GetRows`), you can also use either *Output*, *InputOutput* or *ReturnValue* parameters.
+
+### Output Parameters
+
+Output parameters are parameters that have no input value, but are used to return value from within a stored procedure. To use them, you need to specify the ParameterDirection of your parameters, as well as to keep hold of your parameters object so that you may access the value after executing the procedure.
+
+```
+// Note that the values are null, seeing as output parameters have no value. For the VarChar,
+// we don't need to specify the MaxLength and as such we use named arguments to just pass the
+// direction value.
+var outputParameters = new {
+	Name = Col.VarChar(null, direction:ParameterDirection.Output),
+	Age = Col.Int(null, ParameterDirection.Output)
+};
+
+// Execute the stored procedure
+DB.Execute("uspGetUserDetails", outputParameters);
+
+// Print output values
+Console.WriteLine(outputParameters.Name.Value);
+Console.WriteLine(outputParameters.Age.Value);
+```
+
+### InputOutput Parameters
+
+InputOutput parameters work just like Output parameters, except for these you can specify an input value too. This means you can use the same parameter for both input and output.
+
+### ReturnValue Parameters
+
+Stored procedure return values are integers by definition. To access the return value, you just need to specify the direction as `ParameterDirection.ReturnValue`. Note that you may only have a single ReturnValue parameter.
+
+```
+var parameters = new {
+	ReturnValue = Col.Int(null, ParameterDirection.ReturnValue)
+};
+
+DB.Execute("uspMyProcedure", parameters);
+
+Console.WriteLine("Return value: " + parameters.ReturnValue.Value);
+```
+
+### Mixing Parameter Types
+
+You can of course mix any number of parameter types in the same procedure execution.
+
+```
+var params = new {
+	Input = 5,
+	Output = Col.VarChar(null, direction:ParameterDirection.Output),
+	InputOutput = Col.Bit(true, ParameterDirection.InputOutput),
+	ReturnValue = Col.Int(null, ParameterDirection.ReturnValue)
+};
+
+DB.Execute("uspSomeProcedure", params);
 ```
 
 ## Batch Execution

@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Real)
 		{ }
 
-		public SqlReal(float? value) :
-			base(value, SqlDbType.Real)
+		internal SqlReal(float? value, ParameterDirection direction) :
+			base(value, SqlDbType.Real, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlReal();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetFloat(ordinal, Value.Value);
+				record.SetFloat(ordinal, InputValue.Value);
 		}
 	}
 }

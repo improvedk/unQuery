@@ -42,7 +42,7 @@ namespace unQuery.PerformanceTests
 		[Test]
 		public void Execute_FiveParameters()
 		{
-			RunTest(2.5,
+			RunTest(2.75,
 				() =>
 				{
 					using (var conn = GetOpenConnection())

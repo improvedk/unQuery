@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.TinyInt)
 		{ }
 
-		public SqlTinyInt(byte? value) :
-			base(value, SqlDbType.TinyInt)
+		internal SqlTinyInt(byte? value, ParameterDirection direction) :
+			base(value, SqlDbType.TinyInt, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlTinyInt();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetByte(ordinal, Value.Value);
+				record.SetByte(ordinal, InputValue.Value);
 		}
 	}
 }

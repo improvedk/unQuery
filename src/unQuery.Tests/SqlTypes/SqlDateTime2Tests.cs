@@ -27,10 +27,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTime2.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlDateTime2(testDateTime);
+			SqlTypeHandler col = new SqlDateTime2(testDateTime, null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlDateTime2(testDateTime, 6);
+			col = new SqlDateTime2(testDateTime, 6, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.DateTime2, meta.SqlDbType);
 			Assert.AreEqual(6, meta.Scale);
@@ -40,19 +40,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlDateTime2(testDateTime, 6)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 6);
-			TestHelper.AssertSqlParameter((new SqlDateTime2(null, 4)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 4);
-			TestHelper.AssertSqlParameter((new SqlDateTime2(testDateTime)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 0);
-			TestHelper.AssertSqlParameter((new SqlDateTime2(null)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDateTime2(testDateTime, 6, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 6);
+			TestHelper.AssertSqlParameter((new SqlDateTime2(null, 4, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter((new SqlDateTime2(testDateTime, null, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTime2, testDateTime, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDateTime2(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTime2, DBNull.Value, scale: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlDateTime2(testDateTime, 5);
+			SqlType type = new SqlDateTime2(testDateTime, 5, ParameterDirection.Input);
 			Assert.AreEqual(testDateTime, type.GetRawValue());
 
-			type = new SqlDateTime2(null, 3);
+			type = new SqlDateTime2(null, 3, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

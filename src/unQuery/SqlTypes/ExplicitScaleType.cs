@@ -1,4 +1,5 @@
 ﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -6,41 +7,61 @@ namespace unQuery.SqlTypes
 {
 	public abstract class ExplicitScaleType<TValue> : SqlType
 	{
-		protected readonly TValue Value;
+		protected readonly TValue InputValue;
 		private readonly byte? scale;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
+		private readonly ParameterDirection direction;
+
+		public TValue Value
+		{
+			get
+			{
+				if (Parameter == null)
+					throw new CannotAccessParameterValueBeforeExecutingQuery();
+
+				if (Parameter.Value == DBNull.Value)
+					return default(TValue);
+
+				return (TValue)Parameter.Value;
+			}
+		}
 
 		internal ExplicitScaleType(SqlDbType dbType)
 		{
 			this.dbType = dbType;
 		}
 
-		internal ExplicitScaleType(TValue value, byte? scale, SqlDbType dbType)
+		internal ExplicitScaleType(TValue value, byte? scale, SqlDbType dbType, ParameterDirection direction)
 		{
-			this.Value = value;
+			this.InputValue = value;
 			this.scale = scale;
 			this.dbType = dbType;
+			this.direction = direction;
 
 			hasValue = true;
 		}
 
 		internal override object GetRawValue()
 		{
-			return Value;
+			return InputValue;
 		}
 
 		internal override SqlParameter GetParameter()
 		{
-			var param = new SqlParameter {
-				SqlDbType = dbType,
-				Value = GetDBNullableValue(Value)
-			};
+			if (Parameter == null)
+			{
+				Parameter = new SqlParameter {
+					SqlDbType = dbType,
+					Value = GetDBNullableValue(InputValue),
+					Direction = direction
+				};
 
-			if (scale != null)
-				param.Scale = scale.Value;
+				if (scale != null)
+					Parameter.Scale = scale.Value;
+			}
 
-			return param;
+			return Parameter;
 		}
 
 		internal override SqlParameter CreateParamFromValue(string name, object value)

@@ -9,12 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.NChar)
 		{ }
 
-		public SqlNChar(string value) :
-			base(value, SqlDbType.NChar)
-		{ }
-
-		public SqlNChar(string value, int maxLength) :
-			base(value, SqlDbType.NChar, maxLength: maxLength)
+		internal SqlNChar(string value, int? maxLength, ParameterDirection direction) :
+			base(value, SqlDbType.NChar, direction, maxLength: maxLength)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlNChar();
@@ -25,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetString(ordinal, Value);
+				record.SetString(ordinal, InputValue);
 		}
 	}
 }

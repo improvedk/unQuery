@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Float)
 		{ }
 
-		public SqlFloat(double? value) :
-			base(value, SqlDbType.Float)
+		internal SqlFloat(double? value, ParameterDirection direction) :
+			base(value, SqlDbType.Float, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlFloat();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetDouble(ordinal, Value.Value);
+				record.SetDouble(ordinal, InputValue.Value);
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿
+using NUnit.Framework;
 using System;
 using System.Data;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlXml.GetTypeHandler().CreateMetaData(null));
 
-			SqlTypeHandler col = new SqlXml(testXml);
+			SqlTypeHandler col = new SqlXml(testXml, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Xml, meta.SqlDbType);
 			Assert.AreEqual(-1, meta.MaxLength);
@@ -37,20 +38,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlXml(testXml);
+			SqlType type = new SqlXml(testXml, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Xml, testXml);
 
-			type = new SqlXml(null);
+			type = new SqlXml(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Xml, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlXml(testXml);
+			SqlType type = new SqlXml(testXml, ParameterDirection.Input);
 			Assert.AreEqual(testXml, type.GetRawValue());
 
-			type = new SqlXml(null);
+			type = new SqlXml(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

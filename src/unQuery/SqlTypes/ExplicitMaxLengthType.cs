@@ -1,4 +1,5 @@
 ﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -6,45 +7,65 @@ namespace unQuery.SqlTypes
 {
 	public abstract class ExplicitMaxLengthType<TValue> : SqlType
 	{
-		protected readonly TValue Value;
+		protected readonly TValue InputValue;
 		private readonly int? maxLength;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
 		private readonly int? valueLength;
+		private readonly ParameterDirection direction;
+
+		public TValue Value
+		{
+			get
+			{
+				if (Parameter == null)
+					throw new CannotAccessParameterValueBeforeExecutingQuery();
+
+				if (Parameter.Value == DBNull.Value)
+					return default(TValue);
+
+				return (TValue)Parameter.Value;
+			}
+		}
 
 		internal ExplicitMaxLengthType(SqlDbType dbType)
 		{
 			this.dbType = dbType;
 		}
 
-		internal ExplicitMaxLengthType(TValue value, SqlDbType dbType, int? maxLength = null, int? valueLength = null)
+		internal ExplicitMaxLengthType(TValue value, SqlDbType dbType, ParameterDirection direction, int? maxLength = null, int? valueLength = null)
 		{
-			this.Value = value;
+			this.InputValue = value;
 			this.maxLength = maxLength;
 			this.dbType = dbType;
 			this.valueLength = valueLength;
+			this.direction = direction;
 
 			hasValue = true;
 		}
 
 		internal override object GetRawValue()
 		{
-			return Value;
+			return InputValue;
 		}
 
 		internal override SqlParameter GetParameter()
 		{
-			var param = new SqlParameter {
-				SqlDbType = dbType,
-				Value = GetDBNullableValue(Value)
-			};
+			if (Parameter == null)
+			{
+				Parameter = new SqlParameter {
+					SqlDbType = dbType,
+					Value = GetDBNullableValue(InputValue),
+					Direction = direction
+				};
 
-			if (maxLength != null)
-				param.Size = maxLength.Value;
-			else if (valueLength != null)
-				param.Size = GetAppropriateSizeFromLength(valueLength.Value);
+				if (maxLength != null)
+					Parameter.Size = maxLength.Value;
+				else if (valueLength != null)
+					Parameter.Size = GetAppropriateSizeFromLength(valueLength.Value);
+			}
 
-			return param;
+			return Parameter;
 		}
 
 		internal override SqlParameter CreateParamFromValue(string name, object value)

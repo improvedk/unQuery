@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Microsoft.SqlServer.Server;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 
 namespace unQuery.SqlTypes
 {
@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Xml)
 		{ }
 
-		public SqlXml(string value) :
-			base(value, SqlDbType.Xml)
+		internal SqlXml(string value, ParameterDirection direction) :
+			base(value, SqlDbType.Xml, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlXml();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetString(ordinal, Value);
+				record.SetString(ordinal, InputValue);
 		}
 	}
 }

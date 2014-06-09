@@ -1,4 +1,5 @@
-﻿using Microsoft.SqlServer.Server;
+﻿using System;
+using Microsoft.SqlServer.Server;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -6,46 +7,66 @@ namespace unQuery.SqlTypes
 {
 	public abstract class ExplicitPrecisionAndScaleType<TValue> : SqlType
 	{
-		protected readonly TValue Value;
+		protected readonly TValue InputValue;
 		private readonly byte? scale;
 		private readonly byte? precision;
 		private readonly bool hasValue;
 		private readonly SqlDbType dbType;
+		private readonly ParameterDirection direction;
+
+		public TValue Value
+		{
+			get
+			{
+				if (Parameter == null)
+					throw new CannotAccessParameterValueBeforeExecutingQuery();
+
+				if (Parameter.Value == DBNull.Value)
+					return default(TValue);
+
+				return (TValue)Parameter.Value;
+			}
+		}
 
 		internal ExplicitPrecisionAndScaleType(SqlDbType dbType)
 		{
 			this.dbType = dbType;
 		}
 
-		internal ExplicitPrecisionAndScaleType(TValue value, byte? precision, byte? scale, SqlDbType dbType)
+		internal ExplicitPrecisionAndScaleType(TValue value, byte? precision, byte? scale, SqlDbType dbType, ParameterDirection direction)
 		{
-			this.Value = value;
+			this.InputValue = value;
 			this.precision = precision;
 			this.scale = scale;
 			this.dbType = dbType;
+			this.direction = direction;
 
 			hasValue = true;
 		}
 
 		internal override object GetRawValue()
 		{
-			return Value;
+			return InputValue;
 		}
 
 		internal override SqlParameter GetParameter()
 		{
-			var param = new SqlParameter {
-				SqlDbType = dbType,
-				Value = GetDBNullableValue(Value)
-			};
-
-			if (precision != null && scale != null)
+			if (Parameter == null)
 			{
-				param.Precision = precision.Value;
-				param.Scale = scale.Value;
+				Parameter = new SqlParameter {
+					SqlDbType = dbType,
+					Value = GetDBNullableValue(InputValue),
+					Direction = direction
+				};
+
+				if (precision != null && scale != null)
+				{
+					Parameter.Precision = precision.Value;
+					Parameter.Scale = scale.Value;
+				}
 			}
 
-			return param;
+			return Parameter;
 		}
 
 		internal override SqlParameter CreateParamFromValue(string name, object value)

@@ -27,7 +27,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDate.GetTypeHandler().CreateMetaData(null));
 
-			SqlTypeHandler col = new SqlDate(testDate);
+			SqlTypeHandler col = new SqlDate(testDate, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.Date, meta.SqlDbType);
 			Assert.AreEqual("Test", meta.Name);
@@ -36,20 +36,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlDate(testDate);
+			SqlType type = new SqlDate(testDate, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Date, testDate);
 
-			type = new SqlDate(null);
+			type = new SqlDate(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.Date, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlDate(testDate);
+			SqlType type = new SqlDate(testDate, ParameterDirection.Input);
 			Assert.AreEqual(testDate, type.GetRawValue());
 
-			type = new SqlDate(null);
+			type = new SqlDate(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

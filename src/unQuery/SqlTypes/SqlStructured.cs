@@ -12,7 +12,7 @@ namespace unQuery.SqlTypes
 		private readonly IEnumerable<object> values;
 		private readonly string typeName;
 
-		public SqlStructured(string typeName, IEnumerable<object> values)
+		internal SqlStructured(string typeName, IEnumerable<object> values)
 		{
 			this.typeName = typeName;
 			this.values = values;

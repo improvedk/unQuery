@@ -27,10 +27,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlDateTimeOffset.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlDateTimeOffset(testValue);
+			SqlTypeHandler col = new SqlDateTimeOffset(testValue, null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlDateTimeOffset(testValue, 5);
+			col = new SqlDateTimeOffset(testValue, 5, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.DateTimeOffset, meta.SqlDbType);
 			Assert.AreEqual(5, meta.Scale);
@@ -40,19 +40,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(testValue, 6)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 6);
-			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(null, 4)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 4);
-			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(testValue)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 0);
-			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(null)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(testValue, 6, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 6);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(null, 4, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 4);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(testValue, null, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTimeOffset, testValue, scale: 0);
+			TestHelper.AssertSqlParameter((new SqlDateTimeOffset(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.DateTimeOffset, DBNull.Value, scale: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlDateTimeOffset(testValue, 2);
+			SqlType type = new SqlDateTimeOffset(testValue, 2, ParameterDirection.Input);
 			Assert.AreEqual(testValue, type.GetRawValue());
 
-			type = new SqlDateTimeOffset(null, 0);
+			type = new SqlDateTimeOffset(null, 0, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Microsoft.SqlServer.Server;
+﻿using Microsoft.SqlServer.Server;
+using System.Data;
 
 namespace unQuery.SqlTypes
 {
@@ -9,12 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.NVarChar)
 		{ }
 
-		public SqlNVarChar(string value) :
-			base(value, SqlDbType.NVarChar, valueLength: (value != null ? value.Length : 0))
-		{ }
-
-		public SqlNVarChar(string value, int maxLength) :
-			base(value, SqlDbType.NVarChar, maxLength: maxLength)
+		internal SqlNVarChar(string value, int? maxLength, ParameterDirection direction) :
+			base(value, SqlDbType.NVarChar, direction, maxLength: maxLength, valueLength: (value != null ? value.Length : 0))
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlNVarChar();
@@ -25,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetString(ordinal, Value);
+				record.SetString(ordinal, InputValue);
 		}
 	}
 }

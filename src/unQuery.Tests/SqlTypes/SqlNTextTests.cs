@@ -25,7 +25,7 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNText.GetTypeHandler().CreateMetaData(null));
 
-			SqlTypeHandler col = new SqlNText("ру́сский");
+			SqlTypeHandler col = new SqlNText("ру́сский", ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.NText, meta.SqlDbType);
 			Assert.AreEqual(-1, meta.MaxLength);
@@ -35,20 +35,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlNText("ру́сский");
+			SqlType type = new SqlNText("ру́сский", ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NText, "ру́сский", size: -1);
 
-			type = new SqlNText(null);
+			type = new SqlNText(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.NText, DBNull.Value, size: -1);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlNText("ру́сский");
+			SqlType type = new SqlNText("ру́сский", ParameterDirection.Input);
 			Assert.AreEqual("ру́сский", type.GetRawValue());
 
-			type = new SqlNText(null);
+			type = new SqlNText(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

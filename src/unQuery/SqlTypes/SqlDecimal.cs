@@ -9,12 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Decimal)
 		{ }
 
-		public SqlDecimal(decimal? value) :
-			base(value, null, null, SqlDbType.Decimal)
-		{ }
-
-		public SqlDecimal(decimal? value, byte precision, byte scale) :
-			base(value, precision, scale, SqlDbType.Decimal)
+		internal SqlDecimal(decimal? value, byte? precision, byte? scale, ParameterDirection direction) :
+			base(value, precision, scale, SqlDbType.Decimal, direction)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlDecimal();
@@ -25,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetDecimal(ordinal, Value.Value);
+				record.SetDecimal(ordinal, InputValue.Value);
 		}
 	}
 }

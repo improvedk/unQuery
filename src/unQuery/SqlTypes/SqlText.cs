@@ -9,8 +9,8 @@ namespace unQuery.SqlTypes
 			base(SqlDbType.Text)
 		{ }
 
-		public SqlText(string value) :
-			base(value, SqlDbType.Text, maxLength: -1)
+		internal SqlText(string value, ParameterDirection direction) :
+			base(value, SqlDbType.Text, direction, maxLength: -1)
 		{ }
 
 		private static readonly SqlTypeHandler typeHandler = new SqlText();
@@ -21,10 +21,10 @@ namespace unQuery.SqlTypes
 
 		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal)
 		{
-			if (Value == null)
+			if (InputValue == null)
 				record.SetDBNull(ordinal);
 			else
-				record.SetString(ordinal, Value);
+				record.SetString(ordinal, InputValue);
 		}
 	}
 }

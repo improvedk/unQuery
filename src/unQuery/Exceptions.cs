@@ -161,4 +161,15 @@ namespace unQuery
 			: base("Result set contains more than one column. To map this to a list of a simple type, only one column should be returned.")
 		{ }
 	}
+
+	/// <summary>
+	/// Thrown whenever a parameter value is accessed before the query has been executed.
+	/// </summary>
+	[Serializable]
+	public class CannotAccessParameterValueBeforeExecutingQuery : Exception
+	{
+		public CannotAccessParameterValueBeforeExecutingQuery()
+			: base("Can't access parameter value before executing the query.")
+		{ }
+	}
 }

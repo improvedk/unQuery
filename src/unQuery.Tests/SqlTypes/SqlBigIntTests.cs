@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using unQuery.SqlTypes;
 
@@ -33,20 +32,20 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			SqlType type = new SqlBigInt(5);
+			SqlType type = new SqlBigInt(5, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, (long)5);
 
-			type = new SqlBigInt(null);
+			type = new SqlBigInt(null, ParameterDirection.Input);
 			TestHelper.AssertSqlParameter(type.GetParameter(), SqlDbType.BigInt, DBNull.Value);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlBigInt(5);
+			SqlType type = new SqlBigInt(5, ParameterDirection.Input);
 			Assert.AreEqual((long)5, type.GetRawValue());
 
-			type = new SqlBigInt(null);
+			type = new SqlBigInt(null, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 

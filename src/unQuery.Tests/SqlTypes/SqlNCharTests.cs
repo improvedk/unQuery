@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Data;
+using System.Linq;
 using unQuery.SqlTypes;
 
 namespace unQuery.Tests.SqlTypes
@@ -25,10 +25,10 @@ namespace unQuery.Tests.SqlTypes
 		{
 			Assert.Throws<TypeCannotBeUsedAsAClrTypeException>(() => SqlNChar.GetTypeHandler().CreateMetaData("Test"));
 
-			SqlTypeHandler col = new SqlNChar("ру́сский");
+			SqlTypeHandler col = new SqlNChar("ру́сский", null, ParameterDirection.Input);
 			Assert.Throws<TypePropertiesMustBeSetExplicitlyException>(() => col.CreateMetaData("Test"));
 
-			col = new SqlNChar("ру́сский", 10);
+			col = new SqlNChar("ру́сский", 10, ParameterDirection.Input);
 			var meta = col.CreateMetaData("Test");
 			Assert.AreEqual(SqlDbType.NChar, meta.SqlDbType);
 			Assert.AreEqual(10, meta.MaxLength);
@@ -38,19 +38,19 @@ namespace unQuery.Tests.SqlTypes
 		[Test]
 		public void GetParameter()
 		{
-			TestHelper.AssertSqlParameter((new SqlNChar("ру́сский", 10)).GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
-			TestHelper.AssertSqlParameter((new SqlNChar(null, 10)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
-			TestHelper.AssertSqlParameter((new SqlNChar("рæøåсски")).GetParameter(), SqlDbType.NChar, "рæøåсски", size: 8);
-			TestHelper.AssertSqlParameter((new SqlNChar(null)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 0);
+			TestHelper.AssertSqlParameter((new SqlNChar("ру́сский", 10, ParameterDirection.Input)).GetParameter(), SqlDbType.NChar, "ру́сский", size: 10);
+			TestHelper.AssertSqlParameter((new SqlNChar(null, 10, ParameterDirection.Input)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 10);
+			TestHelper.AssertSqlParameter((new SqlNChar("рæøåсски", null, ParameterDirection.Input)).GetParameter(), SqlDbType.NChar, "рæøåсски", size: 8);
+			TestHelper.AssertSqlParameter((new SqlNChar(null, null, ParameterDirection.Input)).GetParameter(), SqlDbType.NChar, DBNull.Value, size: 0);
 		}
 
 		[Test]
 		public void GetRawValue()
 		{
-			SqlType type = new SqlNChar("ру́сский", 10);
+			SqlType type = new SqlNChar("ру́сский", 10, ParameterDirection.Input);
 			Assert.AreEqual("ру́сский", type.GetRawValue());
 
-			type = new SqlNChar(null, 10);
+			type = new SqlNChar(null, 10, ParameterDirection.Input);
 			Assert.Null(type.GetRawValue());
 		}
 
