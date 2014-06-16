@@ -232,10 +232,6 @@ namespace unQuery
 		/// </summary>
 		internal void AddParametersToCommand(SqlParameterCollection paramCollection, object parameters)
 		{
-			// We can't mix unQuery parameters with existing parameters
-			if (paramCollection.Count > 0)
-				throw new SqlCommandAlreadyHasParametersException();
-
 			// Attempt to get parameter adder from cache; otherwise create it
 			var paramType = parameters.GetType();
 			Action<SqlParameterCollection, object> parameterAdder;

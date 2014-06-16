@@ -12,17 +12,6 @@ namespace unQuery.Tests
 		private readonly unQueryDB db = new unQueryDB(null);
 
 		[Test]
-		public void ClashesWithExistingParameter()
-		{
-			var cmd = new SqlCommand();
-			cmd.Parameters.Add("@A", SqlDbType.Int).Value = 52;
-			cmd.Parameters.Add("B", SqlDbType.Int).Value = 52;
-
-			Assert.Throws<SqlCommandAlreadyHasParametersException>(() => db.AddParametersToCommand(cmd.Parameters, new { A = 25 }));
-			Assert.Throws<SqlCommandAlreadyHasParametersException>(() => db.AddParametersToCommand(cmd.Parameters, new { B = 25 }));
-		}
-
-		[Test]
 		public void SqlTypes()
 		{
 			var cmd = new SqlCommand();
