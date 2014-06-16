@@ -10,9 +10,9 @@ namespace unQuery.PerformanceTests
 	public class GetRowsTests : TestFixture
 	{
 		[Test]
-		public void GetRows_Typed_NoResults()
+		public TestResult Typed_NoResults()
 		{
-			RunTest(9,
+			return RunTest(9,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -40,9 +40,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRows_Typed_1Result()
+		public TestResult Typed_1Result()
 		{
-			RunTest(7.5,
+			return RunTest(7.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -78,9 +78,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRows_Typed_10Results()
+		public TestResult Typed_10Results()
 		{
-			RunTest(5.25,
+			return RunTest(5.25,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -116,9 +116,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRows_Dynamic_NoResults()
+		public TestResult Dynamic_NoResults()
 		{
-			RunTest(4.5,
+			return RunTest(4.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -146,9 +146,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRows_Dynamic_1Result()
+		public TestResult Dynamic_1Result()
 		{
-			RunTest(7.5,
+			return RunTest(7.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -184,9 +184,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRows_Dynamic_10Results()
+		public TestResult Dynamic_10Results()
 		{
-			RunTest(-0.5,
+			return RunTest(-0.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())

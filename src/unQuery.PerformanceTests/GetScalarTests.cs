@@ -7,9 +7,9 @@ namespace unQuery.PerformanceTests
 	public class GetScalerTests : TestFixture
 	{
 		[Test]
-		public void GetScalar_NoParameters()
+		public TestResult NoParameters()
 		{
-			RunTest(1,
+			return RunTest(1,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -26,9 +26,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetScalar_OneParameter()
+		public TestResult OneParameter()
 		{
-			RunTest(2.5,
+			return RunTest(2.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -47,9 +47,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetScalar_FiveParameters()
+		public TestResult FiveParameters()
 		{
-			RunTest(2.5,
+			return RunTest(2.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())

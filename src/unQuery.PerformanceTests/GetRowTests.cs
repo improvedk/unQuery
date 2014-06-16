@@ -9,9 +9,9 @@ namespace unQuery.PerformanceTests
 	public class GetRowTests : TestFixture
 	{
 		[Test]
-		public void GetRow_Typed_NoParameters()
+		public TestResult Typed_NoParameters()
 		{
-			RunTest(5.5,
+			return RunTest(5.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -36,9 +36,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRow_Typed_Parameters()
+		public TestResult Typed_FiveParameters()
 		{
-			RunTest(10,
+			return RunTest(10,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -76,9 +76,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRow_Dynamic_NoParameters()
+		public TestResult Dynamic_NoParameters()
 		{
-			RunTest(1,
+			return RunTest(1,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -103,9 +103,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void GetRow_Dynamic_Parameters()
+		public TestResult Dynamic_FiveParameters()
 		{
-			RunTest(4,
+			return RunTest(4,
 				() =>
 				{
 					using (var conn = GetOpenConnection())

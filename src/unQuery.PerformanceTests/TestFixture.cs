@@ -12,6 +12,8 @@ namespace unQuery.PerformanceTests
 	[TestFixture]
 	public abstract class TestFixture
 	{
+		internal static bool AssertionsEnabled = true;
+
 		private TimeSpan testDuration = TimeSpan.FromMilliseconds(10000);
 		private double testPercentile = 0.90d;
 		private string connectionString = ConfigurationManager.ConnectionStrings["TestDB"].ConnectionString;
@@ -31,7 +33,7 @@ namespace unQuery.PerformanceTests
 			return conn;
 		}
 
-		protected void RunTest(double maxDiff, Action handCoded, Action unQuery)
+		protected TestResult RunTest(double maxDiff, Action handCoded, Action unQuery)
 		{
 			var sw = new Stopwatch();
 			var handCodedRuntimes = new List<long>();
@@ -73,7 +75,8 @@ namespace unQuery.PerformanceTests
 			testThread.Join();
 
 			// Sanity check that both code path were run an equal number of times
-			Assert.AreEqual(handCodedRuntimes.Count, unQueryRuntimes.Count);
+			if (AssertionsEnabled)
+				Assert.AreEqual(handCodedRuntimes.Count, unQueryRuntimes.Count);
 
 			// Extract the Nth percentile results to reduce variance
 			int testIterations = handCodedRuntimes.Count;
@@ -94,12 +97,21 @@ namespace unQuery.PerformanceTests
 			var diff = avgUnQueryRuntime - avgHandCodedRuntime;
 			var diffPercentage = diff / avgHandCodedRuntime * 100;
 
-			Console.WriteLine("Iterations: " + testIterations);
-			Console.WriteLine("Hand coded: " + avgHandCodedRuntime.ToString("N") + " ticks");
-			Console.WriteLine("unQuery: " + avgUnQueryRuntime.ToString("N") + " ticks");
-			Console.WriteLine("unQuery diff: " + diffPercentage.ToString("N") + "% (Max: " + maxDiff.ToString("N") + "%)");
+			Trace.WriteLine("Iterations: " + testIterations);
+			Trace.WriteLine("Hand coded: " + avgHandCodedRuntime.ToString("N") + " ticks");
+			Trace.WriteLine("unQuery: " + avgUnQueryRuntime.ToString("N") + " ticks");
+			Trace.WriteLine("unQuery diff: " + diffPercentage.ToString("N") + "% (Max: " + maxDiff.ToString("N") + "%)");
+			
+			if (AssertionsEnabled)
+				Assert.Less(diffPercentage, maxDiff, "unQuery difference should be below " + maxDiff.ToString("N") + "%");
 
-			Assert.Less(diffPercentage, maxDiff, "unQuery difference should be below " + maxDiff.ToString("N") + "%");
+			return new TestResult {
+				Iterations = testIterations,
+				HandcodedAvgRuntimeInMs = avgHandCodedRuntime,
+				unQueryAvgRuntimeInMs = avgUnQueryRuntime,
+				unQueryOverheadInPercent = diffPercentage,
+				MaximumUnQueryOverheadInPercent = maxDiff
+			};
 		}
 	}
 }

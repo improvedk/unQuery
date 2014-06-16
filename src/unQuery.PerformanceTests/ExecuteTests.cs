@@ -9,9 +9,9 @@ namespace unQuery.PerformanceTests
 	public class ExecuteTests : TestFixture
 	{
 		[Test]
-		public void Execute_NoParameters()
+		public TestResult NoParameters()
 		{
-			RunTest(1,
+			return RunTest(1,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -23,9 +23,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void Execute_OneParameter()
+		public TestResult OneParameter()
 		{
-			RunTest(1.5,
+			return RunTest(1.5,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
@@ -40,9 +40,9 @@ namespace unQuery.PerformanceTests
 		}
 
 		[Test]
-		public void Execute_FiveParameters()
+		public TestResult FiveParameters()
 		{
-			RunTest(2.75,
+			return RunTest(2.75,
 				() =>
 				{
 					using (var conn = GetOpenConnection())
