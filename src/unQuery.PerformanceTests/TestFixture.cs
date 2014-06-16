@@ -13,8 +13,8 @@ namespace unQuery.PerformanceTests
 	public abstract class TestFixture
 	{
 		internal static bool AssertionsEnabled = true;
+		internal static TimeSpan TestDuration = TimeSpan.FromMilliseconds(10000);
 
-		private TimeSpan testDuration = TimeSpan.FromMilliseconds(10000);
 		private double testPercentile = 0.90d;
 		private string connectionString = ConfigurationManager.ConnectionStrings["TestDB"].ConnectionString;
 
@@ -70,7 +70,7 @@ namespace unQuery.PerformanceTests
 
 			});
 			testThread.Start();
-			testThread.Join(testDuration);
+			testThread.Join(TestDuration);
 			runTest = false;
 			testThread.Join();
 
