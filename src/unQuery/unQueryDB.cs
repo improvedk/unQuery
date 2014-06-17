@@ -62,7 +62,10 @@ namespace unQuery
 		/// <param name="options">An optional set of query options</param>
 		public dynamic GetRow(string sql, object parameters = null, QueryOptions options = null)
 		{
-			return getRows(sql, CommandBehavior.SingleRow, parameters, options).FirstOrDefault();
+			using (var conn = getConnection())
+			using (var cmd = getCommand(sql, parameters, conn, options))
+			using (var reader = cmd.ExecuteReader(CommandBehavior.SingleRow))
+				return mapReaderRowsToObject(reader).FirstOrDefault();
 		}
 
 		/// <summary>
