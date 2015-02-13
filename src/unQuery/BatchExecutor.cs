@@ -19,6 +19,14 @@ namespace unQuery
 		}
 
 		/// <summary>
+		/// The amount of commands currently queued up for execution.
+		/// </summary>
+		internal int CommandCount
+		{
+			get { return commands.Count; }
+		}
+
+		/// <summary>
 		/// Adds a statement to execute when Execute is called.
 		/// </summary>
 		/// <param name="sql">The SQL statement to execute.</param>
@@ -47,6 +55,7 @@ namespace unQuery
 			using (var set = new PublicSqlCommandSet(conn))
 			{
 				commands.ForEach(set.Append);
+				commands.Clear();
 
 				return set.ExecuteNonQuery();
 			}

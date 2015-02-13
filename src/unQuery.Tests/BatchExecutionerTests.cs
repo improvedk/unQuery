@@ -141,5 +141,22 @@ namespace unQuery.Tests
 			using (var batch = DB.Batch())
 				Assert.AreEqual(0, batch.Execute());
 		}
+
+		[Test]
+		public void ClearsCommandsAfterExecuting()
+		{
+			using (var batch = DB.Batch())
+			{
+				Assert.AreEqual(0, batch.CommandCount);
+
+				batch.Add("SELECT 2 AS A INTO #TMP");
+
+				Assert.AreEqual(1, batch.CommandCount);
+
+				batch.Execute();
+
+				Assert.AreEqual(0, batch.CommandCount);
+			}
+		}
 	}
 }
