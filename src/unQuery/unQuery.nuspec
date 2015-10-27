@@ -11,6 +11,12 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>unQuery is a minimal data access library that makes it as simple as possible to consume and interact with data in SQL Server.</description>
 		<releaseNotes>
+			0.1.8
+			 - Now handles emply table-valued parameter input
+			 - Result column access is now case insensitive
+			 - Added support for stored procedures
+			 - Added support for QueryOptions
+			 - Batch Executor now clears stored commands after executing
 			0.1.7
 			 - Better LINQPad formatting
 			 - Improved exception messages
