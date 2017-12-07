@@ -30,8 +30,8 @@ namespace unQuery.SqlTypes
 			return 8000;
 		}
 
-		internal abstract SqlParameter GetParameter();
-		internal abstract object GetRawValue();
-		internal abstract void SetDataRecordValue(SqlDataRecord record, int ordinal);
+		internal virtual SqlParameter GetParameter() => throw new NotImplementedException();
+		internal virtual object GetRawValue() => throw new NotImplementedException();
+		internal virtual void SetDataRecordValue(SqlDataRecord record, int ordinal) => throw new NotImplementedException();
 	}
 }

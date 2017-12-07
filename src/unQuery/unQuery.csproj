@@ -1,104 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D527620B-C076-4ADF-B73E-AF00771B2146}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>unQuery</RootNamespace>
-    <AssemblyName>unQuery</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.1.8</Version>
+    <Authors>Mark S. Rasmussen</Authors>
+    <PackageLicenseUrl>https://raw.github.com/improvedk/unQuery/master/license.txt</PackageLicenseUrl>
+    <Company />
+    <Product />
+    <PackageProjectUrl>https://github.com/improvedk/unQuery</PackageProjectUrl>
+    <Description>unQuery is a minimal data access library that makes it as simple as possible to consume and interact with data in SQL Server.</Description>
+    <PackageReleaseNotes>0.1.8
+- Ported to .NET Standard 2.0.
+0.1.7
+- Better LINQPad formatting
+- Improved exception messages
+- Support for mapping rows into lists of simple types
+- All exceptions are now serializable
+- Minor performance optimization
+0.1.6
+- unQueryDB is now Serializable
+0.1.5
+- Now supports mapping results into strong types
+0.1.4
+- Massive performance improvements in parameter parsing
+- Added Batch() functionality
+- Now targets .NET 4.0 rather than 4.5
+0.1.3
+- Table valued parameter performance increase
+0.1.2
+- Added support for all common SQL Server data types
+- Added support for table-valued parameters
+- Updated documentation
+- Performance improvements
+0.1.1
+- Initial release</PackageReleaseNotes>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="BatchExecutor.cs" />
-    <Compile Include="DB.cs" />
-    <Compile Include="Exceptions.cs" />
-    <Compile Include="ICustomMemberProvider.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PublicSqlCommandSet.cs" />
-    <Compile Include="QueryOptions.cs" />
-    <Compile Include="SqlTypes\Col.cs" />
-    <Compile Include="SqlTypes\SqlTypeHandler.cs" />
-    <Compile Include="SqlTypes\SqlXml.cs" />
-    <Compile Include="SqlTypes\SqlVarBinary.cs" />
-    <Compile Include="SqlTypes\SqlTime.cs" />
-    <Compile Include="SqlTypes\SqlText.cs" />
-    <Compile Include="SqlTypes\SqlSmallMoney.cs" />
-    <Compile Include="SqlTypes\SqlSmallDateTime.cs" />
-    <Compile Include="SqlTypes\ExplicitPrecisionAndScaleType.cs" />
-    <Compile Include="SqlTypes\ExplicitScaleType.cs" />
-    <Compile Include="SqlTypes\SqlReal.cs" />
-    <Compile Include="SqlTypes\SqlNText.cs" />
-    <Compile Include="SqlTypes\ExplicitValueType.cs" />
-    <Compile Include="SqlTypes\ExplicitMaxLengthType.cs" />
-    <Compile Include="SqlTypes\SqlNChar.cs" />
-    <Compile Include="SqlTypes\SqlMoney.cs" />
-    <Compile Include="SqlTypes\SqlImage.cs" />
-    <Compile Include="SqlTypes\SqlFloat.cs" />
-    <Compile Include="SqlTypes\SqlDateTimeOffset.cs" />
-    <Compile Include="SqlTypes\SqlDateTime2.cs" />
-    <Compile Include="SqlTypes\SqlDateTime.cs" />
-    <Compile Include="SqlTypes\SqlDate.cs" />
-    <Compile Include="SqlTypes\SqlChar.cs" />
-    <Compile Include="SqlTypes\SqlDecimal.cs" />
-    <Compile Include="SqlTypes\SqlBinary.cs" />
-    <Compile Include="SqlTypes\SqlStructured.cs" />
-    <Compile Include="SqlTypes\SqlType.cs" />
-    <Compile Include="SqlTypes\SqlUniqueIdentifier.cs" />
-    <Compile Include="SqlTypes\SqlVarchar.cs" />
-    <Compile Include="SqlTypes\SqlNVarchar.cs" />
-    <Compile Include="SqlTypes\SqlBigInt.cs" />
-    <Compile Include="SqlTypes\SqlInt.cs" />
-    <Compile Include="SqlTypes\SqlSmallInt.cs" />
-    <Compile Include="SqlTypes\SqlTinyInt.cs" />
-    <Compile Include="SqlTypes\SqlBit.cs" />
-    <Compile Include="DynamicRow.cs" />
-    <Compile Include="SqlTypes\ImplicitValueType.cs" />
-    <Compile Include="StructuredDynamicYielder.cs" />
-    <Compile Include="unQueryDB.cs" />
+    <Reference Include="System.Configuration">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Configuration.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="nugetpack.bat" />
-    <None Include="unQuery.nuspec" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

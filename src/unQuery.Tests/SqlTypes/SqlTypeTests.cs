@@ -1,6 +1,4 @@
-﻿using System.Data.SqlClient;
-using Microsoft.SqlServer.Server;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using unQuery.SqlTypes;
 
@@ -17,12 +15,6 @@ namespace unQuery.Tests.SqlTypes
 		{
 			return base.GetAppropriateSizeFromLength(length);
 		}
-
-		internal override SqlParameter GetParameter() { throw new NotImplementedException(); }
-		internal override object GetRawValue() { throw new NotImplementedException(); }
-		internal override void SetDataRecordValue(SqlDataRecord record, int ordinal) { throw new NotImplementedException(); }
-		internal override SqlParameter CreateParamFromValue(string name, object value) { throw new NotImplementedException(); }
-		internal override SqlMetaData CreateMetaData(string name) { throw new NotImplementedException(); }
 	}
 
 	[TestFixture]

@@ -280,7 +280,7 @@ namespace unQuery
 							il.Emit(OpCodes.Call, typeof(SqlParameter).GetMethod("set_ParameterName")); // Set the parameter name []
 							il.Emit(OpCodes.Ldarg_0); // Load the param collection [paramCollection]
 							il.Emit(OpCodes.Ldloc, paramLocIndex); // Load the parameter [paramCollection, param]
-							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
+							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod(nameof(SqlParameterCollection.Add), new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
 							il.Emit(OpCodes.Pop); // Get rid of the added parameter, as returned by SqlParameterCollection.Add []
 						}
 						else
@@ -291,8 +291,8 @@ namespace unQuery
 							il.Emit(OpCodes.Ldloc_0); // Load the object [paramCollection, typeHandler, paramName, object]
 							il.Emit(OpCodes.Call, prop.GetGetMethod()); // Get the property value [paramCollection, typeHandler, paramName, value]
 							il.Emit(OpCodes.Box, prop.PropertyType); // Box the value [paramCollection, typeHandler, paramName, boxedValue]
-							il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod("CreateParamFromValue", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(string), typeof(object) }, null)); // Let the type handler create the param [paramCollection, param]
-							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod("Add", new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
+							il.Emit(OpCodes.Callvirt, typeof(SqlTypeHandler).GetMethod(nameof(SqlTypeHandler.CreateParamFromValue), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(string), typeof(object) }, null)); // Let the type handler create the param [paramCollection, param]
+							il.Emit(OpCodes.Call, typeof(SqlParameterCollection).GetMethod(nameof(SqlParameterCollection.Add), new[] { typeof(SqlParameter) })); // Add the parameter to the collection [param]
 							il.Emit(OpCodes.Pop); // Get rid of the param as we don't need it anymore []*/
 						}
 					}
@@ -307,8 +307,7 @@ namespace unQuery
 			}
 
 			// Run the cached parameter adder
-			if (parameterAdder != null)
-				parameterAdder(paramCollection, parameters);
+			parameterAdder?.Invoke(paramCollection, parameters);
 		}
 
 		/// <summary>
@@ -388,10 +387,11 @@ namespace unQuery
 				var type = typeof(T);
 				PropertyInfo[] properties = type.GetProperties();
 
-				var schema = reader.GetSchemaTable().AsEnumerable().Select(x => new
+				var table = reader.GetSchemaTable();
+				var schema = table.Select().Select(x => new
 				{
-					Name = x.Field<string>("ColumnName"),
-					Ordinal = x.Field<int>("ColumnOrdinal")
+					Name = (string)x.ItemArray[table.Columns.IndexOf("ColumnName")],
+					Ordinal = (int)x.ItemArray[table.Columns.IndexOf("ColumnOrdinal")]
 				});
 
 				// If there are no properties on the type, it doesn't make sense to use it here
