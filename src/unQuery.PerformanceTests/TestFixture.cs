@@ -18,7 +18,7 @@ namespace unQuery.PerformanceTests
 		private double testPercentile = 0.90d;
 		private string connectionString = ConfigurationManager.ConnectionStrings["TestDB"].ConnectionString;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init()
 		{
 			// Increase process priority since this is time sensitive code

@@ -8,7 +8,7 @@ namespace unQuery.Tests
 	{
 		private TransactionScope ts;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUp()
 		{
 			// Non-transactional setup
@@ -124,7 +124,7 @@ namespace unQuery.Tests
 			");
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void TearDown()
 		{
 			ts.Dispose();

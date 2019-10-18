@@ -50,7 +50,7 @@ namespace unQuery
 		}
 
 		/// <summary>
-		/// Allows casting Dictionary<string, object> into a DynamicRow directly
+		/// Allows casting Dictionary&lt;astring, object&gt; into a DynamicRow directly
 		/// </summary>
 		public static explicit operator Dictionary<string, object>(DynamicRow row)
 		{
