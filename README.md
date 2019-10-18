@@ -480,7 +480,7 @@ Note that connections will inherit from your machine.config & root web.config fi
 
 ## Requirements
 
-* .NET Framework 4.0+
+* .NET Standard 2.0
 * SQL Server 2008+ if you want to use table-valued parameters, otherwise SQL Server 2000+
 
 ## Contact
