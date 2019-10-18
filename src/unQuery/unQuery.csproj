@@ -2,15 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.1.8</Version>
+    <Version>0.1.9</Version>
     <Authors>Mark S. Rasmussen</Authors>
     <PackageLicenseUrl>https://raw.github.com/improvedk/unQuery/master/license.txt</PackageLicenseUrl>
     <Company />
     <Product />
     <PackageProjectUrl>https://github.com/improvedk/unQuery</PackageProjectUrl>
     <Description>unQuery is a minimal data access library that makes it as simple as possible to consume and interact with data in SQL Server.</Description>
-    <PackageReleaseNotes>0.1.8
+    <PackageReleaseNotes>0.1.9
 - Ported to .NET Standard 2.0.
+0.1.8
+- Now handles emply table-valued parameter input
+- Result column access is now case insensitive
+- Added support for stored procedures
+- Added support for QueryOptions
+- Batch Executor now clears stored commands after executing
 0.1.7
 - Better LINQPad formatting
 - Improved exception messages
