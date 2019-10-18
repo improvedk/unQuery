@@ -1,2 +1,2 @@
-NuGet Pack -Build -Prop Configuration=Release
+dotnet pack /p:Configuration=Release
 pause
