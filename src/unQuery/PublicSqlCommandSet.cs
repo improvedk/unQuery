@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Reflection;
 
 namespace unQuery
@@ -21,8 +21,8 @@ namespace unQuery
 		/// </summary>
 		static PublicSqlCommandSet()
 		{
-			var assembly = Assembly.Load("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-			sqlCommandSetType = assembly.GetType("System.Data.SqlClient.SqlCommandSet");
+			var assembly = Assembly.Load("Microsoft.Data.SqlClient, Version=1.0.19269.1, Culture=neutral, PublicKeyToken=23ec7fc2d6eaa4a5");
+			sqlCommandSetType = assembly.GetType("Microsoft.Data.SqlClient.SqlCommandSet");
 		}
 
 		/// <summary>

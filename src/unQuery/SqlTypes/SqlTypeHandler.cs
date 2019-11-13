@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.SqlServer.Server;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient.Server;
+using Microsoft.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {
