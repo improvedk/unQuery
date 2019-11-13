@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace unQuery
 {

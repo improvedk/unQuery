@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace unQuery.PerformanceTests
 {

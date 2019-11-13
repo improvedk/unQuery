@@ -1,7 +1,7 @@
-﻿using Microsoft.SqlServer.Server;
+﻿using Microsoft.Data.SqlClient.Server;
 using System;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace unQuery.SqlTypes
 {

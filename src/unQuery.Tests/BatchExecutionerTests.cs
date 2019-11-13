@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Transactions;
 
 namespace unQuery.Tests
